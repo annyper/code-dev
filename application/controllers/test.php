@@ -24,13 +24,17 @@ class Test extends CI_Controller
         $data['title'] = 'Inicio';
         $data['lasd'] = 'Lasd';
 
-        echo "<pre>";
-        $this->benchmark->mark('perro');
-        print_r($this->test_model->getActividad());
-        $this->benchmark->mark('gato');
-        echo "</pre>";
+        $this->load->view('templates/header', $data);
         
-        $this->load->view('test/index', $data);           
+        
+        $this->benchmark->mark('perro');
+        $data['row'] = $this->test_model->getRacsTiempoReal();
+        $this->benchmark->mark('gato');
+
+        
+        $this->load->view('test/index', $data);
+
+        $this->load->view('templates/footer', $data);        
     }
 
 }

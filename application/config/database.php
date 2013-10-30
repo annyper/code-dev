@@ -45,7 +45,7 @@
 | the active record class
 */
 
-$active_group = 'default';
+$active_group = 'centromedellin';
 $active_record = TRUE;
 
 $db['default']['hostname'] = '10.65.52.22';//:1433';
@@ -64,6 +64,21 @@ $db['default']['swap_pre'] = '';
 $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
 
+$db['centromedellin']['hostname'] = '10.74.28.242';//
+$db['centromedellin']['username'] = 'sa';
+$db['centromedellin']['password'] = 'TIGO';
+$db['centromedellin']['database'] = 'DIGITURNO13';
+$db['centromedellin']['dbdriver'] = 'sqlsrv';
+$db['centromedellin']['dbprefix'] = '';
+$db['centromedellin']['pconnect'] = FALSE;
+$db['centromedellin']['db_debug'] = TRUE;
+$db['centromedellin']['cache_on'] = FALSE;
+$db['centromedellin']['cachedir'] = '';
+$db['centromedellin']['char_set'] = 'utf8';
+$db['centromedellin']['dbcollat'] = 'utf8_general_ci';
+$db['centromedellin']['swap_pre'] = '';
+$db['centromedellin']['autoinit'] = TRUE;
+$db['centromedellin']['stricton'] = FALSE;
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */
