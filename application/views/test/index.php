@@ -1,16 +1,20 @@
 	<div class="container">
-		<div class="col-md-3" id="panel">
+		<div class="col-sm-2" id="panel">
 		</div>
 
-		<div class="col-md-5" id="gtr">
+		<div class="col-sm-7" id="gtr">
 			<?php foreach ($row as $key => $turnos): ?>
 
-			<div class="row well-white">
-				<div class="col-md-12">
+			<div class="row well-white marcador-borde-verde bloque-top">
+				<div class="col-sm-2 fontSize1_5">
+					<?php echo $turnos['LABOR']; ?>
+				</div>
+				<div class="col-sm-5">
 
 					<?php $colas['colas'] = $this->test_model->getColas($turnos['TERMINAL']); ?>
+					<?php $colas['servicios'] = $this->test_model->getServicios($turnos['TER_PKSTRID']); ?>
 
-					<a href="#" class="" data-toggle="modal" data-target="#myModal<?php echo $key; ?>">
+					<a href="#" class="fontSize1_5" data-toggle="modal" data-target="#myModal<?php echo $key; ?>">
 						<?php echo $turnos['NOMBRE']; ?>
 					</a>
 					
@@ -30,17 +34,19 @@
 					</div><!-- /.modal -->
 					
 				</div>
-				<div class="col-md-12">
-					<?php echo $turnos['LABOR']; ?>
-					<?php echo $turnos['TURNO']; ?>
+				<div class="col-sm-2 fontSize1_5">
+					<?php echo $turnos['TIEMPO']; ?>
+					<span class="pull-right"><?php echo $turnos['TURNO']; ?></span>
+				</div>
+				<div class="col-sm-3 fontSize1_5">
 					<?php echo $turnos['TERMINAL']; ?>
 				</div>
 			</div>
 			<?php endforeach; ?>
 		</div>
 
-		<div class="col-md-4" id="estadisticas">
-			<pre>
+		<div class="col-sm-3" id="estadisticas">
+			<pre class="fontSize1">
 			<?php print_r($row) ?>
 			</pre>
 		</div>

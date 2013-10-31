@@ -7,11 +7,21 @@
 <!-- Tab panes -->
 <div class="tab-content">
   <div class="tab-pane active" id="servicios<?php echo $RandonId; ?>">
-  		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum, assumenda, repudiandae qui dicta eum exercitationem maiores consequatur cumque sapiente quia impedit animi quo debitis voluptate fugiat aut adipisci laboriosam ipsam necessitatibus id corrupti sunt explicabo pariatur vero at cum et. Quod, explicabo, nisi, adipisci ratione repellat amet magnam et numquam obcaecati porro nam nemo sit expedita odit suscipit id est laborum molestiae veritatis cumque consequatur totam ad maxime voluptate minima? Molestiae perferendis nulla voluptates amet. Amet, odio, reiciendis dolorem velit cum dolorum harum autem officiis necessitatibus numquam maxime hic assumenda corrupti repellendus repellat ducimus perferendis molestiae nostrum sit expedita omnis.
-  </div>
+  		<!-- <pre><?php //print_r($servicios); ?></pre> -->
+
+  		<div class="margen">
+  			<?php foreach ($servicios as $key => $value): ?>
+  			<p> 
+  				<strong class="text-success"><?php echo $value['SER_SDSTRNOMBRE']; ?></strong><br>
+				<?php echo $value['SUB_SDSTRNOMBRE'];; ?>
+  			 </p>
+  			<?php endforeach; ?>
+  		</div>
+		
+   </div>
   <div class="tab-pane" id="colas<?php echo $RandonId; ?>">
 
-    						<table class="table table-hover table-condensed table-bordered fontSize1">
+    						<table class="margen table table-hover table-condensed table-bordered fontSize1 table-responsive">
 					       		<thead>
 					       			<tr>
 					       				<th>Cola</th>
