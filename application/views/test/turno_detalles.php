@@ -21,7 +21,7 @@
    </div>
   <div class="tab-pane" id="colas<?php echo $RandonId; ?>">
 
-    						<table class="margen table table-hover table-condensed table-bordered fontSize1 table-responsive">
+    						<table class="margen table table-striped table-hover table-condensed table-bordered fontSize1 table-responsive">
 					       		<thead>
 					       			<tr>
 					       				<th>Cola</th>

@@ -4,7 +4,7 @@
 /**
 * 
 */
-class Test_model extends CI_model
+class Asesor_model extends CI_model
 {
 	
 	function __construct()
@@ -27,9 +27,9 @@ class Test_model extends CI_model
 	function getRacsTiempoReal()
 	{
 		$query = $this->db->query("SELECT UPPER(NOMBRE) NOMBRE, LABOR, ROUND(TIEMPO,2) TIEMPO, TURNO_ACTUAL TURNO, ATENDIDOS, ROUND(AHT,2) AHT_min, TERMINAL, TER_PKSTRID
-			FROM [dbo].[RACs] ('TIGO CENTRO MEDELLIN') AS qua
-			JOIN [dbo].[DG45_TERMINALES] AS pua
-			ON qua.TERMINAL = pua.[TER_SDSTRNOMBRE]
+			FROM [dbo].[RACs] ('TIGO CENTRO MEDELLIN') AS q
+			JOIN [dbo].[DG45_TERMINALES] AS p
+			ON q.TERMINAL = p.[TER_SDSTRNOMBRE]
 			ORDER BY LABOR DESC, AHT DESC");
 
 		return $query->result_array();
@@ -74,16 +74,6 @@ class Test_model extends CI_model
 			  where REPLACE([TER_SDSTRNOMBRE],' ','') = REPLACE('$terminal',' ','')
 			  ORDER BY [TER_SDSTRNOMBRE]");
 
-		return $query->result_array();
-	}
-
-	function getSinTurnoHistorico($datetimeInicio, $datetimeFin)
-	{
-		$query = $this->db->query("SELECT fecha, username, nombre, ISNULL(SUM(CAST(TIEMPO AS FLOAT)),0) as tiempo_Sin_Turno, sucursal, regional
-				FROM [dbo].[Funcion_Actividad_Fecha] ('$datetimeInicio','$datetimeFin')
-				WHERE LABOR = 'SIN TURNO' AND CARGO = 'Asesor'
-				GROUP BY fecha, username, NOMBRE, sucursal, regional
-				ORDER BY tiempo_Sin_Turno DESC");
 		return $query->result_array();
 	}
 }

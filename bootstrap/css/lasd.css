@@ -93,7 +93,7 @@ a.Matbar2:hover{
 }
 
 .well-white{
-    padding: 9px;
+    padding: 4px;
     -webkit-border-radius: 3px;
      -moz-border-radius: 3px;
           border-radius: 3px;
@@ -109,9 +109,10 @@ a.Matbar2:hover{
   top: 10%;
 }
 
-.marcador-borde-azul, .marcador-borde-verde{
-    transition:All 0.2s;
-  -webkit-transition:All 0.2s;
+.marcador-borde-azul, .marcador-borde-verde, .marcador-borde-rojo{
+  border-left: solid 3px #fff;
+    transition:All 0.3s;
+  -webkit-transition:All 0.3s;
 }
 .marcador-borde-azul:hover{
   border-left: solid 3px #0088cc;
@@ -120,6 +121,10 @@ a.Matbar2:hover{
 .marcador-borde-verde:hover{
   border-left: solid 3px #00B147;
 }
+.marcador-borde-rojo:hover{
+  border-left: solid 3px darkred;
+}
+
 
 /*********************************************************************/
 .fontSize0{
@@ -593,6 +598,9 @@ ul li.active a.navegacion{
   border: solid 1px #5cb85c !important;
 }
 
+.panel-extra{
+  box-shadow: 0px 0px 6px rgb(160, 160, 160);
+}
 
 /*********** Botones ****************/
 .btn-inverse{
@@ -609,4 +617,36 @@ ul li.active a.navegacion{
   left: 45%;
   color: rgba(255, 255, 255, 0.8);
 
+}
+
+.navbar-default-violeta {
+background-color: rgba(161, 78, 158, 1);
+border-color: #e7e7e7;
+}
+.navbar-default-azul {
+background-color: rgba(62, 86, 166, 1);
+border-color: #e7e7e7;
+}
+.navbar-default-azul-claro {
+background-color: rgba(30, 145, 200, 1);
+border-color: #e7e7e7;
+}
+.navbar-default .navbar-brand {
+color: #FFFFFF;
+}
+
+.navbar-default-azul .navbar-nav > li > a {
+  color: #CCCCCC !important;
+}
+
+.navbar-default-azul .navbar-nav > .active > a,
+.navbar-default-azul .navbar-nav > .active > a:hover,
+.navbar-default-azul .navbar-nav > .active > a:focus {
+background-color: rgba(39, 53, 102, 1);
+}
+
+.navbar-default-azul .navbar-nav > .open > a,
+.navbar-default-azul .navbar-nav > .open > a:hover,
+.navbar-default-azul .navbar-nav > .open > a:focus {
+background-color: rgba(39, 53, 102, 1) !important;
 }

@@ -20,6 +20,8 @@ class Welcome extends CI_Controller {
 	public function index()
 	{
 		$this->load->view('welcome_message');
+		date_default_timezone_set('America/Bogota');
+		echo date('Y-m-d H:i:s');
 	}
 }
 
