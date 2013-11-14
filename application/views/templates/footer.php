@@ -1,5 +1,5 @@
 		<footer>
-			<div class="row">
+			<div class="">
 				<div class="col-md-12">
 					<div class="text-muted text-center" ><small>Copyright &copy; 2013 <?php echo $lasd;?></small></div>
 				</div>
@@ -8,7 +8,7 @@
 		
 		
 		<script src="<?php  echo base_url("bootstrap/js/bootstrap.min.js"); ?>"></script>
-		<script src="<?php //echo base_url("bootstrap/js/Chart.min.js"); ?>"></script>
+		<script src="<?php echo base_url("bootstrap/js/highcharts.js"); ?>"></script>
 		<script src="<?php //echo base_url("bootstrap/js/lasd.js"); ?>"></script>
 
 	</body>

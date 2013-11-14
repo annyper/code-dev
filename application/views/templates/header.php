@@ -10,7 +10,14 @@
         <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/lasd.css"); ?>">
         <link rel="stylesheet" href="<?php //echo base_url("bootstrap/css/boxstyles.css"); ?>">
         <script src="<?php  echo base_url("bootstrap/js/jquery.js"); ?>"></script>
+		<style type="text/css">
+        	body {
+            background: rgba(189, 221, 235, 0.2);
+
+          }
+        </style>
 	</head>
+
 
 <body data-spy="scroll" data-target="#nav-ejemplo" data-offset="100">
 	<nav class="navbar navbar-default navbar-default-azul" role="navigation">
