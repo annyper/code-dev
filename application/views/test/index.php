@@ -13,28 +13,17 @@
 								<?php echo $turnos['LABOR']; ?>
 							</div>
 							<div class="col-sm-5">
+								<?php $terminal = str_replace(" ", "-", $turnos['TERMINAL']); ?>
+								<?php //$CDE = $this->test_model->getServicios($turnos['TER_PKSTRID']); ?>
 
-								<?php $colas['colas'] = $this->test_model->getColas($turnos['TERMINAL']); ?>
-								<?php $colas['servicios'] = $this->test_model->getServicios($turnos['TER_PKSTRID']); ?>
-
-								<a href="#" class="fontSize1_5" data-toggle="modal" data-target="#myModal<?php echo $key; ?>">
-									<?php echo $turnos['NOMBRE']; ?>
-								</a>
+								<h5 class="media-heading text-primary foroTitulo">	
+									<a href="<?php echo site_url('test/cargarModalTurnoAjax/' . $terminal . '/' . $turnos['TER_PKSTRID']); ?>" 
+										class="fontSize1_5" data-toggle="modal" data-target="#myModal">
+										<?php echo $turnos['NOMBRE']; ?>
+									</a>
+								</h5>
 								
-								<!-- Modal -->
-								<div class="modal" id="myModal<?php echo $key; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-								  <div class="modal-dialog">
-								    <div class="modal-content">
-								      <div class="modal-header">
-								        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times fa-lg"></i></button>
-								        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-								      </div>
-								      <div class="modal-body">
-								      	<?php $this->load->view('test/turno_detalles',$colas) ?>
-								      </div>
-								    </div><!-- /.modal-content -->
-								  </div><!-- /.modal-dialog -->
-								</div><!-- /.modal -->
+
 								
 							</div>
 							<div class="col-sm-2 fontSize1_5">
@@ -57,7 +46,7 @@
 				
 				<div class="panel panel-tigo-rojo panel-extra">
 				  <div class="panel-heading">
-				    <h3 class="panel-title">Sin turno tiempo real</h3>
+				    <h3 class="panel-title"><i class="fa fa-check fa-3x"></i>Sin turno tiempo real</h3>
 				  </div>
 				  <div class="panel-body">
 				  	<?php $this->load->view('test/sin_turno') ?>
@@ -212,4 +201,13 @@
     
     <?php echo $this->benchmark->memory_usage();?>
 <br>
-   <?php echo $this->benchmark->elapsed_time('perro', 'gato');?>
+	<p>Tiempo de consulta: 
+   		<?php echo $this->benchmark->elapsed_time('perro', 'gato');?>
+   </p>
+
+<!-- Modal -->
+
+
+<div class="modal cuerpoModalDelForo" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+</div><!-- /.modal -->

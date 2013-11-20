@@ -9,7 +9,7 @@
 		
 		<script src="<?php  echo base_url("bootstrap/js/bootstrap.min.js"); ?>"></script>
 		<script src="<?php echo base_url("bootstrap/js/highcharts.js"); ?>"></script>
-		<script src="<?php //echo base_url("bootstrap/js/lasd.js"); ?>"></script>
+		<script src="<?php echo base_url("bootstrap/js/lasd.js"); ?>"></script>
 
 	</body>
 </html>

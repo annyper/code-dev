@@ -729,3 +729,12 @@ background-color: rgba(39, 53, 102, 1) !important;
 .panel-tigo-azul > .panel-footer + .panel-collapse .panel-body {
   border-bottom-color: rgb(62,86,166);
 }
+
+.centrar-caja{
+  position: absolute;
+  margin-left: 45%;
+  margin-top: 25%;
+}
+.font-color-blanco{
+  color: white;
+}
