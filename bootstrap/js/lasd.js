@@ -19,7 +19,37 @@ $(function(){
 
 	});
 
+//================================================================================
 
+	// var enlaceLoad = $('.loadInstantaneo a').attr('href');
+	// $('.loadInstantaneo').load(enlaceLoad);
+
+	function actualizar(){
+
+		setInterval( function() 
+    	{
+    	    var enlace = $('#estadoAsesores-titulo a:eq(1)').attr('href');
+       	    console.log(enlace)
+       	    $('#estadoAsesores-titulo a span').html('<i class="font-color-blanco fa fa-refresh fa-spin"></i>');
+    	    $('#estadoAsesores').load(enlace);
+    	    $('#estadoAsesores-titulo a span').html('<i class="font-color-blanco fa fa-check"></i>')
+    	}, 10000);
+	}
+
+	actualizar2('#estadoAsesores-titulo', '#estadoAsesores', 10000);
+	actualizar2('#sinTurnoAcumulado-titulo', '#sinTurnoAcumulado', 120000);
+
+	function actualizar2(idTitulo, idBody, tiempo){
+
+		setInterval( function() 
+    	{
+    	    var enlace = $(idTitulo + ' a:eq(1)').attr('href');
+       	    console.log(enlace)
+       	    $(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-refresh fa-spin"></i>');
+    	    $(idBody).load(enlace);
+    	    $(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-check"></i>')
+    	}, tiempo);
+	}
 
 //========== F O R O==================================================================
 

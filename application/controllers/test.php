@@ -26,10 +26,6 @@ class Test extends CI_Controller
 
         $this->load->view('templates/header', $data);
         
-        
-        $this->benchmark->mark('perro');
-        $data['row'] = $this->test_model->getRacsTiempoReal();
-        $this->benchmark->mark('gato');
         $datetimeInicio = date('Y-m-d') . ' 08:00:00';
         $data['sinturno'] = $this->test_model->getSinTurnoHistorico($datetimeInicio, date('Y-m-d H:i:s'));
         
@@ -41,26 +37,13 @@ class Test extends CI_Controller
     // alpha
     function asesores($id_asesores)
     {
-        $data['title'] = 'Inicio';
-        $data['lasd'] = 'Lasd';
 
-        $this->load->view('templates/header', $data);
-        
-        
-        $this->benchmark->mark('perro');
-        $data['row'] = $this->test_model->getRacsTiempoReal();
-        $this->benchmark->mark('gato');
-
-        
-        $this->load->view('test/index', $data);
-
-        $this->load->view('templates/footer', $data); 
     }
 
     function cargarModalTurnoAjax($terminal, $idTurno)
     {
         if ($this->input->is_ajax_request()) {
-            echo "holaaaaaaaaa";
+            
             $terminal = str_replace("-", " ", $terminal);
             $col['colas'] = $this->test_model->getColas($terminal);
             $col['servicios'] = $this->test_model->getServicios($idTurno);
@@ -71,11 +54,38 @@ class Test extends CI_Controller
         }
     }
 
+    function renderRacsTiempoReal()
+    {
+        if ($this->input->is_ajax_request()) {
+
+            $data['row'] = $this->test_model->getRacsTiempoReal();
+            $this->load->view('test/racsTiempoReal', $data);
+        }
+    }
+
+    function renderSinTurno()
+    {
+        if ($this->input->is_ajax_request()) {
+
+            $datetimeInicio = date('Y-m-d') . ' 08:00:00';
+            $data['sinturno'] = $this->test_model->getSinTurnoHistorico($datetimeInicio, date('Y-m-d H:i:s'));
+            $this->load->view('test/sin_turno', $data);
+        }
+    }
+
     function cargarModalColaAjax()
     {
         if ($this->input->is_ajax_request()) {
 
+            echo "Hola Mundo! jajajaj";
+        }
+    }
 
+    function cargarModalColaAjax2()
+    {
+        if ($this->input->is_ajax_request()) {
+
+            echo "Hola Mundo2!";
         }
     }
 }

@@ -3,39 +3,25 @@
 		<div class="col-sm-6" id="gtr">
 			<div class="panel panel-tigo-verde panel-extra">
 				<div class="panel-heading">
-					<h3 class="panel-title">Estado de los asesores</h3>
+					<h3 class="panel-title" id="estadoAsesores-titulo">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+	         				 Estado de los asesores <span></span>
+	        			</a>
+	        			<a href="<?php echo site_url('test/renderRacsTiempoReal'); ?>"></a>
+        			</h3>
 				</div>
-				<div class="panel-body">
-					<?php foreach ($row as $key => $turnos): ?>
-
-						<div class="row well-white marcador-borde-verde bloque-top">
-							<div class="col-sm-2 fontSize1_5">
-								<?php echo $turnos['LABOR']; ?>
-							</div>
-							<div class="col-sm-5">
-								<?php $terminal = str_replace(" ", "-", $turnos['TERMINAL']); ?>
-								<?php //$CDE = $this->test_model->getServicios($turnos['TER_PKSTRID']); ?>
-
-								<h5 class="media-heading text-primary foroTitulo">	
-									<a href="<?php echo site_url('test/cargarModalTurnoAjax/' . $terminal . '/' . $turnos['TER_PKSTRID']); ?>" 
-										class="fontSize1_5" data-toggle="modal" data-target="#myModal">
-										<?php echo $turnos['NOMBRE']; ?>
-									</a>
-								</h5>
-								
-
-								
-							</div>
-							<div class="col-sm-2 fontSize1_5">
-								<?php echo $turnos['TIEMPO']; ?>
-								<span class="pull-right"><?php echo $turnos['TURNO']; ?></span>
-							</div>
-							<div class="col-sm-3 fontSize1_5">
-								<?php echo $turnos['TERMINAL']; ?>
-							</div>
-						</div>
-					<?php endforeach; ?>
+				<div id="collapseOne" class="panel-collapse collapse in">
+					<div class="panel-body" id="estadoAsesores">
+						
+						<script>
+							var enlaceLoad1 = $('#estadoAsesores-titulo a:eq(1)').attr('href');
+							 console.log(enlaceLoad1)
+							$('#estadoAsesores').html('<p class="text-center"><i class="fa fa-refresh fa-spin fa-2x text-success"></i></p>');
+							$('#estadoAsesores').load(enlaceLoad1);
+						</script>
+					</div>
 				</div>
+
 			</div>
 
 			
@@ -46,10 +32,23 @@
 				
 				<div class="panel panel-tigo-rojo panel-extra">
 				  <div class="panel-heading">
-				    <h3 class="panel-title"><i class="fa fa-check fa-3x"></i>Sin turno tiempo real</h3>
+				    <h3 class="panel-title" id="sinTurnoAcumulado-titulo">
+				    	<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+	         				 Sin turno tiempo real <span></span>
+	        			</a>
+	        			<a href="<?php echo site_url('test/renderSinTurno'); ?>"></a>
+	        		</h3>
 				  </div>
-				  <div class="panel-body">
-				  	<?php $this->load->view('test/sin_turno') ?>
+				  <div id="collapseTwo" class="panel-collapse collapse in">
+					  <div class="panel-body" id="sinTurnoAcumulado">
+					  	<?php //$this->load->view('test/sin_turno') ?>
+					  	<script>
+							var enlaceLoad2 = $('#sinTurnoAcumulado-titulo a:eq(1)').attr('href');
+							 console.log(enlaceLoad1)
+							$('#sinTurnoAcumulado').html('<p class="text-center"><i class="fa fa-refresh fa-spin fa-2x text-success"></i></p>');
+							$('#sinTurnoAcumulado').load(enlaceLoad2);
+						</script>
+					  </div>
 				  </div>
 				</div>
 
@@ -57,10 +56,25 @@
 				  <div class="panel-heading">
 				    <h3 class="panel-title">Almuerzos no justificados</h3>
 				  </div>
-				  <div class="panel-body">
+				  <div class="panel-body" id="estadoAsesores2">
 				  	<?php $this->load->view('test/almuerzo-no-justificado') ?>
+					
 				  </div>
 				</div>
+
+				<div class="panel panel-tigo-amarillo panel-extra">
+				  <div class="panel-heading">
+				    <h3 class="panel-title">LALALallalalalallaa</h3>
+				  </div>
+				  <div class="panel-body" id="AlmuerzoNoJustificado">
+				  	<?php //$this->load->view('test/almuerzo-no-justificado') ?>
+					<script>
+						var enlaceLoad = "<?php echo site_url('test/cargarModalColaAjax2'); ?>";
+						$('#AlmuerzoNoJustificado').load(enlaceLoad);
+					</script>
+				  </div>
+				</div>
+
 			</div>
 		</div>
 
@@ -201,9 +215,6 @@
     
     <?php echo $this->benchmark->memory_usage();?>
 <br>
-	<p>Tiempo de consulta: 
-   		<?php echo $this->benchmark->elapsed_time('perro', 'gato');?>
-   </p>
 
 <!-- Modal -->
 
