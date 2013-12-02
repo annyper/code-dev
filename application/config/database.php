@@ -45,7 +45,7 @@
 | the active record class
 */
 
-$active_group = 'centromedellin';
+$active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = '10.65.52.22';//:1433';
@@ -64,7 +64,7 @@ $db['default']['swap_pre'] = '';
 $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
 
-$db['centromedellin']['hostname'] = '10.74.28.242';//
+$db['centromedellin']['hostname'] = '10.74.28.242';//10.74.31.30
 $db['centromedellin']['username'] = 'sa';
 $db['centromedellin']['password'] = 'TIGO';
 $db['centromedellin']['database'] = 'DIGITURNO13';

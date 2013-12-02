@@ -24,26 +24,17 @@ $(function(){
 	// var enlaceLoad = $('.loadInstantaneo a').attr('href');
 	// $('.loadInstantaneo').load(enlaceLoad);
 
-	function actualizar(){
+	actualizar('#estadoAsesores-titulo', '#estadoAsesores', 10000);
+	actualizar('#clientesEspera-titulo', '#clientesEspera', 10000);
+	actualizar('#sinTurnoAcumulado-titulo', '#Lineadetiempo', 10000);
+	actualizar2('#sinTurnoAcumulado-titulo', '#Acumulado', 90000);
+
+	function actualizar(idTitulo, idBody, tiempo){
 
 		setInterval( function() 
     	{
-    	    var enlace = $('#estadoAsesores-titulo a:eq(1)').attr('href');
-       	    console.log(enlace)
-       	    $('#estadoAsesores-titulo a span').html('<i class="font-color-blanco fa fa-refresh fa-spin"></i>');
-    	    $('#estadoAsesores').load(enlace);
-    	    $('#estadoAsesores-titulo a span').html('<i class="font-color-blanco fa fa-check"></i>')
-    	}, 10000);
-	}
-
-	actualizar2('#estadoAsesores-titulo', '#estadoAsesores', 10000);
-	actualizar2('#sinTurnoAcumulado-titulo', '#sinTurnoAcumulado', 120000);
-
-	function actualizar2(idTitulo, idBody, tiempo){
-
-		setInterval( function() 
-    	{
-    	    var enlace = $(idTitulo + ' a:eq(1)').attr('href');
+    		var ipCifrada = $('.containerIP').attr('id');
+    	    var enlace = $(idTitulo + ' a:eq(1)').attr('href') + '/' + ipCifrada;
        	    console.log(enlace)
        	    $(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-refresh fa-spin"></i>');
     	    $(idBody).load(enlace);
@@ -51,7 +42,20 @@ $(function(){
     	}, tiempo);
 	}
 
-//========== F O R O==================================================================
+	function actualizar2(idTitulo, idBody, tiempo){
+
+		setInterval( function() 
+    	{
+    		var ipCifrada = $('.containerIP').attr('id');
+    	    var enlace = $(idTitulo + ' a:eq(2)').attr('href') + '/' + ipCifrada;
+       	    console.log(enlace)
+       	    $(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-refresh fa-spin"></i>');
+    	    $(idBody).load(enlace);
+    	    $(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-check"></i>')
+    	}, tiempo);
+	}
+
+//========== F O R O ==================================================================
 
 	$('.foroTitulo a').on('click', function() {
 			//var id_enlace_foro = $(this).attr('id');
