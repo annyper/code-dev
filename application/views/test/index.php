@@ -10,21 +10,27 @@
 	        			<a href="<?php echo site_url('test/renderRacsTiempoReal/' . $oficina); ?>"></a>
         			</h3>
 				</div>
-				<div id="collapseOne" class="panel-collapse collapse">
-					<div class="panel-body" id="estadoAsesores">
+				<div id="collapseOne" class="panel-collapse collapse in">
+					<div class="panel-body" id="">
+
+						<div id="estadoAsesoresChart" style="width: 100%; height: 100px; margin: 0 auto">
+						</div>
+
+						<div id="estadoAsesores">
+							<script>
+								var ipCifrada = $('.containerIP').attr('id');
+								var enlaceLoad1 = $('#estadoAsesores-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
+								 console.log(enlaceLoad1)
+								$('#estadoAsesores').html('<p class="text-center"><i class="fa fa-refresh fa-spin fa-2x text-success"></i></p>');
+								$('#estadoAsesores').load(enlaceLoad1, function( response, status, xhr ) {
+								  if ( status == "error" ) {
+								    var msg = "Error 404: Karen Garcia NOT found ";
+								    $( "#estadoAsesores" ).html( msg + xhr.status + " " + xhr.statusText );
+								  }
+								});
+							</script>
+						</div>
 						
-						<script>
-							var ipCifrada = $('.containerIP').attr('id');
-							var enlaceLoad1 = $('#estadoAsesores-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
-							 console.log(enlaceLoad1)
-							$('#estadoAsesores').html('<p class="text-center"><i class="fa fa-refresh fa-spin fa-2x text-success"></i></p>');
-							$('#estadoAsesores').load(enlaceLoad1, function( response, status, xhr ) {
-							  if ( status == "error" ) {
-							    var msg = "Error 404: Karen Garcia NOT found ";
-							    $( "#estadoAsesores" ).html( msg + xhr.status + " " + xhr.statusText );
-							  }
-							});
-						</script>
 					</div>
 				</div>
 
@@ -36,24 +42,30 @@
 						<a data-toggle="collapse" data-parent="#accordion" href="#collapseClientes">
 	         				 Clientes en espera <span></span>
 	        			</a>
-	        			<a href="<?php echo site_url('test/renderClientesEsperaTiempoReal'); ?>"></a>
+	        			<a href="<?php echo site_url('test/renderClientesEsperaTiempoReal/' . $oficina); ?>"></a>
+	        			<a href="<?php echo site_url('test/chartCientesEspera/' . $oficina); ?>"></a>
         			</h3>
 				</div>
 				<div id="collapseClientes" class="panel-collapse collapse in">
-					<div class="panel-body" id="clientesEspera">
-						
-						<script>
-							var ipCifrada = $('.containerIP').attr('id');
-							var enlaceLoad1 = $('#clientesEspera-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
-							 console.log(enlaceLoad1)
-							$('#clientesEspera').html('<p class="text-center"><i class="fa fa-refresh fa-spin fa-2x text-success"></i></p>');
-							$('#clientesEspera').load(enlaceLoad1, function( response, status, xhr ) {
-							  if ( status == "error" ) {
-							    var msg = "Error 404: Karen Garcia NOT found ";
-							    $( "#clientesEspera" ).html( msg + xhr.status + " " + xhr.statusText );
-							  }
-							});
-						</script>
+					<div class="panel-body" id="">
+						<div id="loquesea"></div>
+						<div id="estadoSala" style="min-width: 100px; height: 100px; margin: 0 auto"></div>
+
+						<div id="clientesEspera">
+							<script>
+								var ipCifrada = $('.containerIP').attr('id');
+								var enlaceLoad1 = $('#clientesEspera-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
+								 console.log(enlaceLoad1)
+								$('#clientesEspera').html('<p class="text-center"><i class="fa fa-refresh fa-spin fa-2x text-success"></i></p>');
+								$('#clientesEspera').load(enlaceLoad1, function( response, status, xhr ) {
+								  if ( status == "error" ) {
+								    var msg = "Error 404: Karen Garcia NOT found ";
+								    $( "#clientesEspera" ).html( msg + xhr.status + " " + xhr.statusText );
+								  }
+								});
+							</script>
+						</div>
+		
 					</div>
 				</div>
 
@@ -77,59 +89,6 @@
 				</div>
 				<div id="collapseFour" class="panel-collapse collapse in">
 				<div class="panel-body">
-					<div id="container1" style="margin: 0 auto">
-						<script>
-							$(function () {
-							    var chart;
-							    
-							    $(document).ready(function () {
-							    	
-							    	// Build the chart
-							        $('#container1').highcharts({
-							            chart: {
-							                plotBackgroundColor: null,
-							                plotBorderWidth: null,
-							                plotShadow: false
-							            },
-							            title: {
-							                text: 'Estado de la sala'
-							            },
-							            tooltip: {
-							        	    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-							            },
-							            plotOptions: {
-							                pie: {
-							                    allowPointSelect: true,
-							                    cursor: 'pointer',
-							                    dataLabels: {
-							                        enabled: false
-							                    },
-							                    showInLegend: true
-							                }
-							            },
-							            series: [{
-							                type: 'pie',
-							                name: 'Browser share',
-							                data: [
-							                    ['Siendo Atendidos',   45.0],
-							                    ['[0,15)',     6.2],
-							                    ['[15,30)',       26.8],
-							                    {
-							                        name: 'Chrome',
-							                        y: 12.8,
-							                        sliced: true,
-							                        selected: true
-							                    },
-							                    ['[45,60)',    8.5],
-							                    ['Mas de 60',   0.7]
-							                ]
-							            }]
-							        });
-							    });
-							    
-							});
-						</script>
-					</div>
 					
 					<div id="container2" style="margin: 0 auto">
 						<script>

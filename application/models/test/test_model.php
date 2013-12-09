@@ -145,6 +145,20 @@ class Test_model extends CI_model
 
 		return $query->result_array();
 	}
+
+	function  getChartClientesEspera($oficina)
+	{
+		$query = $this->dbCDE->query("SELECT * FROM [dbo].CLIENTES_ESPERA('$oficina')");
+
+		return $query->result_array();
+	}
+
+	function  getChartEstadoAsesores($oficina)
+	{
+		$query = $this->dbCDE->query("SELECT LABOR, COUNT(1) FROM dbo.RACs('$oficina') GROUP BY LABOR");
+
+		return $query->result_array();
+	}
 }
 
  ?>
