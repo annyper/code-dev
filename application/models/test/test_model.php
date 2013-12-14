@@ -42,8 +42,9 @@ class Test_model extends CI_model
 		$query = $this->dbCDE->query($quer);
 
 		if (!$query) {
-			echo "Error en la function RACS de la base de datos";
-			return array();
+			echo "<pre>";
+			die( print_r( sqlsrv_errors(), true));
+			echo "</pre>";
 		}
 		else
 		{
@@ -159,6 +160,15 @@ class Test_model extends CI_model
 
 		return $query->result_array();
 	}
-}
 
- ?>
+	function getActividadAsesoresPorDia($datetimeInicio, $datetimeFin)
+	{
+		$query = $this->dbCDE->query("SELECT nombre, labor, tiempo, DATEDIFF(second, '00:00:00.00', hora) segundos FROM [dbo].[Funcion_Actividad_Fecha] ('$datetimeInicio','$datetimeFin')
+					WHERE LABOR != 'Llamando' AND TIEMPO > 0
+					AND NOMBRE != 'SELECTOR' AND CARGO = 'Asesor' --AND username = 'YM43910806'
+					ORDER BY nombre, HORA DESC");
+		return $query->result_array();
+	}
+}
+					
+?>

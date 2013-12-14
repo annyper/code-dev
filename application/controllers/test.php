@@ -33,10 +33,11 @@ class Test extends CI_Controller
         $data['lasd'] = 'Lasd';
 
         $this->load->view('templates/header', $data);
-        $this->load->view('templates/footer', $data);        
+        $this->load->view('templates/footer', $data);   
+
+        $this->chartActividadAsesores();     
     }
 
-    // alpha
     function cde($oficina)
     {
         $data['title'] = 'Inicio';
@@ -54,6 +55,7 @@ class Test extends CI_Controller
         $data['ipCifrada'] = str_replace("/", "-", $data['ipCifrada']);
         $data['ipCifrada'] = str_replace("+", "_", $data['ipCifrada']);
         $data['ipCifrada'] = str_replace("=", "á", $data['ipCifrada']);
+
         //echo "<pre>"; print_r($data); echo "</pre>";
 
         $this->load->view('templates/header', $data);
@@ -61,15 +63,16 @@ class Test extends CI_Controller
         $this->load->view('test/index', $data);
 
         $this->load->view('templates/footer', $data); 
-    }
 
+        //$this->chartActividadAsesores($oficina, $data['ipCifrada']);
+    }
 
 // ------------------AJAX ---------------------------------------
     function cargarModalTurnoAjax($terminal, $idTurno, $ipCifrada)
     {
-        if ($this->input->is_ajax_request()) {
+        //if ($this->input->is_ajax_request()) {
             
-            $ipCifrada = urldecode($ipCifrada);
+            //$ipCifrada = urldecode($ipCifrada);
             $ipCifrada = str_replace("-", "/", $ipCifrada);
             $ipCifrada = str_replace("_", "+", $ipCifrada);
             $ipCifrada = str_replace("á", "=", $ipCifrada);
@@ -85,14 +88,14 @@ class Test extends CI_Controller
             $this->load->view('test/turno_detalles',$col);
 
             //echo "<pre>"; print_r($col); echo "</pre>";
-        }
+        //}
     }
 
     function renderRacsTiempoReal($oficina, $ipCifrada)
     {
         //if ($this->input->is_ajax_request()) {
             
-            $ipCifrada = urldecode($ipCifrada);
+            //$ipCifrada = urldecode($ipCifrada);
             $ipCifrada = str_replace("-", "/", $ipCifrada);
             $ipCifrada = str_replace("_", "+", $ipCifrada);
             $ipCifrada = str_replace("á", "=", $ipCifrada);
@@ -116,7 +119,7 @@ class Test extends CI_Controller
     {
         //if ($this->input->is_ajax_request()) {
 
-            $ipCifrada = urldecode($ipCifrada);
+            //$ipCifrada = urldecode($ipCifrada);
             $ipCifrada = str_replace("-", "/", $ipCifrada);
             $ipCifrada = str_replace("_", "+", $ipCifrada);
             $ipCifrada = str_replace("á", "=", $ipCifrada);
@@ -136,7 +139,7 @@ class Test extends CI_Controller
     {
         //if ($this->input->is_ajax_request()) {
 
-            $ipCifrada = urldecode($ipCifrada);
+            //$ipCifrada = urldecode($ipCifrada);
             $ipCifrada = str_replace("-", "/", $ipCifrada);
             $ipCifrada = str_replace("_", "+", $ipCifrada);
             $ipCifrada = str_replace("á", "=", $ipCifrada);
@@ -170,7 +173,7 @@ class Test extends CI_Controller
 
     function chartCientesEspera($oficina, $ipCifrada)
     {
-        if ($this->input->is_ajax_request()) {
+        //if ($this->input->is_ajax_request()) {
             
             $this->inicializarModeloYdecodificarIP($ipCifrada);
 
@@ -214,7 +217,7 @@ class Test extends CI_Controller
             $this->load->view('test/charts/chartCientesEsperaView', $dataJSON);
             //echo "<pre>"; print_r($data); echo "</pre>";
 
-        }
+        //}
     }
 
     function chartEstadoAsesores($oficina, $ipCifrada)
@@ -228,6 +231,52 @@ class Test extends CI_Controller
         foreach ($data['series'] as $key => $value) {
             $data['series'][$key]['data'] = array(0 => $value['']);
             unset($data['series'][$key]['']);
+
+            if ($value['LABOR']  == "Disponible") {
+                 $data['series'][$key]['color'] = "rgb(67, 183, 96)";//
+
+            } elseif ($value['LABOR'] == "Desconectado") {
+                $data['series'][$key]['color'] = "rgb(108, 108, 108)";//
+
+            } elseif ($value['LABOR'] == "Arranque Terminal") {
+                $data['series'][$key]['color'] = "rgb(124, 124, 124)";
+
+            } elseif ($value['LABOR'] == "Fin de Jornada") {
+                $data['series'][$key]['color'] = "rgb(31, 43, 82)";//
+
+            } elseif ($value['LABOR'] == "Cierre Arranque") {
+                $data['series'][$key]['color'] = "rgb(140, 140, 140)";
+
+            } elseif ($value['LABOR'] == "Ocupado") {
+                $data['series'][$key]['color'] = "rgb(62, 86, 166)";//
+
+            } elseif ($value['LABOR'] == "Capacitación") {
+                $data['series'][$key]['color'] = "rgb(134, 101, 0)";//
+
+            } elseif ($value['LABOR'] == "Baño") {
+                $data['series'][$key]['color'] = "rgb(202, 152, 0)";//
+
+            } elseif ($value['LABOR'] == "Break") {
+                $data['series'][$key]['color'] = "rgb(223, 237, 58)";
+
+            } elseif ($value['LABOR'] == "Paso Primera Línea") {
+                $data['series'][$key]['color'] = "rgb(255, 202, 40)";
+
+            } elseif ($value['LABOR'] == "Labor Administrativa") {
+                $data['series'][$key]['color'] = "rgb(244, 121, 10)";//
+
+            } elseif ($value['LABOR'] == "Sin turno") {
+               $data['series'][$key]['color'] = "rgb(202, 29, 15)";//
+
+            } elseif ($value['LABOR'] == "Almuerzo") {
+               $data['series'][$key]['color'] = "rgb(137, 59, 195)";//
+
+            }elseif ($value['LABOR'] == "Orientador") {
+               $data['series'][$key]['color'] = "rgb(45, 200, 255)";//
+
+            } elseif ($value['LABOR'] == "Llamando") {
+               $data['series'][$key]['color'] = "rgb(33, 234, 255)";//
+            }
         }
 
         //echo "<pre>"; print_r($data['series']); echo "</pre>";
@@ -242,7 +291,7 @@ class Test extends CI_Controller
 
     protected function inicializarModeloYdecodificarIP($ipCifrada)
     {
-        $ipCifrada = urldecode($ipCifrada);
+        //$ipCifrada = urldecode($ipCifrada);
         $ipCifrada = str_replace("-", "/", $ipCifrada);
         $ipCifrada = str_replace("_", "+", $ipCifrada);
         $ipCifrada = str_replace("á", "=", $ipCifrada);
@@ -250,9 +299,79 @@ class Test extends CI_Controller
         $this->test_model->inicializar($ip);
     }
 
+    function chartActividadAsesores()
+    {
+        $ip = '10.74.28.242';
+        $this->test_model->inicializar($ip);
 
+        //$this->inicializarModeloYdecodificarIP($ipCifrada);
 
+        $datetimeInicio = date('Y-m-d') . ' 08:00:00';
 
+        $data['series'] = $this->test_model->getActividadAsesoresPorDia($datetimeInicio, date('Y-m-d H:i:s'));
+
+        foreach ($data['series'] as $key => $value) {
+            $data['series'][$key]['tiempo'] = array(0 => $value['tiempo']*1000);
+
+            if ($value['labor']  == "Disponible") {
+                 $data['series'][$key]['color'] = "rgb(67, 183, 96)";//
+
+            } elseif ($value['labor'] == "Desconectado") {
+                $data['series'][$key]['color'] = "rgb(108, 108, 108)";//
+
+            } elseif ($value['labor'] == "Arranque Terminal") {
+                $data['series'][$key]['color'] = "rgb(124, 124, 124)";
+
+            } elseif ($value['labor'] == "Fin de Jornada") {
+                $data['series'][$key]['color'] = "rgb(31, 43, 82)";//
+
+            } elseif ($value['labor'] == "Cierre Arranque") {
+                $data['series'][$key]['color'] = "rgb(140, 140, 140)";
+
+            } elseif ($value['labor'] == "Ocupado") {
+                $data['series'][$key]['color'] = "rgb(62, 86, 166)";//
+
+            } elseif ($value['labor'] == "Capacitación") {
+                $data['series'][$key]['color'] = "rgb(134, 101, 0)";//
+
+            } elseif ($value['labor'] == "Baño") {
+                $data['series'][$key]['color'] = "rgb(202, 152, 0)";//
+
+            } elseif ($value['labor'] == "Break") {
+                $data['series'][$key]['color'] = "rgb(223, 237, 58)";
+
+            } elseif ($value['labor'] == "Paso Primera Línea") {
+                $data['series'][$key]['color'] = "rgb(255, 202, 40)";
+
+            } elseif ($value['labor'] == "Labor Administrativa") {
+                $data['series'][$key]['color'] = "rgb(244, 121, 10)";//
+
+            } elseif ($value['labor'] == "Sin turno") {
+               $data['series'][$key]['color'] = "rgb(202, 29, 15)";//
+
+            } elseif ($value['labor'] == "Almuerzo") {
+               $data['series'][$key]['color'] = "rgb(137, 59, 195)";//
+            }
+        }
+
+        $data['size'] = count($data['series']) - 1;
+        $data['milisegundos'] = $data['series'][$data['size']]['segundos'] * 1000;
+
+        $data['series'][$data['size'] + 1] = array('labor' => 'Out',
+                                            'tiempo' => array('0' => $data['milisegundos']),
+                                            'color' => 'rgb(255, 255, 255)'
+                                            );
+
+        echo "<pre>"; print_r($data['series']); echo "</pre>";
+
+        $data['dataJSON'] = json_encode($data['series']);
+        $data['dataJSON'] = str_replace("labor", "name", $data['dataJSON']);
+        $data['dataJSON'] = str_replace("tiempo", "data", $data['dataJSON']);
+
+        //echo "<pre>"; print_r($actividad); echo "</pre>";
+        
+        $this->load->view('test/charts/chartsActividadAsesores', $data);
+    }
 
 }
 

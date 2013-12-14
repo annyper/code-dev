@@ -24,10 +24,10 @@ $(function(){
 	// var enlaceLoad = $('.loadInstantaneo a').attr('href');
 	// $('.loadInstantaneo').load(enlaceLoad);
 
-	actualizar('#estadoAsesores-titulo', '#estadoAsesores', 10000);
-	actualizar('#clientesEspera-titulo', '#clientesEspera', 10000);
-	actualizar('#sinTurnoAcumulado-titulo', '#Lineadetiempo', 10000);
-	actualizar2('#sinTurnoAcumulado-titulo', '#Acumulado', 90000);
+	actualizar('#estadoAsesores-titulo', '#estadoAsesores', 12000);
+	actualizar('#clientesEspera-titulo', '#clientesEspera', 12000);
+	actualizar('#sinTurnoAcumulado-titulo', '#Lineadetiempo', 12000);
+	actualizar2('#sinTurnoAcumulado-titulo', '#Acumulado', 120000);
 
 	function actualizar(idTitulo, idBody, tiempo){
 
