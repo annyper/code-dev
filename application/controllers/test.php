@@ -33,9 +33,10 @@ class Test extends CI_Controller
         $data['lasd'] = 'Lasd';
 
         $this->load->view('templates/header', $data);
-        $this->load->view('templates/footer', $data);   
-
+          
         $this->chartActividadAsesores();     
+
+        $this->load->view('templates/footer', $data); 
     }
 
     function cde($oficina)
@@ -149,7 +150,7 @@ class Test extends CI_Controller
             $this->test_model->inicializar($ip);
             //$this->test_model->inicializar('10.74.28.242');
 
-            $datetimeInicio = date('Y-m-d') . ' 08:00:00';
+            $datetimeInicio = date('Y-m-d') . ' 07:00:00';
             $data['sinturno'] = $this->test_model->getSinTurnoHistorico($datetimeInicio, date('Y-m-d H:i:s'));
             //echo "<pre>"; print_r($data['sinturno']); echo "</pre>";
             $this->load->view('test/sin_turno', $data);
@@ -169,6 +170,17 @@ class Test extends CI_Controller
             $data['sinturnoTiempoReal'] = $this->test_model->getLaborTiempoReal($oficina, 'Sin turno');
             $this->load->view('test/sin_turnoTiempoReal', $data);
         //}
+    }
+
+    function renderAlmuerzoHistorico($ipCifrada)
+    {
+            $this->inicializarModeloYdecodificarIP($ipCifrada);
+            $datetimeInicio = date('Y-m-d') . ' 07:00:00';
+
+            $data['AlmuerzoHistorico'] = $this->test_model->getActividadHistorico($datetimeInicio, date('Y-m-d H:i:s'), 'Almuerzo', 3600);
+            $this->load->view('test/almuerzo-no-justificado', $data);
+
+            //echo "<pre>"; print_r($data['AlmuerzoHistorico']); echo "</pre>";
     }
 
     function chartCientesEspera($oficina, $ipCifrada)
@@ -275,7 +287,7 @@ class Test extends CI_Controller
                $data['series'][$key]['color'] = "rgb(45, 200, 255)";//
 
             } elseif ($value['LABOR'] == "Llamando") {
-               $data['series'][$key]['color'] = "rgb(33, 234, 255)";//
+               $data['series'][$key]['color'] = "rgb(159, 248, 156)";//rgba(159, 248, 156, 0.93)
             }
         }
 
@@ -301,15 +313,30 @@ class Test extends CI_Controller
 
     function chartActividadAsesores()
     {
-        $ip = '10.74.28.242';
+        $ip = '10.75.46.34'; //'10.74.28.242';
         $this->test_model->inicializar($ip);
 
         //$this->inicializarModeloYdecodificarIP($ipCifrada);
 
+    //----------- Consulta a la BD-------------------------------------------------------------------------------
         $datetimeInicio = date('Y-m-d') . ' 08:00:00';
 
         $data['series'] = $this->test_model->getActividadAsesoresPorDia($datetimeInicio, date('Y-m-d H:i:s'));
+    //----------------------------------------------------------------------------------------------------------
+        //echo "<pre>"; print_r($data['series']); echo "</pre>";
 
+
+    //--------------------- Reorganización del Arreglo ---------------------------------------
+        // foreach ($data['series'] as $key => $value) {
+        //     $data['asesores'][$key] = $value['nombre'];
+        // }
+        // $data['asesores'] = array_unique($data['asesores']);
+
+        // echo "<pre>"; print_r($data['asesores']); echo "</pre>";
+    // ---------------------------------------------------------------------------------------
+
+
+    // -------------------- ------------------------------------------------------------
         foreach ($data['series'] as $key => $value) {
             $data['series'][$key]['tiempo'] = array(0 => $value['tiempo']*1000);
 
@@ -354,19 +381,64 @@ class Test extends CI_Controller
             }
         }
 
-        $data['size'] = count($data['series']) - 1;
-        $data['milisegundos'] = $data['series'][$data['size']]['segundos'] * 1000;
 
-        $data['series'][$data['size'] + 1] = array('labor' => 'Out',
-                                            'tiempo' => array('0' => $data['milisegundos']),
-                                            'color' => 'rgb(255, 255, 255)'
-                                            );
+        //$data['series'] = count($data['series']) - 1;
+        $data['milisegundos'] = 0;
 
-        echo "<pre>"; print_r($data['series']); echo "</pre>";
+        // tiempo actual en microsegundos
+        $pieces = explode(":", date('H:i:s'));
+        $data['max'] = ($pieces[0]*3600 + $pieces[1]*60 + $pieces[2]) * 1000;
 
-        $data['dataJSON'] = json_encode($data['series']);
-        $data['dataJSON'] = str_replace("labor", "name", $data['dataJSON']);
-        $data['dataJSON'] = str_replace("tiempo", "data", $data['dataJSON']);
+  
+        $barraOut = array('labor' => 'Out',
+                            'tiempo' => array('0' => 0),
+                            'color' => 'rgba(255, 255, 255, 0)',
+                            'nombre' => 'nn'
+                            );
+
+        $asesor0 = $data['series'][0]['nombre'];
+        $index = 0;
+        foreach ($data['series'] as $key => $value) {
+            
+            if ($value['nombre'] == $asesor0) {
+                
+                $data['asesores'][$asesor0][$index] = $value; 
+                $index = $index + 1;
+
+                 // se coloca la barra out en caso que sea el final del arreglo
+                if ($key == count($data['series']) - 1) {
+
+                    $barraOut['tiempo'][0] = $value['segundos']*1000;
+                    $data['asesores'][$asesor0][$index] = $barraOut;
+                }
+
+            } else {
+                // se coloca la barra out 
+                $barraOut['tiempo'][0] = $data['series'][$key-1]['segundos']*1000;
+                $data['asesores'][$asesor0][$index] = $barraOut;
+
+                $index = 0;
+                $asesor0 = $value['nombre'];
+                $data['asesores'][$asesor0][$index] = $value; 
+            }
+            
+        }
+
+        foreach ($data['asesores'] as $key => $value) {
+            
+            $jsonString = json_encode($value);
+            $jsonString = str_replace("labor", "name", $jsonString);
+            $jsonString = str_replace("tiempo", "data", $jsonString);
+            $data['dataJSON'][$key]['CadenaJson'] = $jsonString;
+
+            $data['dataJSON'][$key]['out'][0] = $value[count($value)-1]['tiempo'][0];
+        }
+
+        //echo "<pre>"; print_r($data); echo "</pre>";
+
+        // $data['dataJSON'] = json_encode($data['series']);
+        // $data['dataJSON'] = str_replace("labor", "name", $data['dataJSON']);
+        // $data['dataJSON'] = str_replace("tiempo", "data", $data['dataJSON']);
 
         //echo "<pre>"; print_r($actividad); echo "</pre>";
         

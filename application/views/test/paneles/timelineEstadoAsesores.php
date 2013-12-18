@@ -3,7 +3,7 @@
 				<div class="panel-heading">
 				    <h3 class="panel-title">
 						<a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
-	         				 Indicadores de rendimiento <span></span>
+	         				 Actividad de los asesores <span></span>
 	        			</a>
 				    </h3>
 				</div>

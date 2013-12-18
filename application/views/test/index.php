@@ -84,18 +84,22 @@
 			</div>
 			
 			<div class="col-sm-6 col-md-3" id="almuerzo">
-				<div class="panel panel-tigo-amarillo panel-extra">
+				<?php $this->load->view('test/paneles/panelAlmuerzo') ?>
+			</div>
+
+			<div class="col-sm-6 col-md-3" id="Control-disponibles">
+				<div class="panel panel-info panel-extra">
 					  <div class="panel-heading">
 					    <h3 class="panel-title">
-					    	<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-		         				 Almuerzos no justificados <span></span>
+					    	<a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+		         				Disponibles y turnos en sala <span></span>
 		        			</a>
 		        		</h3>
 					  </div>
 
-					  <div id="collapseThree" class="panel-collapse collapse in">
+					  <div id="collapseFour" class="panel-collapse collapse in">
 					  	<div class="panel-body" id="estadoAsesores2">
-					  		<?php $this->load->view('test/almuerzo-no-justificado') ?>
+					  		<?php //$this->load->view('test/almuerzo-no-justificado') ?>
 						
 					  	</div>
 					  </div>
@@ -103,37 +107,18 @@
 			</div>
 
 			<div class="col-sm-6 col-md-3" id="AHT-alto">
-				<div class="panel panel-tigo-amarillo panel-extra">
+				<div class="panel panel-success panel-extra">
 					  <div class="panel-heading">
 					    <h3 class="panel-title">
-					    	<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+					    	<a data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
 		         				 Almuerzos no justificados <span></span>
 		        			</a>
 		        		</h3>
 					  </div>
 
-					  <div id="collapseThree" class="panel-collapse collapse in">
+					  <div id="collapseFive" class="panel-collapse collapse in">
 					  	<div class="panel-body" id="estadoAsesores2">
-					  		<?php $this->load->view('test/almuerzo-no-justificado') ?>
-						
-					  	</div>
-					  </div>
-				</div>
-			</div>
-
-			<div class="col-sm-6 col-md-3" id="AHT-alto">
-				<div class="panel panel-tigo-amarillo panel-extra">
-					  <div class="panel-heading">
-					    <h3 class="panel-title">
-					    	<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-		         				 Almuerzos no justificados <span></span>
-		        			</a>
-		        		</h3>
-					  </div>
-
-					  <div id="collapseThree" class="panel-collapse collapse in">
-					  	<div class="panel-body" id="estadoAsesores2">
-					  		<?php $this->load->view('test/almuerzo-no-justificado') ?>
+					  		<?php //$this->load->view('test/almuerzo-no-justificado') ?>
 						
 					  	</div>
 					  </div>

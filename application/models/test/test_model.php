@@ -147,6 +147,20 @@ class Test_model extends CI_model
 		return $query->result_array();
 	}
 
+	function getActividadHistorico($datetimeInicio, $datetimeFin, $labor, $tiempoMinimo = 0)
+	{
+		$query = $this->dbCDE->query("SELECT * FROM (
+				SELECT fecha, username, nombre, ISNULL(SUM(CAST(TIEMPO AS FLOAT)),0) as tiempo_Labor, sucursal, regional
+					FROM [dbo].[Funcion_Actividad_Fecha] ('$datetimeInicio','$datetimeFin')
+					WHERE LABOR = '$labor' AND CARGO = 'Asesor'
+					GROUP BY fecha, username, NOMBRE, sucursal, regional
+					) AS ASDASD
+					WHERE tiempo_Labor >= $tiempoMinimo
+				ORDER BY tiempo_Labor DESC");
+
+		return $query->result_array();
+	}
+
 	function  getChartClientesEspera($oficina)
 	{
 		$query = $this->dbCDE->query("SELECT * FROM [dbo].CLIENTES_ESPERA('$oficina')");
@@ -164,7 +178,7 @@ class Test_model extends CI_model
 	function getActividadAsesoresPorDia($datetimeInicio, $datetimeFin)
 	{
 		$query = $this->dbCDE->query("SELECT nombre, labor, tiempo, DATEDIFF(second, '00:00:00.00', hora) segundos FROM [dbo].[Funcion_Actividad_Fecha] ('$datetimeInicio','$datetimeFin')
-					WHERE LABOR != 'Llamando' AND TIEMPO > 0
+					WHERE TIEMPO > 0 --AND LABOR != 'Llamando' 
 					AND NOMBRE != 'SELECTOR' AND CARGO = 'Asesor' --AND username = 'YM43910806'
 					ORDER BY nombre, HORA DESC");
 		return $query->result_array();
