@@ -1,3 +1,4 @@
+<?php if (is_array($row)): ?>					
 					<?php foreach ($row as $key => $turnos): ?>
 
 						<div class="row well-white marcador-borde-verde bloque-top">
@@ -40,3 +41,5 @@
 
 		});
 </script>
+
+<?php endif;  ?>

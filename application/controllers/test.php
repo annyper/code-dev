@@ -23,6 +23,9 @@ class Test extends CI_Controller
         $this->load->library('encrypt');
         $this->encrypt->set_cipher(MCRYPT_GOST);
 
+        $this->load->library('form_validation');
+        $this->load->helper('form');
+
 	}
 
 	function index()
@@ -34,29 +37,34 @@ class Test extends CI_Controller
 
         $this->load->view('templates/header', $data);
           
-        $this->chartActividadAsesores();     
+        //$this->chartActividadAsesores();     
 
         $this->load->view('templates/footer', $data); 
     }
 
     function cde($oficina)
     {
-        $data['title'] = 'Inicio';
-        $data['lasd'] = 'Lasd';
+        //$this->output->cache(60);
+        $this->benchmark->mark('inicio');
+        $data['title'] = str_replace("-", " ", $oficina) . " GTR";
+        $data['lasd'] = 'COC';
+        $data['nav'] = 'gtr';
 
         //$data['oficina'] = str_replace("-", " ", $oficina);
         $data['oficina'] = $oficina;
 
         $data['ip_info'] = $this->config_model->getIP($oficina);
+        $data['listaCDEs'] = $this->config_model->getListaNombresCDEs();
         //
 
-        echo $data['ip_info']['SER_SDSTRSERVIDOR'];
+        //echo $data['ip_info']['SER_SDSTRSERVIDOR'];
         $data['ipCifrada'] = $this->encrypt->encode($data['ip_info']['SER_SDSTRSERVIDOR']);
         
         $data['ipCifrada'] = str_replace("/", "-", $data['ipCifrada']);
         $data['ipCifrada'] = str_replace("+", "_", $data['ipCifrada']);
-        $data['ipCifrada'] = str_replace("=", "á", $data['ipCifrada']);
+        $data['ipCifrada'] = str_replace("=", "", $data['ipCifrada']);
 
+        //echo " " . $data['ipCifrada'] . " ";
         //echo "<pre>"; print_r($data); echo "</pre>";
 
         $this->load->view('templates/header', $data);
@@ -66,6 +74,26 @@ class Test extends CI_Controller
         $this->load->view('templates/footer', $data); 
 
         //$this->chartActividadAsesores($oficina, $data['ipCifrada']);
+
+        $this->benchmark->mark('fin');
+
+        //echo " " . $this->benchmark->elapsed_time('inicio', 'fin');
+    }
+
+    function dashboardEncabezado($ipCifrada)
+    {
+        $ipCifrada = str_replace("-", "/", $ipCifrada);
+        $ipCifrada = str_replace("_", "+", $ipCifrada);
+        $ipCifrada = str_replace("á", "=", $ipCifrada);
+
+        $ip = $this->encrypt->decode($ipCifrada);
+        $this->test_model->inicializar($ip);
+
+        $data['gtr'] = $this->test_model->getGTR();
+
+        $this->load->view('test/paneles/dashboardEncabezado',$data);
+        //echo "<pre>"; print_r($data['gtr']); echo "</pre>";
+
     }
 
 // ------------------AJAX ---------------------------------------
@@ -107,12 +135,23 @@ class Test extends CI_Controller
             
             $oficina = str_replace("-", " ", $oficina);
             //echo($oficina);
+
+            $contador = 0;
             $data['row'] = $this->test_model->getRacsTiempoReal($oficina);
-            //echo "<pre>"; print_r($data['row']); echo "</pre>";
 
-            $this->chartEstadoAsesores($oficina, $ipCifrada);
+            while ( $contador <= 2 && !is_array($data['row'])) {
+                $contador = $contador + 1;
 
-            $this->load->view('test/racsTiempoReal', $data);
+                $data['row'] = $this->test_model->getRacsTiempoReal($oficina);
+            }
+            
+            if (is_array($data['row'])) {
+                
+                $this->chartEstadoAsesores($oficina, $ipCifrada);
+
+                $this->load->view('test/racsTiempoReal', $data);
+            }
+            
         //}
     }
 
@@ -129,6 +168,9 @@ class Test extends CI_Controller
             $this->test_model->inicializar($ip);
 
             $data['clientesEspera'] = $this->test_model->getClientesEsperaTiempoReal();
+
+            //$developer = $this->test_model->developer();
+            //echo "<pre>"; print_r($developer); echo "</pre>";
 
             $this->chartCientesEspera($oficina, $ipCifrada);
 
@@ -175,12 +217,30 @@ class Test extends CI_Controller
     function renderAlmuerzoHistorico($ipCifrada)
     {
             $this->inicializarModeloYdecodificarIP($ipCifrada);
-            $datetimeInicio = date('Y-m-d') . ' 07:00:00';
+            $datetimeInicio = date('Y-m-d') . ' 06:00:00';
 
             $data['AlmuerzoHistorico'] = $this->test_model->getActividadHistorico($datetimeInicio, date('Y-m-d H:i:s'), 'Almuerzo', 3600);
             $this->load->view('test/almuerzo-no-justificado', $data);
 
             //echo "<pre>"; print_r($data['AlmuerzoHistorico']); echo "</pre>";
+    }
+
+    function renderBanohistorico($ipCifrada)
+    {
+        $this->inicializarModeloYdecodificarIP($ipCifrada);
+        $datetimeInicio = date('Y-m-d') . ' 06:00:00';
+
+        $data['BanoHistorico'] = $this->test_model->getActividadHistorico($datetimeInicio, date('Y-m-d H:i:s'), 'Baño', 0);
+        //$this->load->view('test/bano-no-justificado', $data);
+    }
+
+    function renderLaborAdministrativaHistorico($ipCifrada)
+    {
+        $this->inicializarModeloYdecodificarIP($ipCifrada);
+        $datetimeInicio = date('Y-m-d') . ' 06:00:00';
+
+        $data['LaborAdministrativaHistorico'] = $this->test_model->getActividadHistorico($datetimeInicio, date('Y-m-d H:i:s'), 'Labor Administrativa', 900);
+        //$this->load->view('test/Labor-Administrativa-historico', $data);
     }
 
     function chartCientesEspera($oficina, $ipCifrada)
@@ -238,67 +298,78 @@ class Test extends CI_Controller
 
         $oficina = str_replace("-", " ", $oficina);
 
+        $contador = 0;
         $data['series'] = $this->test_model->getChartEstadoAsesores($oficina);
 
-        foreach ($data['series'] as $key => $value) {
-            $data['series'][$key]['data'] = array(0 => $value['']);
-            unset($data['series'][$key]['']);
+        while ( $contador <= 2 && !is_array($data['series'])) {
+            $contador = $contador + 1;
 
-            if ($value['LABOR']  == "Disponible") {
-                 $data['series'][$key]['color'] = "rgb(67, 183, 96)";//
-
-            } elseif ($value['LABOR'] == "Desconectado") {
-                $data['series'][$key]['color'] = "rgb(108, 108, 108)";//
-
-            } elseif ($value['LABOR'] == "Arranque Terminal") {
-                $data['series'][$key]['color'] = "rgb(124, 124, 124)";
-
-            } elseif ($value['LABOR'] == "Fin de Jornada") {
-                $data['series'][$key]['color'] = "rgb(31, 43, 82)";//
-
-            } elseif ($value['LABOR'] == "Cierre Arranque") {
-                $data['series'][$key]['color'] = "rgb(140, 140, 140)";
-
-            } elseif ($value['LABOR'] == "Ocupado") {
-                $data['series'][$key]['color'] = "rgb(62, 86, 166)";//
-
-            } elseif ($value['LABOR'] == "Capacitación") {
-                $data['series'][$key]['color'] = "rgb(134, 101, 0)";//
-
-            } elseif ($value['LABOR'] == "Baño") {
-                $data['series'][$key]['color'] = "rgb(202, 152, 0)";//
-
-            } elseif ($value['LABOR'] == "Break") {
-                $data['series'][$key]['color'] = "rgb(223, 237, 58)";
-
-            } elseif ($value['LABOR'] == "Paso Primera Línea") {
-                $data['series'][$key]['color'] = "rgb(255, 202, 40)";
-
-            } elseif ($value['LABOR'] == "Labor Administrativa") {
-                $data['series'][$key]['color'] = "rgb(244, 121, 10)";//
-
-            } elseif ($value['LABOR'] == "Sin turno") {
-               $data['series'][$key]['color'] = "rgb(202, 29, 15)";//
-
-            } elseif ($value['LABOR'] == "Almuerzo") {
-               $data['series'][$key]['color'] = "rgb(137, 59, 195)";//
-
-            }elseif ($value['LABOR'] == "Orientador") {
-               $data['series'][$key]['color'] = "rgb(45, 200, 255)";//
-
-            } elseif ($value['LABOR'] == "Llamando") {
-               $data['series'][$key]['color'] = "rgb(159, 248, 156)";//rgba(159, 248, 156, 0.93)
-            }
+            $data['series'] = $this->test_model->getChartEstadoAsesores($oficina);
         }
 
-        //echo "<pre>"; print_r($data['series']); echo "</pre>";
+        if (is_array($data['series'])) {
 
-        $dataJSON['jsonCodificado'] = json_encode($data['series']);
+            foreach ($data['series'] as $key => $value) {
+                $data['series'][$key]['data'] = array(0 => $value['']);
+                unset($data['series'][$key]['']);
 
-        $dataJSON['jsonCodificado'] = str_replace("LABOR", "name", $dataJSON['jsonCodificado']);
-        //echo "<pre>"; echo $dataJSON['jsonCodificado']; echo "</pre>";
+                if ($value['LABOR']  == "Disponible") {
+                     $data['series'][$key]['color'] = "rgb(67, 183, 96)";//
 
-        $this->load->view('test/charts/chartEstadoAsesoresView', $dataJSON);
+                } elseif ($value['LABOR'] == "Desconectado") {
+                    $data['series'][$key]['color'] = "rgb(108, 108, 108)";//
+
+                } elseif ($value['LABOR'] == "Arranque Terminal") {
+                    $data['series'][$key]['color'] = "rgb(124, 124, 124)";
+
+                } elseif ($value['LABOR'] == "Fin de Jornada") {
+                    $data['series'][$key]['color'] = "rgb(31, 43, 82)";//
+
+                } elseif ($value['LABOR'] == "Cierre Arranque") {
+                    $data['series'][$key]['color'] = "rgb(140, 140, 140)";
+
+                } elseif ($value['LABOR'] == "Ocupado") {
+                    $data['series'][$key]['color'] = "rgb(62, 86, 166)";//
+
+                } elseif ($value['LABOR'] == "Capacitación") {
+                    $data['series'][$key]['color'] = "rgb(134, 101, 0)";//
+
+                } elseif ($value['LABOR'] == "Baño") {
+                    $data['series'][$key]['color'] = "rgb(202, 152, 0)";//
+
+                } elseif ($value['LABOR'] == "Break") {
+                    $data['series'][$key]['color'] = "rgb(223, 237, 58)";
+
+                } elseif ($value['LABOR'] == "Paso Primera Línea") {
+                    $data['series'][$key]['color'] = "rgb(255, 202, 40)";
+
+                } elseif ($value['LABOR'] == "Labor Administrativa") {
+                    $data['series'][$key]['color'] = "rgb(244, 121, 10)";//
+
+                } elseif ($value['LABOR'] == "Sin turno") {
+                   $data['series'][$key]['color'] = "rgb(202, 29, 15)";//
+
+                } elseif ($value['LABOR'] == "Almuerzo") {
+                   $data['series'][$key]['color'] = "rgb(137, 59, 195)";//
+
+                }elseif ($value['LABOR'] == "Orientador") {
+                   $data['series'][$key]['color'] = "rgb(45, 200, 255)";//
+
+                } elseif ($value['LABOR'] == "Llamando") {
+                   $data['series'][$key]['color'] = "rgb(159, 248, 156)";//rgba(159, 248, 156, 0.93)
+                }
+            }
+ 
+            //echo "<pre>"; print_r($data['series']); echo "</pre>";
+
+            $dataJSON['jsonCodificado'] = json_encode($data['series']);
+
+            $dataJSON['jsonCodificado'] = str_replace("LABOR", "name", $dataJSON['jsonCodificado']);
+            //echo "<pre>"; echo $dataJSON['jsonCodificado']; echo "</pre>";
+
+            $this->load->view('test/charts/chartEstadoAsesoresView', $dataJSON);
+
+        }
     }
 
     protected function inicializarModeloYdecodificarIP($ipCifrada)
@@ -311,32 +382,55 @@ class Test extends CI_Controller
         $this->test_model->inicializar($ip);
     }
 
-    function chartActividadAsesores()
+    protected function mensajesValidacion()
     {
-        $ip = '10.75.46.34'; //'10.74.28.242';
-        $this->test_model->inicializar($ip);
+        $this->form_validation->set_message('required', 'El campo %s es obligatorio');
+        $this->form_validation->set_message('valid_email', 'El campo %s no es un Email valido');
+    }
 
-        //$this->inicializarModeloYdecodificarIP($ipCifrada);
+    function chartActividadAsesores($ipCifrada)
+    {
+         //'10.74.28.242';
+        //$this->test_model->inicializar($ip);
 
-    //----------- Consulta a la BD-------------------------------------------------------------------------------
         $datetimeInicio = date('Y-m-d') . ' 08:00:00';
+        $datetimeFin = date('Y-m-d H:i:s');
 
-        $data['series'] = $this->test_model->getActividadAsesoresPorDia($datetimeInicio, date('Y-m-d H:i:s'));
-    //----------------------------------------------------------------------------------------------------------
+        $this->inicializarModeloYdecodificarIP($ipCifrada);
+
+        $this->chartActividadAsesoresFecha($datetimeInicio, $datetimeFin);
+    
+    }
+
+    function chartActividadAsesoresForm($ipCifrada)
+    {
+        $this->form_validation->set_rules('fechaActividadAsesor', 'Fecha actividad del asesor', 'trim|required|xss_clean|htmlspecialchars');
+
+        if ($this->form_validation->run()) {
+
+            //echo "hola mundo";
+
+            $this->inicializarModeloYdecodificarIP($ipCifrada);
+
+            $fechaConsultada = $this->input->post('fechaActividadAsesor');
+
+            $datetimeInicio = $fechaConsultada . ' 08:00:00';
+            $datetimeFin = $fechaConsultada . ' 21:00:00';
+            //echo $datetimeFin . " ";
+            //echo $datetimeInicio . " " . $datetimeFin;
+            $this->chartActividadAsesoresFecha($datetimeInicio, $datetimeFin);
+
+        }
+    }
+
+    protected function chartActividadAsesoresFecha($datetimeInicio, $datetimeFin)
+    {
+        //----------- Consulta a la BD-------------------------------------------------------------------------------
+        $data['series'] = $this->test_model->getActividadAsesoresPorDia($datetimeInicio, $datetimeFin);
+        //----------------------------------------------------------------------------------------------------------
         //echo "<pre>"; print_r($data['series']); echo "</pre>";
 
-
-    //--------------------- Reorganización del Arreglo ---------------------------------------
-        // foreach ($data['series'] as $key => $value) {
-        //     $data['asesores'][$key] = $value['nombre'];
-        // }
-        // $data['asesores'] = array_unique($data['asesores']);
-
-        // echo "<pre>"; print_r($data['asesores']); echo "</pre>";
-    // ---------------------------------------------------------------------------------------
-
-
-    // -------------------- ------------------------------------------------------------
+        // -------------------- ------------------------------------------------------------
         foreach ($data['series'] as $key => $value) {
             $data['series'][$key]['tiempo'] = array(0 => $value['tiempo']*1000);
 
@@ -362,12 +456,12 @@ class Test extends CI_Controller
                 $data['series'][$key]['color'] = "rgb(134, 101, 0)";//
 
             } elseif ($value['labor'] == "Baño") {
-                $data['series'][$key]['color'] = "rgb(202, 152, 0)";//
+                $data['series'][$key]['color'] = "rgb(187, 146, 21)";//
 
             } elseif ($value['labor'] == "Break") {
                 $data['series'][$key]['color'] = "rgb(223, 237, 58)";
 
-            } elseif ($value['labor'] == "Paso Primera Línea") {
+            } elseif ($value['labor'] == "Paso a Primera Línea") {
                 $data['series'][$key]['color'] = "rgb(255, 202, 40)";
 
             } elseif ($value['labor'] == "Labor Administrativa") {
@@ -375,6 +469,9 @@ class Test extends CI_Controller
 
             } elseif ($value['labor'] == "Sin turno") {
                $data['series'][$key]['color'] = "rgb(202, 29, 15)";//
+
+            } elseif ($value['labor'] == "Llamando") {
+               $data['series'][$key]['color'] = "rgb(164, 213, 58)";//
 
             } elseif ($value['labor'] == "Almuerzo") {
                $data['series'][$key]['color'] = "rgb(137, 59, 195)";//
@@ -385,8 +482,19 @@ class Test extends CI_Controller
         //$data['series'] = count($data['series']) - 1;
         $data['milisegundos'] = 0;
 
-        // tiempo actual en microsegundos
-        $pieces = explode(":", date('H:i:s'));
+        // tiempo MAX en microsegundos
+        $datePart = explode(" ", $datetimeFin);
+        //echo $datePart[0];
+
+        if ($datePart[0] == date('Y-m-d')) {
+
+            $pieces = explode(":", date('H:i:s'));
+            //echo " entró al dia de hoy";
+        } else {
+            $pieces = explode(":", $datePart[1]);
+            //echo " entró en la fecha correcta";
+        }
+        
         $data['max'] = ($pieces[0]*3600 + $pieces[1]*60 + $pieces[2]) * 1000;
 
   
@@ -443,6 +551,34 @@ class Test extends CI_Controller
         //echo "<pre>"; print_r($actividad); echo "</pre>";
         
         $this->load->view('test/charts/chartsActividadAsesores', $data);
+    }
+
+    function renderEstadisticas($oficina, $ipCifrada)
+    {
+        $oficina = str_replace("-", " ", $oficina);
+
+        $this->inicializarModeloYdecodificarIP($ipCifrada);
+        
+        $data['kpisNS'] = $this->test_model->getChartNSlinea($oficina);
+        $data['kpisPS'] = $this->test_model->getChartPercepcionlinea($oficina);
+
+        foreach ($data['kpisNS'] as $key => $value) {
+            $data['seriesNS'][$key] = round($value['NS'] * 100, 1);
+            $data['seriesNS_HORA'][$key] = round($value['NS_HORA'] * 100, 1);
+            $data['xAxisNS'][$key] = $value['HORA'];
+        }
+
+        foreach ($data['kpisPS'] as $key => $value) {
+            $data['seriesPS'][$key] = round($value['PS'] * 100, 1);
+            $data['seriesPS_HORA'][$key] = round($value['PS_HORA'] * 100, 1);
+            $data['xAxisPS'][$key] = $value['HORA'];
+        }
+
+        //$this->load->view('test/chartLineasKpis', $data);
+
+        //echo "<pre>"; print_r($data); echo "</pre>";
+
+        $this->load->view('test/charts/chartsNS_PS', $data);
     }
 
 }

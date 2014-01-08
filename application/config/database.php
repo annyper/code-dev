@@ -46,7 +46,7 @@
 */
 
 $active_group = 'default';
-$active_record = TRUE;
+$active_record = FALSE;
 
 $db['default']['hostname'] = '10.65.52.22';//:1433';
 $db['default']['username'] = 'sa';
@@ -56,7 +56,7 @@ $db['default']['dbdriver'] = 'sqlsrv';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = FALSE;
 $db['default']['db_debug'] = TRUE;
-$db['default']['cache_on'] = FALSE;
+$db['default']['cache_on'] = TRUE;
 $db['default']['cachedir'] = '';
 $db['default']['char_set'] = 'utf8';
 $db['default']['dbcollat'] = 'utf8_general_ci';

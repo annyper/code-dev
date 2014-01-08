@@ -8,8 +8,10 @@
 		<link rel="stylesheet" href="<?php  echo base_url("bootstrap/css/bootstrap.css"); ?>">
         <link rel="stylesheet" href="<?php echo base_url("font-awesome/css/font-awesome.min.css"); ?>">
         <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/lasd.css"); ?>">
-        <link rel="stylesheet" href="<?php //echo base_url("bootstrap/css/boxstyles.css"); ?>">
+        
+        <link rel="stylesheet" href="<?php echo base_url("jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.min.css"); ?>">
         <script src="<?php  echo base_url("bootstrap/js/jquery.js"); ?>"></script>
+        <script src="<?php  echo base_url("jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"); ?>"></script>
 		<style type="text/css">
         	body {
             background: rgba(189, 221, 235, 0.2);
@@ -34,15 +36,19 @@
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		    <ul class="nav navbar-nav">
-		      <li class="active"><a href="#">Link</a></li>
-		      <li><a href="#">Link</a></li>
-		      <li><a href="#">Link</a></li>
-		      <li><a href="#">Link</a></li>
-		    </ul>
 
-		    <ul class="nav navbar-nav navbar-right">
-		      <li><a href="#">Link</a></li>
+			<?php $this->load->view('templates/nav-principal'); ?>
+
+			<ul class="nav navbar-nav navbar-right">
+		      <li>
+		      <?php if (isset($ip_info)): ?>
+		      	<?php $ip_digiturno = str_replace("\SQLEXPRESS", "", $ip_info['SER_SDSTRSERVIDOR']); ?>
+		      	<a href="<?php echo "http://" . $ip_digiturno . ":8888"; ?>" class="navbar-link" target="_blank">
+		      		<i class="fa fa-link fa-lg"></i> Ip: <?php echo $ip_digiturno; ?>
+		      	</a>
+		      <?php endif ?>
+		      </li>
+		      
 		      <li class="dropdown">
 		        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
 		        <ul class="dropdown-menu">
@@ -54,6 +60,8 @@
 		        </ul>
 		      </li>
 		    </ul>
+
 		  </div><!-- /.navbar-collapse -->
 		
 	</nav>
+

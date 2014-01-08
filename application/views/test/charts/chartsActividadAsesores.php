@@ -1,4 +1,4 @@
-        <div id="legenda" style="min-width: 310px; height: 120px; margin: 0 auto"></div>
+        <div id="legenda" style="min-width: 310px; height: 125px; margin: 0 auto"></div>
             <script>
                 $(function () {
                     $('#legenda').highcharts({
@@ -44,7 +44,7 @@
                             name: 'Labor Administrativa',
                             color: 'rgb(244, 121, 10)'                
                         }, {
-                            name: 'Paso Primera Línea',
+                            name: 'Paso a Primera Línea',
                             color: 'rgb(255, 202, 40)'       
                         }, {
                             name: 'Break',
@@ -71,6 +71,9 @@
                             name: 'Desconectado',
                             color: 'rgb(108, 108, 108)'       
                         }, {
+                            name: 'Llamando',
+                            color: 'rgb(164, 213, 58)'       
+                        }, {
                             name: 'Disponible',
                             color: 'rgb(67, 183, 96)'       
                         }]
@@ -95,7 +98,7 @@
                                         zoomType: 'y'
                                     },
                                     title: {
-                                        text: '<?php echo $key;?>',
+                                        text: '<?php echo ucwords(strtolower($key));?>',
                                         align: 'left'
                                     },
                                     xAxis: {

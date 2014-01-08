@@ -42,9 +42,8 @@ class Test_model extends CI_model
 		$query = $this->dbCDE->query($quer);
 
 		if (!$query) {
-			echo "<pre>";
-			die( print_r( sqlsrv_errors(), true));
-			echo "</pre>";
+
+			$query = 0;
 		}
 		else
 		{
@@ -172,17 +171,129 @@ class Test_model extends CI_model
 	{
 		$query = $this->dbCDE->query("SELECT LABOR, COUNT(1) FROM dbo.RACs('$oficina') GROUP BY LABOR");
 
-		return $query->result_array();
+		//return $query->result_array();
+		if (!$query) {
+			$query = 0;
+			//echo "se generó una mala consulta";
+		}
+		else
+		{
+			//print_r($query->result_array());
+			return $query->result_array();
+		}
 	}
 
 	function getActividadAsesoresPorDia($datetimeInicio, $datetimeFin)
 	{
-		$query = $this->dbCDE->query("SELECT nombre, labor, tiempo, DATEDIFF(second, '00:00:00.00', hora) segundos FROM [dbo].[Funcion_Actividad_Fecha] ('$datetimeInicio','$datetimeFin')
+		$query = $this->dbCDE->query("SELECT nombre, labor, tiempo, DATEDIFF(second, '00:00:00.00', hora) segundos, fecha_hora
+					FROM [dbo].[Funcion_Actividad_Fecha] ('$datetimeInicio','$datetimeFin')
 					WHERE TIEMPO > 0 --AND LABOR != 'Llamando' 
-					AND NOMBRE != 'SELECTOR' AND CARGO = 'Asesor' --AND username = 'YM43910806'
+					AND NOMBRE != 'SELECTOR' AND CARGO = 'Asesor'
 					ORDER BY nombre, HORA DESC");
-		return $query->result_array();
+		
+		if (!$query) {
+			$query = 0;
+			//echo "se generó una mala consulta";
+		}
+		else
+		{
+			//print_r($query->result_array());
+			return $query->result_array();
+		}
 	}
+
+	function getGTR()
+	{
+		$query = $this->dbCDE->query("SELECT TOP 1000 [REGIONAL],[NOMBRE],[SL],[PS],[PUNTUALES],[ATENDIDOS],[VISITAS],[0 a 5],[5 a 15],[15 a 30],[30 a 45],[45 a 60],[Mayor a 60]
+  					FROM [DIGITURNO13].[dbo].[GTR]");
+		$data = $query->row_array();
+
+		$query2 = $this->dbCDE->query("SELECT ([TUR_SDSTRTURNO]) as esperando, 
+                        DATEDIFF(MINUTE,TRA_SDDATHORASOLICITUD,SYSDATETIME()) AS Tiempo, 
+                        CONVERT(VARCHAR(16), TRA_SDDATHORASOLICITUD,121) as Hora_solicitud
+                        FROM [dbo].[DG45_TRANSACCIONES] TRANS 
+                        JOIN DG45_SALAS SAL ON SAL.SAL_PKSTRID=TRANS.TRA_FKSTRSALA 
+                        JOIN DG45_OFICINAS OFI ON SAL.SAL_FKSTROFICINA=OFI.OFI_PKSTRID 
+                        RIGHT JOIN [dbo].[DG45_TURNOS] TURN 
+                        ON TRANS.[TRA_FKUNITURNO] = TURN.[TUR_PKUNIGUID] 
+                        WHERE [TRA_SDINTESTADO] = 0 
+                        --AND OFI.OFI_SDSTRNOMBRE LIKE '%nombre%' 
+                        order by [TUR_SDSTRTURNO]");
+		$data2 = $query2->result_array();
+
+		if ($query && $query2 && (count($query->result_array) > 0) ) {
+			
+			$b15_30 = 0; $b30_45 = 0; $b45_60 = 0; $b60 = 0;
+
+			foreach ($data2 as $key => $value) {
+
+				if ($value['Tiempo'] < 15) {
+					
+				}elseif ($value['Tiempo'] >= 15 && $value['Tiempo'] < 30) {
+
+					$b15_30 = $b15_30 + 1;
+
+				}elseif ($value['Tiempo'] < 45) {
+
+					$b30_45 = $b30_45 + 1;
+
+				}elseif ($value['Tiempo'] < 60) {
+
+					$b45_60 = $b45_60 + 1;
+					
+				}elseif ($value['Tiempo'] >= 60) {
+					
+					$b60 = $b60 + 1;
+				}
+			}
+
+			// echo $b15_30 . " "; echo $b30_45 . " ";echo $b45_60 . " ";echo $b60 . " ";
+
+			$numeradorPercepcionHistorica = (1 - $data['PS'])*$data['ATENDIDOS'];
+
+			$numeradorPercepcionActual = ($b15_30*0.6) + ($b30_45*1.2) + ($b45_60*2.4) + ($b60*4.8);
+
+			$data['PercepcionEsperada'] = 1 - (($numeradorPercepcionHistorica + $numeradorPercepcionActual)/($data['ATENDIDOS'] + count($data2)));
+
+			return $data;
+			//echo "<pre>"; print_r(); echo "</pre>";
+
+		}else{
+			$query = 0;;
+		} 
+
+	}
+
+	function getChartNSlinea($oficina)
+	{
+		$query = $this->dbCDE->query("SELECT * FROM [dbo].[Nivel_Servicio] ('$oficina')");
+
+		if (!$query) {
+			$query = 0;
+			//echo "se generó una mala consulta";
+		}
+		else
+		{
+			//print_r($query->result_array());
+			return $query->result_array();
+		}
+	}
+
+	function getChartPercepcionlinea($oficina)
+	{
+		$query = $this->dbCDE->query("SELECT * FROM [dbo].[Percepcion_Servicio] ('$oficina')");
+
+		if (!$query) {
+			$query = 0;
+			//echo "se generó una mala consulta";
+		}
+		else
+		{
+			//print_r($query->result_array());
+			return $query->result_array();
+		}
+	}
+
 }
 					
 ?>

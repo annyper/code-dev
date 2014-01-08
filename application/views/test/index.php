@@ -1,5 +1,24 @@
 	<div class="container containerIP" id="<?php echo $ipCifrada; ?>">
-		
+
+		<div id="dashboardEncabezado-titulo">
+			<a href=""></a>
+			<a href="<?php echo site_url('test/dashboardEncabezado'); ?>"></a>
+		</div>
+			
+		<div class="row">
+			<div id="dashboardEncabezado" class="col-md-7 col-sm-7">
+				<script>
+					var ipCifrada = $('.containerIP').attr('id');
+					var enlaceLoad3 = $('#dashboardEncabezado-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
+					$('#dashboardEncabezado').load(enlaceLoad3);
+				</script>
+			</div>
+
+			<div class="col-md-5 col-sm-5">
+			<?php $this->load->view('templates/datalist'); ?>
+			</div>
+		</div>
+
 		<div class="row" id="gtr">
 			<div class="col-md-6">
 				<div class="panel panel-tigo-verde panel-extra">
@@ -23,12 +42,18 @@
 									var enlaceLoad1 = $('#estadoAsesores-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
 									 console.log(enlaceLoad1)
 									$('#estadoAsesores').html('<p class="text-center"><i class="fa fa-refresh fa-spin fa-2x text-success"></i></p>');
-									$('#estadoAsesores').load(enlaceLoad1, function( response, status, xhr ) {
-									  if ( status == "error" ) {
-									    var msg = enlaceLoad1;
-									    $( "#estadoAsesores" ).html( msg + xhr.status + " " + xhr.statusText );
-									  }
+									
+									$.get( enlaceLoad1, function( data ) {
+									  	if (data != 0) {
+									  		$( "#estadoAsesores" ).html( data );
+									  	} else if (data == 0) {
+									  		$( "#estadoAsesores" ).text("ola k ase");
+									  	};
+
+									}).fail(function() {
+									    alert( "Up's ha ocurrido un error" );
 									});
+
 								</script>
 							</div>
 							
@@ -127,20 +152,22 @@
 		</div>
 	</div>
 
-	<div class="container">
-
-		<div class="row" id="timelineEstadoAsesores">
-			<?php $this->load->view('test/paneles/timelineEstadoAsesores') ?>
-
-		</div>
-	</div>
 
 	<div class="container">
 
 		<div class="row" id="estadisticas">
-			<?php $this->load->view('test/paneles/estadisticas') ?>
+			<?php $this->load->view('test/paneles/estadisticas'); ?>
 		</div>
 	</div>
+
+	<div class="container">
+
+		<div class="row" id="timelineEstadoAsesores">
+			<?php $this->load->view('test/paneles/timelineEstadoAsesores'); ?>
+		</div>
+	</div>
+
+
 	
 	<!-- <pre class="fontSize1"><?php //print_r($row) ?></pre> -->
 
