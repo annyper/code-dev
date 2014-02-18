@@ -1,3 +1,7 @@
+<?php if (isset($total)): ?>
+  <div><strong>Tiempo total: </strong><?php echo gmdate('H:i:s',round($total, 1)); ?> (hh:mm:ss)</div>
+<?php endif; ?>
+
         <?php foreach ($sinturno as $key => $value): ?> 
           <?php if ($value['tiempo_Sin_Turno'] > 90): ?>          
               

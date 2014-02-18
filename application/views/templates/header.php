@@ -8,20 +8,22 @@
 		<link rel="stylesheet" href="<?php  echo base_url("bootstrap/css/bootstrap.css"); ?>">
         <link rel="stylesheet" href="<?php echo base_url("font-awesome/css/font-awesome.min.css"); ?>">
         <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/lasd.css"); ?>">
+        <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/templates.css"); ?>">
         
         <link rel="stylesheet" href="<?php echo base_url("jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.min.css"); ?>">
         <script src="<?php  echo base_url("bootstrap/js/jquery.js"); ?>"></script>
         <script src="<?php  echo base_url("jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"); ?>"></script>
 		<style type="text/css">
         	body {
-            background: rgba(189, 221, 235, 0.2);
-
+            /*background: rgba(189, 221, 235, 0.2);*/
+			background: url("<?php echo base_url('bootstrap/img/tigoLogin9.png'); ?>") 
+          no-repeat bottom center fixed rgba(189, 221, 235, 0.2);
           }
         </style>
 	</head>
 
 
-<body data-spy="scroll" data-target="#nav-ejemplo" data-offset="100">
+<body data-spy="scroll" data-target="#sidebar-wrapper" data-offset="100">
 	<nav class="navbar navbar-default navbar-default-azul" role="navigation">
 
 		<div class="navbar-header">
@@ -40,8 +42,13 @@
 			<?php $this->load->view('templates/nav-principal'); ?>
 
 			<ul class="nav navbar-nav navbar-right">
+				<?php if (isset($oficina)): ?>
+					<li>
+						<a href="#"><strong>CDE: </strong> <?php echo str_replace("-", " ", $oficina); ?></a>
+					</li>
+				<?php endif ?>
 		      <li>
-		      <?php if (isset($ip_info)): ?>
+		      <?php if (isset($ip_info) && !empty($ip_info)): ?>
 		      	<?php $ip_digiturno = str_replace("\SQLEXPRESS", "", $ip_info['SER_SDSTRSERVIDOR']); ?>
 		      	<a href="<?php echo "http://" . $ip_digiturno . ":8888"; ?>" class="navbar-link" target="_blank">
 		      		<i class="fa fa-link fa-lg"></i> Ip: <?php echo $ip_digiturno; ?>

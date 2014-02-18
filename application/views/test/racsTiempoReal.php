@@ -1,25 +1,30 @@
-<?php if (is_array($row)): ?>					
+<?php if (isset($row) and is_array($row)): ?>					
 					<?php foreach ($row as $key => $turnos): ?>
 
 						<div class="row well-white marcador-borde-verde bloque-top">
+
 							<div class="col-sm-2 fontSize1_5">
-								<?php echo $turnos['LABOR']; ?>
+								<?php $claseLabel = "label label-". str_replace(" ", "-", $turnos['LABOR']) . " label-default"; ?>
+								<div class="<?php echo $claseLabel; ?> fontSize1" 
+									style="display: inline-block;padding: .4em .6em .4em;white-space: normal;"><?php echo $turnos['LABOR']; ?>
+								</div>
 							</div>
-							<div class="col-sm-5">
+
+							<div class="col-sm-4">
 								<?php $terminal = str_replace(" ", "-", $turnos['TERMINAL']); ?>
 								<?php //$CDE = $this->test_model->getServicios($turnos['TER_PKSTRID']); ?>
 
 								<h5 class="media-heading text-primary ajaxLink">	
 									<a href="<?php echo site_url('test/cargarModalTurnoAjax/' . $terminal . '/' . $turnos['TER_PKSTRID']); ?>" 
 										class="fontSize1_5" data-toggle="modal" data-target="#myModal">
-										<?php echo $turnos['NOMBRE']; ?>
+										<?php echo strtoupper($turnos['NOMBRE']); ?>
 									</a>
 								</h5>
 								
 
 								
 							</div>
-							<div class="col-sm-2 fontSize1_5">
+							<div class="col-sm-3 fontSize1_5">
 								<?php echo gmdate('H:i:s',$turnos['TIEMPO']*60); ?>
 								<span class="pull-right"><a><?php echo $turnos['TURNO']; ?></a></span>
 							</div>

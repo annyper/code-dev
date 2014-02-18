@@ -9,6 +9,9 @@
 									    chart: {
 							                type: 'bar'
 							            },
+							            credits: {
+  											enabled: false
+  										},
 							            title: {
 							                text: ''
 							            },

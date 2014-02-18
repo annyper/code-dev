@@ -1,4 +1,6 @@
-<?php //echo "<pre>"; print_r($clientesEspera); echo "</pre>"; ?> 
+<?php if (isset($clientesEspera) && !empty($clientesEspera)): ?>
+	
+
 <?php foreach ($clientesEspera as $key => $value): ?>
 
 						<div class="row well-white marcador-borde-verde bloque-top">
@@ -18,7 +20,8 @@
 								<?php echo gmdate('H:i:s',$value['TSA']*60); ?>
 							</div>
 							<div class="col-sm-3 fontSize1_5">
-								<?php echo $value['TUR_SDSTRNOMBRECLIENTE']; ?>
+								<?php echo strtoupper($value['TUR_SDSTRNOMBRECLIENTE']); ?>
 							</div>
 						</div>
 					<?php endforeach; ?>
+<?php endif ?>

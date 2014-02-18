@@ -14,11 +14,12 @@ class Test extends CI_Controller
         date_default_timezone_set('America/Bogota');
 
         session_start();
-
+        //error_reporting(0);
         $this->load->helper('url');
 
         $this->load->model('test/config_model');
         $this->load->model('test/test_model');
+        $this->load->model('consolidados/checkList_model');
 
         $this->load->library('encrypt');
         $this->encrypt->set_cipher(MCRYPT_GOST);
@@ -42,7 +43,7 @@ class Test extends CI_Controller
         $this->load->view('templates/footer', $data); 
     }
 
-    function cde($oficina)
+    function cde($oficina = 'TIGO-CENTRO-MEDELLIN')
     {
         //$this->output->cache(60);
         $this->benchmark->mark('inicio');
@@ -53,27 +54,36 @@ class Test extends CI_Controller
         //$data['oficina'] = str_replace("-", " ", $oficina);
         $data['oficina'] = $oficina;
 
-        $data['ip_info'] = $this->config_model->getIP($oficina);
-        $data['listaCDEs'] = $this->config_model->getListaNombresCDEs();
-        //
+        $data['ip_info'] = $this->checkList_model->getIP($oficina);
+        $data['listaCDEs'] = $this->checkList_model->getListaNombresCDEs();
+        //echo "<pre>"; print_r($data['ip_info']); echo "</pre>";
 
-        //echo $data['ip_info']['SER_SDSTRSERVIDOR'];
-        $data['ipCifrada'] = $this->encrypt->encode($data['ip_info']['SER_SDSTRSERVIDOR']);
-        
-        $data['ipCifrada'] = str_replace("/", "-", $data['ipCifrada']);
-        $data['ipCifrada'] = str_replace("+", "_", $data['ipCifrada']);
-        $data['ipCifrada'] = str_replace("=", "", $data['ipCifrada']);
+        if (isset($data['ip_info']) && !empty($data['ip_info'])) {
 
-        //echo " " . $data['ipCifrada'] . " ";
-        //echo "<pre>"; print_r($data); echo "</pre>";
+            //echo "<pre>"; print_r($data['ip_info']); echo "</pre>";
 
-        $this->load->view('templates/header', $data);
-        
-        $this->load->view('test/index', $data);
+        //  //echo $data['ip_info']['SER_SDSTRSERVIDOR'];
+            $data['ipCifrada'] = $this->encrypt->encode($data['ip_info']['SER_SDSTRSERVIDOR']);
+            
+            $data['ipCifrada'] = str_replace("/", "-", $data['ipCifrada']);
+            $data['ipCifrada'] = str_replace("+", "_", $data['ipCifrada']);
+            $data['ipCifrada'] = str_replace("=", "", $data['ipCifrada']);
 
-        $this->load->view('templates/footer', $data); 
+            //echo " " . $data['ipCifrada'] . " ";
+            //echo "<pre>"; print_r($data); echo "</pre>";
 
-        //$this->chartActividadAsesores($oficina, $data['ipCifrada']);
+            $this->load->view('templates/header', $data);
+            $this->load->view('test/includes/sidebarGTR', $data);
+            $this->load->view('test/includes/endSidebar', $data);
+            $this->load->view('test/index', $data);
+            
+            $this->load->view('templates/footer', $data);
+        }else {
+            $this->load->view('templates/header', $data);
+            $this->load->view('error/error404');
+            $this->load->view('templates/footer', $data);
+        }
+         //$this->chartActividadAsesores($oficina, $data['ipCifrada']);
 
         $this->benchmark->mark('fin');
 
@@ -194,6 +204,11 @@ class Test extends CI_Controller
 
             $datetimeInicio = date('Y-m-d') . ' 07:00:00';
             $data['sinturno'] = $this->test_model->getSinTurnoHistorico($datetimeInicio, date('Y-m-d H:i:s'));
+            
+            $data['total'] = 0;
+            foreach ($data['sinturno'] as $key => $value) {
+                $data['total'] = $data['total'] + $value['tiempo_Sin_Turno'];
+            } 
             //echo "<pre>"; print_r($data['sinturno']); echo "</pre>";
             $this->load->view('test/sin_turno', $data);
         //}
@@ -219,8 +234,14 @@ class Test extends CI_Controller
             $this->inicializarModeloYdecodificarIP($ipCifrada);
             $datetimeInicio = date('Y-m-d') . ' 06:00:00';
 
-            $data['AlmuerzoHistorico'] = $this->test_model->getActividadHistorico($datetimeInicio, date('Y-m-d H:i:s'), 'Almuerzo', 3600);
-            $this->load->view('test/almuerzo-no-justificado', $data);
+            $data['Historico'] = $this->test_model->getActividadHistorico($datetimeInicio, date('Y-m-d H:i:s'), 'Almuerzo', 3600);
+            $data['color'] = "#B98C48";
+
+            // $data['total'] = 0;
+            // foreach ($data['Historico'] as $key => $value) {
+            //     $data['total'] = $data['total'] + $value['tiempo_Labor']-3600;
+            // } 
+            $this->load->view('test/historico', $data);
 
             //echo "<pre>"; print_r($data['AlmuerzoHistorico']); echo "</pre>";
     }
@@ -230,7 +251,15 @@ class Test extends CI_Controller
         $this->inicializarModeloYdecodificarIP($ipCifrada);
         $datetimeInicio = date('Y-m-d') . ' 06:00:00';
 
-        $data['BanoHistorico'] = $this->test_model->getActividadHistorico($datetimeInicio, date('Y-m-d H:i:s'), 'Baño', 0);
+        $data['Historico'] = $this->test_model->getActividadHistorico($datetimeInicio, date('Y-m-d H:i:s'), 'Baño', 0);
+        $data['color'] = "#3970B4";
+        //echo "<pre>"; print_r($data['BanoHistorico']); echo "</pre>";
+
+        $data['total'] = 0;
+        foreach ($data['Historico'] as $key => $value) {
+            $data['total'] = $data['total'] + $value['tiempo_Labor'];
+        } 
+        $this->load->view('test/historico', $data);
         //$this->load->view('test/bano-no-justificado', $data);
     }
 
@@ -239,7 +268,15 @@ class Test extends CI_Controller
         $this->inicializarModeloYdecodificarIP($ipCifrada);
         $datetimeInicio = date('Y-m-d') . ' 06:00:00';
 
-        $data['LaborAdministrativaHistorico'] = $this->test_model->getActividadHistorico($datetimeInicio, date('Y-m-d H:i:s'), 'Labor Administrativa', 900);
+        $data['Historico'] = $this->test_model->getActividadHistorico($datetimeInicio, date('Y-m-d H:i:s'), 'Labor Administrativa', 900);
+        $data['color'] = "#3970B4";
+
+        $data['total'] = 0;
+        foreach ($data['Historico'] as $key => $value) {
+            $data['total'] = $data['total'] + $value['tiempo_Labor'];
+        } 
+
+        $this->load->view('test/historico', $data);
         //$this->load->view('test/Labor-Administrativa-historico', $data);
     }
 
@@ -430,127 +467,127 @@ class Test extends CI_Controller
         //----------------------------------------------------------------------------------------------------------
         //echo "<pre>"; print_r($data['series']); echo "</pre>";
 
-        // -------------------- ------------------------------------------------------------
-        foreach ($data['series'] as $key => $value) {
-            $data['series'][$key]['tiempo'] = array(0 => $value['tiempo']*1000);
-
-            if ($value['labor']  == "Disponible") {
-                 $data['series'][$key]['color'] = "rgb(67, 183, 96)";//
-
-            } elseif ($value['labor'] == "Desconectado") {
-                $data['series'][$key]['color'] = "rgb(108, 108, 108)";//
-
-            } elseif ($value['labor'] == "Arranque Terminal") {
-                $data['series'][$key]['color'] = "rgb(124, 124, 124)";
-
-            } elseif ($value['labor'] == "Fin de Jornada") {
-                $data['series'][$key]['color'] = "rgb(31, 43, 82)";//
-
-            } elseif ($value['labor'] == "Cierre Arranque") {
-                $data['series'][$key]['color'] = "rgb(140, 140, 140)";
-
-            } elseif ($value['labor'] == "Ocupado") {
-                $data['series'][$key]['color'] = "rgb(62, 86, 166)";//
-
-            } elseif ($value['labor'] == "Capacitación") {
-                $data['series'][$key]['color'] = "rgb(134, 101, 0)";//
-
-            } elseif ($value['labor'] == "Baño") {
-                $data['series'][$key]['color'] = "rgb(187, 146, 21)";//
-
-            } elseif ($value['labor'] == "Break") {
-                $data['series'][$key]['color'] = "rgb(223, 237, 58)";
-
-            } elseif ($value['labor'] == "Paso a Primera Línea") {
-                $data['series'][$key]['color'] = "rgb(255, 202, 40)";
-
-            } elseif ($value['labor'] == "Labor Administrativa") {
-                $data['series'][$key]['color'] = "rgb(244, 121, 10)";//
-
-            } elseif ($value['labor'] == "Sin turno") {
-               $data['series'][$key]['color'] = "rgb(202, 29, 15)";//
-
-            } elseif ($value['labor'] == "Llamando") {
-               $data['series'][$key]['color'] = "rgb(164, 213, 58)";//
-
-            } elseif ($value['labor'] == "Almuerzo") {
-               $data['series'][$key]['color'] = "rgb(137, 59, 195)";//
-            }
-        }
-
-
-        //$data['series'] = count($data['series']) - 1;
-        $data['milisegundos'] = 0;
-
-        // tiempo MAX en microsegundos
-        $datePart = explode(" ", $datetimeFin);
-        //echo $datePart[0];
-
-        if ($datePart[0] == date('Y-m-d')) {
-
-            $pieces = explode(":", date('H:i:s'));
-            //echo " entró al dia de hoy";
-        } else {
-            $pieces = explode(":", $datePart[1]);
-            //echo " entró en la fecha correcta";
-        }
-        
-        $data['max'] = ($pieces[0]*3600 + $pieces[1]*60 + $pieces[2]) * 1000;
-
-  
-        $barraOut = array('labor' => 'Out',
-                            'tiempo' => array('0' => 0),
-                            'color' => 'rgba(255, 255, 255, 0)',
-                            'nombre' => 'nn'
-                            );
-
-        $asesor0 = $data['series'][0]['nombre'];
-        $index = 0;
-        foreach ($data['series'] as $key => $value) {
+        if (isset($data['series']) && !empty($data['series'])) {
             
-            if ($value['nombre'] == $asesor0) {
-                
-                $data['asesores'][$asesor0][$index] = $value; 
-                $index = $index + 1;
+        
+            // -------------------- ------------------------------------------------------------
+            foreach ($data['series'] as $key => $value) {
+                $data['series'][$key]['tiempo'] = array(0 => $value['tiempo']*1000);
 
-                 // se coloca la barra out en caso que sea el final del arreglo
-                if ($key == count($data['series']) - 1) {
+                if ($value['labor']  == "Disponible") {
+                     $data['series'][$key]['color'] = "rgb(67, 183, 96)";//
 
-                    $barraOut['tiempo'][0] = $value['segundos']*1000;
-                    $data['asesores'][$asesor0][$index] = $barraOut;
+                } elseif ($value['labor'] == "Desconectado") {
+                    $data['series'][$key]['color'] = "rgb(108, 108, 108)";//
+
+                } elseif ($value['labor'] == "Arranque Terminal") {
+                    $data['series'][$key]['color'] = "rgb(124, 124, 124)";
+
+                } elseif ($value['labor'] == "Fin de Jornada") {
+                    $data['series'][$key]['color'] = "rgb(31, 43, 82)";//
+
+                } elseif ($value['labor'] == "Cierre Arranque") {
+                    $data['series'][$key]['color'] = "rgb(140, 140, 140)";
+
+                } elseif ($value['labor'] == "Ocupado") {
+                    $data['series'][$key]['color'] = "rgb(62, 86, 166)";//
+
+                } elseif ($value['labor'] == "Capacitación") {
+                    $data['series'][$key]['color'] = "rgb(134, 101, 0)";//
+
+                } elseif ($value['labor'] == "Baño") {
+                    $data['series'][$key]['color'] = "rgb(187, 146, 21)";//
+
+                } elseif ($value['labor'] == "Break") {
+                    $data['series'][$key]['color'] = "rgb(223, 237, 58)";
+
+                } elseif ($value['labor'] == "Paso a Primera Línea") {
+                    $data['series'][$key]['color'] = "rgb(255, 202, 40)";
+
+                } elseif ($value['labor'] == "Labor Administrativa") {
+                    $data['series'][$key]['color'] = "rgb(244, 121, 10)";//
+
+                } elseif ($value['labor'] == "Sin turno") {
+                   $data['series'][$key]['color'] = "rgb(202, 29, 15)";//
+
+                } elseif ($value['labor'] == "Llamando") {
+                   $data['series'][$key]['color'] = "rgb(164, 213, 58)";//
+
+                } elseif ($value['labor'] == "Almuerzo") {
+                   $data['series'][$key]['color'] = "rgb(137, 59, 195)";//
                 }
+            }
 
+
+            //$data['series'] = count($data['series']) - 1;
+            $data['milisegundos'] = 0;
+
+            // tiempo MAX en microsegundos
+            $datePart = explode(" ", $datetimeFin);
+            //echo $datePart[0];
+
+            if ($datePart[0] == date('Y-m-d')) {
+
+                $pieces = explode(":", date('H:i:s'));
+                //echo " entró al dia de hoy";
             } else {
-                // se coloca la barra out 
-                $barraOut['tiempo'][0] = $data['series'][$key-1]['segundos']*1000;
-                $data['asesores'][$asesor0][$index] = $barraOut;
-
-                $index = 0;
-                $asesor0 = $value['nombre'];
-                $data['asesores'][$asesor0][$index] = $value; 
+                $pieces = explode(":", $datePart[1]);
+                //echo " entró en la fecha correcta";
             }
             
-        }
+            $data['max'] = ($pieces[0]*3600 + $pieces[1]*60 + $pieces[2]) * 1000;
 
-        foreach ($data['asesores'] as $key => $value) {
+      
+            $barraOut = array('labor' => 'Out',
+                                'tiempo' => array('0' => 0),
+                                'color' => 'rgba(255, 255, 255, 0)',
+                                'nombre' => 'nn'
+                                );
+
+            $asesor0 = $data['series'][0]['nombre'];
+            $index = 0;
+            foreach ($data['series'] as $key => $value) {
+                
+                if ($value['nombre'] == $asesor0) {
+                    
+                    $data['asesores'][$asesor0][$index] = $value; 
+                    $index = $index + 1;
+
+                     // se coloca la barra out en caso que sea el final del arreglo
+                    if ($key == count($data['series']) - 1) {
+
+                        $barraOut['tiempo'][0] = $value['segundos_inicio']*1000;
+                        $data['asesores'][$asesor0][$index] = $barraOut;
+                    }
+
+                } else {
+                    // se coloca la barra out 
+                    $barraOut['tiempo'][0] = $data['series'][$key-1]['segundos_inicio']*1000;
+                    $data['asesores'][$asesor0][$index] = $barraOut;
+
+                    $index = 0;
+                    $asesor0 = $value['nombre'];
+                    $data['asesores'][$asesor0][$index] = $value; 
+                }
+                
+            }
+
+            foreach ($data['asesores'] as $key => $value) {
+                
+                $jsonString = json_encode($value);
+                $jsonString = str_replace("labor", "name", $jsonString);
+                $jsonString = str_replace("tiempo", "data", $jsonString);
+                $jsonString = str_replace("Paso a Primera Línea", "Orientador", $jsonString);
+                $data['dataJSON'][$key]['CadenaJson'] = $jsonString;
+
+                $data['dataJSON'][$key]['out'][0] = $value[count($value)-1]['tiempo'][0];
+            }
+
             
-            $jsonString = json_encode($value);
-            $jsonString = str_replace("labor", "name", $jsonString);
-            $jsonString = str_replace("tiempo", "data", $jsonString);
-            $data['dataJSON'][$key]['CadenaJson'] = $jsonString;
-
-            $data['dataJSON'][$key]['out'][0] = $value[count($value)-1]['tiempo'][0];
+            $this->load->view('test/charts/chartsActividadAsesores', $data);
+        }else {
+            echo "Lo sentimos, aún no hay datos.";
         }
-
-        //echo "<pre>"; print_r($data); echo "</pre>";
-
-        // $data['dataJSON'] = json_encode($data['series']);
-        // $data['dataJSON'] = str_replace("labor", "name", $data['dataJSON']);
-        // $data['dataJSON'] = str_replace("tiempo", "data", $data['dataJSON']);
-
-        //echo "<pre>"; print_r($actividad); echo "</pre>";
-        
-        $this->load->view('test/charts/chartsActividadAsesores', $data);
     }
 
     function renderEstadisticas($oficina, $ipCifrada)
@@ -579,6 +616,35 @@ class Test extends CI_Controller
         //echo "<pre>"; print_r($data); echo "</pre>";
 
         $this->load->view('test/charts/chartsNS_PS', $data);
+    }
+
+    function renderVisitasHoy($oficina, $ipCifrada)
+    {
+        $oficina = str_replace("-", " ", $oficina);
+
+        $this->inicializarModeloYdecodificarIP($ipCifrada);
+
+        $datetimeInicio = date('Y-m-d') . ' 08:00:00';
+        $datetimeFin = date('Y-m-d H:i:s');
+
+        $data['vistasAtendidos'] = $this->test_model->getChartVisitas($datetimeInicio, $datetimeFin);
+        $data['VisitasAcumulado'][0] = 0;
+        
+        foreach ($data['vistasAtendidos'] as $key => $value) {
+
+            $data['Visitas'][$key] = $value['TotalTurnos'];
+            
+            $data['Puntuales'][$key] = $value['TotalturnosAtendidos'] - $value['Entre15_30'] - $value['Entre30_45'] - $value['Entre45_60'] - $value['Mayor60'];
+            $data['xAxisVisitas'][$key] = $value['HORA'];
+
+            if ($key == 0) {
+               $data['VisitasAcumulado'][$key] = $value['TotalTurnos'];
+            }else{
+                $data['VisitasAcumulado'][$key] = $data['VisitasAcumulado'][$key - 1] + $value['TotalTurnos'];
+            }
+        }
+        $this->load->view('test/charts/chartVisitas', $data);
+        //echo "<pre>"; print_r($data['VisitasAcumulado'] ); echo "</pre>";
     }
 
 }

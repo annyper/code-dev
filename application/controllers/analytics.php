@@ -12,9 +12,13 @@ class Analytics extends CI_Controller
         date_default_timezone_set('America/Bogota');
 
         $this->load->helper('url');
-
+        //error_reporting(0);
         $this->load->model('test/config_model');
         $this->load->model('test/test_model');
+        $this->load->model('consolidados/checkList_model');
+        $this->load->model('consolidados/Consolidados_model');
+
+        //$this->load->model('consolidados/checkList_model');
 
         $this->load->library('encrypt');
         $this->encrypt->set_cipher(MCRYPT_GOST);
@@ -31,24 +35,24 @@ class Analytics extends CI_Controller
         //echo "<h1>hola mundo<h1>";
         $data['title'] = 'Analytics';
         $data['lasd'] = 'COC';
-        $data['listaCDEs'] = $this->config_model->getListaNombresCDEs();
+        $data['listaCDEs'] = $this->checkList_model->getListaNombresCDEs();
         $data['nav'] = 'analytics';
 
         if (is_string($oficina) && $oficina != "0") {
 
             $data['oficina'] = $oficina;
-            $data['ip_info'] = $this->config_model->getIP($oficina);
+            $data['ip_info'] = $this->checkList_model->getIP($oficina);
 
             $data['ipCifrada'] = $this->encrypt->encode($data['ip_info']['SER_SDSTRSERVIDOR']);
             
             $data['ipCifrada'] = str_replace("/", "-", $data['ipCifrada']);
             $data['ipCifrada'] = str_replace("+", "_", $data['ipCifrada']);
-            $data['ipCifrada'] = str_replace("=", "á", $data['ipCifrada']);
+            $data['ipCifrada'] = str_replace("=", "", $data['ipCifrada']);
 
             $this->load->view('templates/header', $data);
-             
-            $this->load->view('analytics/actividad', $data);
-            //$this->chartActividadAsesores();     
+            $this->load->view('test/includes/sidebarAnalytics', $data);
+                $this->load->view('analytics/actividad', $data);
+            $this->load->view('test/includes/endSidebar', $data); 
             $this->load->view('templates/footer', $data); 
 
         }elseif (is_string($oficina) && $oficina == "0"){
@@ -64,6 +68,21 @@ class Analytics extends CI_Controller
         }
 
     }
+
+    function disponiblesNoJustificados(){
+
+        $data['title'] = 'Analytics';
+        $data['lasd'] = 'COC';
+        $data['nav'] = 'analytics';
+
+        $data['data'] = $this->Consolidados_model->getDisponiblesNoJustificados('2014-01-15 00:00:00', '2014-01-15 23:59:59');
+
+        $this->load->view('templates/header', $data);
+        echo "<pre>"; print_r($data['data']); echo "</pre>";
+        $this->load->view('templates/footer', $data);
+
+    }
+
 }
 
  ?>

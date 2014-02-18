@@ -1,0 +1,2 @@
+			</div><!-- Sidebar -->
+		</div><!-- Sidebar -->

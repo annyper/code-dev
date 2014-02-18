@@ -1,34 +1,30 @@
-<div id="NS_PS" style="min-width: 310px; margin: 0 auto"></div>
+<div id="vistas" style="min-width: 310px; margin: 0 auto"></div>
 
 <script>
 	
 	$(function () {
-        $('#NS_PS').highcharts({
+        $('#vistas').highcharts({
             chart: {
             },
-            credits: {
-                enabled: false
-            },
             title: {
-                text: 'Nivel y Percepción del servicio'
+                text: 'Visitas y turnos puntuales'
             },
             xAxis: {
-                categories: <?php echo json_encode($xAxisNS); ?>,
+                categories: <?php echo json_encode($xAxisVisitas); ?>,
                 title: {
                     text: 'HORA'
                 },
             },
             yAxis: {
-	            max: 100,
                 title: {
                     text: ''
                 },
                 labels: {
                     formatter: function() {
-                        return this.value +'%'
+                        return this.value
                     }
                 }
-	        },
+            },
             tooltip: {
                 crosshairs: true,
                 shared: true,
@@ -44,42 +40,46 @@
                 }
             },
             series: [{
-                type: 'column',
-                name: 'NS_HORA',
-                data: <?php echo json_encode($seriesNS_HORA); ?>,
-                color: 'RGB(89, 195, 114)'
-            }, {
-                type: 'column',
-                name: 'PS_HORA',
-                data: <?php echo json_encode($seriesPS_HORA); ?>,
-                color: 'RGB(132, 149, 208)'
-            }, {
                 type: 'spline',
-                name: 'NS',
-                data: <?php echo json_encode($seriesNS); ?>,
+                name: 'Visitas',
+                data: <?php echo json_encode($Visitas); ?>,
                 marker: {
                     symbol: 'circle',
                     radius: 4,
-                	lineWidth: 4,
+                    lineWidth: 4,
                     lineColor: null,
-                	fillColor: 'white'
+                    fillColor: 'white'
                 },
                 color: 'RGB(50, 137, 72)'
-            }, {
+            },{
                 type: 'spline',
-                name: 'PS',
-                data: <?php echo json_encode($seriesPS); ?>,
+                visible: false,
+                name: 'Visitas acumulada',
+                data: <?php echo json_encode($VisitasAcumulado); ?>,
                 marker: {
                     symbol: 'circle',
                     radius: 4,
-                	lineWidth: 4,
+                    lineWidth: 4,
                     lineColor: null,
-                	fillColor: 'white'
+                    fillColor: 'white'
+                },
+                color: 'RGB(255, 194, 14)'
+            },{
+                type: 'spline',
+                name: 'Puntuales',
+                data: <?php echo json_encode($Puntuales); ?>,
+                marker: {
+                    symbol: 'circle',
+                    radius: 4,
+                    lineWidth: 4,
+                    lineColor: null,
+                    fillColor: 'white'
                 },
                 color: 'RGB(62, 86, 166)'
             }]
         });
     });
+    
     
 
 </script>

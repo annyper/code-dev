@@ -26,7 +26,14 @@ class Config_model extends CI_model
   			FROM [TIGOCENTRAL].[dbo].[DG45_SERVIDORES_REP]
   			where [SER_SDSTRDESCRIPCION] like '$oficina'");
     	//echo "<pre>"; print_r($query->row_array()); echo "</pre>";
-    	return $query->row_array();
+        if (!$query) {
+            $query = 0;
+            //echo "se generó una mala consulta";
+        }
+        else
+        {
+            return $query->row_array();
+        }
     }
 
     function getAcumuladoDia($regional)

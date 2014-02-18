@@ -1,3 +1,5 @@
+<?php if (isset($listaCDEs) && !empty($listaCDEs)):  ?>
+
 			<form class="navbar-form " id="listaCDEform" role="search">
 		      <div class="">
 		      <div class="form-group">
@@ -14,7 +16,8 @@
 					<?php foreach ($listaCDEs as $key => $value): ?>
 						<?php
 							//echo $value['regional'];
-							$cde = str_replace(" /12", "", $value['cde']); 
+							//$cde = str_replace(" /12", "", $value['cde']); 
+							$cde = substr($value['cde'], 4);
 							$cde = str_replace("TIGO ", "", $cde); 
 
 						?>
@@ -50,6 +53,7 @@
 		    	});
 
 		    </script>
+<?php endif; ?>
 
 
 

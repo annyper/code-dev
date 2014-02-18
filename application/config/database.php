@@ -72,13 +72,30 @@ $db['centromedellin']['dbdriver'] = 'sqlsrv';
 $db['centromedellin']['dbprefix'] = '';
 $db['centromedellin']['pconnect'] = FALSE;
 $db['centromedellin']['db_debug'] = TRUE;
-$db['centromedellin']['cache_on'] = FALSE;
+$db['centromedellin']['cache_on'] = TRUE;
 $db['centromedellin']['cachedir'] = '';
 $db['centromedellin']['char_set'] = 'utf8';
 $db['centromedellin']['dbcollat'] = 'utf8_general_ci';
 $db['centromedellin']['swap_pre'] = '';
 $db['centromedellin']['autoinit'] = TRUE;
 $db['centromedellin']['stricton'] = FALSE;
+
+$db['bd_cded_cde_pda1']['hostname'] = '10.66.6.240';//10.74.31.30
+$db['bd_cded_cde_pda1']['username'] = 'ricardo';
+$db['bd_cded_cde_pda1']['password'] = 'ricardo';
+$db['bd_cded_cde_pda1']['database'] = '';
+$db['bd_cded_cde_pda1']['dbdriver'] = 'mysql';
+$db['bd_cded_cde_pda1']['dbprefix'] = '';
+$db['bd_cded_cde_pda1']['pconnect'] = TRUE;
+$db['bd_cded_cde_pda1']['db_debug'] = TRUE;
+$db['bd_cded_cde_pda1']['cache_on'] = FALSE;
+$db['bd_cded_cde_pda1']['cachedir'] = '';
+$db['bd_cded_cde_pda1']['char_set'] = 'utf8';
+$db['bd_cded_cde_pda1']['dbcollat'] = 'utf8_general_ci';
+$db['bd_cded_cde_pda1']['swap_pre'] = '';
+$db['bd_cded_cde_pda1']['autoinit'] = TRUE;
+$db['bd_cded_cde_pda1']['stricton'] = FALSE;
+$db['bd_cded_cde_pda1']['port'] = 3306;
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */

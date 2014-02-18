@@ -6,6 +6,9 @@
                             backgroundColor: 'rgba(252, 255, 197, 0)',
                             type: 'bar'
                         },
+                        credits: {
+                            enabled: false
+                        },
                         title: {
                             text: '',
                             enabled: false
@@ -96,6 +99,9 @@
                                         type: 'bar',
                                         inverted: true,
                                         zoomType: 'y'
+                                    },
+                                    credits: {
+                                        enabled: false
                                     },
                                     title: {
                                         text: '<?php echo ucwords(strtolower($key));?>',

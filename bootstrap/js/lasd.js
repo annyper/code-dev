@@ -19,6 +19,12 @@ $(function(){
 
 	});
 
+	// Para menú responsive
+	$("#menu-toggle").click(function(e) {
+	        e.preventDefault();
+	        $("#wrapper").toggleClass("active");
+	        $("#sidebar").toggleClass("desactive");
+	});
 //================================================================================
 
 	// var enlaceLoad = $('.loadInstantaneo a').attr('href');
@@ -43,9 +49,9 @@ $(function(){
     		var ipCifrada = $('.containerIP').attr('id');
     	    var enlace = $(idTitulo + ' a:eq(1)').attr('href') + '/' + ipCifrada;
        	    //console.log(enlace)
-       	    $(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-refresh fa-spin"></i>');
+       	    //$(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-refresh fa-spin"></i>');
     	    $(idBody).load(enlace);
-    	    $(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-check"></i>')
+    	    //$(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-check"></i>')
     	}, tiempo);
 	}
 
@@ -56,9 +62,9 @@ $(function(){
     		var ipCifrada = $('.containerIP').attr('id');
     	    var enlace = $(idTitulo + ' a:eq(2)').attr('href') + '/' + ipCifrada;
        	    //console.log(enlace)
-       	    $(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-refresh fa-spin"></i>');
+       	    //$(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-refresh fa-spin"></i>');
     	    $(idBody).load(enlace);
-    	    $(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-check"></i>')
+    	    //$(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-check"></i>')
     	}, tiempo);
 	}
 
@@ -82,6 +88,15 @@ $(function(){
 
 		actualizarClick('#actividadAsesoresAnalytics', url, 300000);
 
+	});
+
+
+	$('#btnVisitas').on('click', function(e){
+		e.preventDefault();
+		//alert('hola');
+		var url = $(this).attr('href');
+		console.log(url);
+		actualizarClick2('#visitasAtendidos', url);
 	});
 
 	function actualizarClick(idBody, url, tiempo){
@@ -204,6 +219,9 @@ $(function(){
 
 	$(function() {
 		$( "#datepickerActividadAsesor" ).datepicker({dateFormat: "yy-mm-dd"});
+		$( "#datepickerCheckList1" ).datepicker({dateFormat: "yy-mm-dd"});
+		$( "#datepickerCheckList2" ).datepicker({dateFormat: "yy-mm-dd"});
+
 	});
 
 	//========== F O R M U L A R I O S  ==================================================================
@@ -235,6 +253,22 @@ $(function(){
 			var serializeForm = $(this).serialize();
 
 			actualizarFormAjaxClick('#actividadAsesoresAnalytics', enlace, serializeForm);
+
+		});
+
+
+		$('form.formAjaxClicCheck').on('submit', function(e){
+
+			e.preventDefault();
+			var enlace = $(this).attr('action');
+			var serializeForm = $(this).serialize();
+
+			$('#checkListApertura').html('<i class="text-muted fa fa-spinner fa-spin" style="font-size: 9em"></i>');
+			$.post(enlace, serializeForm, function(data) {
+				$('#checkListApertura').html(data);
+			});
+
+			console.log('fin')
 
 		});
 

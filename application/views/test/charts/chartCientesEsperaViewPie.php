@@ -8,6 +8,9 @@
             plotBorderWidth: null,
             plotShadow: true
         },
+        credits: {
+            enabled: false
+        },
         title: {
             text: 'Browser market shares at a specific website, 2010'
         },
