@@ -5,13 +5,13 @@
 
 						<div class="row well-white marcador-borde-verde bloque-top">
 							<div class="col-sm-2 fontSize1_5">
-								<?php echo $value['TUR_SDSTRTURNO']; ?>
+								<?php echo $value['TURNO']; ?>
 							</div>
 							<div class="col-sm-5">
 
 								<h5 class="media-heading text-primary ajaxLink">	
 									<a >
-										<?php echo $value['SER_SDSTRNOMBRE']; ?>
+										<?php echo $value['NOMBRETRANS']; ?>
 									</a>
 								</h5>
 								
@@ -20,7 +20,7 @@
 								<?php echo gmdate('H:i:s',$value['TSA']*60); ?>
 							</div>
 							<div class="col-sm-3 fontSize1_5">
-								<?php echo strtoupper($value['TUR_SDSTRNOMBRECLIENTE']); ?>
+								<?php echo strtoupper($value['NOMBRECLIENTE']); ?>
 							</div>
 						</div>
 					<?php endforeach; ?>

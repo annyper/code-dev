@@ -13,8 +13,8 @@ class Regional extends CI_Controller
 
         $this->load->helper('url');
 
-        $this->load->model('test/config_model');
-        $this->load->model('test/test_model');
+        $this->load->model('gtr/config_model');
+        $this->load->model('gtr/test_model');
 
         $this->load->library('encrypt');
         $this->encrypt->set_cipher(MCRYPT_GOST);

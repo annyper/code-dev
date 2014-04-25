@@ -3,7 +3,7 @@
 
 		<div class="col-md-3">
 			<div id="container1" style="min-width: 100px; height: 400px; margin: 0 auto"></div>
-			<?php $this->load->view('test/charts/chartCientesEsperaViewPie') ?>
+			<?php $this->load->view('gtr/charts/chartCientesEsperaViewPie') ?>
 		</div>
 
 		<div class="col-md-3">

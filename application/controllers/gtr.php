@@ -3,7 +3,7 @@
 /**
 * 
 */
-class Test extends CI_Controller
+class Gtr extends CI_Controller
 {
 
     //protected $ipCDE;
@@ -13,12 +13,12 @@ class Test extends CI_Controller
 		parent::__construct();
         date_default_timezone_set('America/Bogota');
 
-        session_start();
+        //session_start();
         //error_reporting(0);
         $this->load->helper('url');
 
-        $this->load->model('test/config_model');
-        $this->load->model('test/test_model');
+        $this->load->model('gtr/config_model');
+        $this->load->model('gtr/test_model');
         $this->load->model('consolidados/checkList_model');
 
         $this->load->library('encrypt');
@@ -33,18 +33,43 @@ class Test extends CI_Controller
     {
         //echo "string";
         //echo "<h1>hola mundo<h1>";
-        $data['title'] = 'Inicio';
-        $data['lasd'] = 'Lasd';
+        $data['title'] = 'GTR';
+        $data['lasd'] = 'COC';
+        $data['nav'] = 'gtr';
 
+        //$data['Esp'] = $this->config_model->GTREspera();
+        //$data['row'] = $this->config_model->getRacsTiempoReal('tigo centro medellin');
+        //$data['cliEsp'] = $this->config_model->getClientesEspera('5000435');
+
+        
+        //echo "<pre>"; print_r($data); echo "</pre>";
         $this->load->view('templates/header', $data);
           
-        //$this->chartActividadAsesores();     
+        $this->load->view('gtr/main/index.php', $data);
 
         $this->load->view('templates/footer', $data); 
     }
 
-    function cde($oficina = 'TIGO-CENTRO-MEDELLIN')
+    function tiendasEspera($regional = null){
+
+        $data['Esp'] = $this->config_model->GTREspera($regional);
+        //echo "<pre>"; print_r($data); echo "</pre>";
+        $this->load->view('gtr/main/tiendasEspera.php',  $data);
+    }
+
+
+    function tiendaBusqueda($CDE = null){
+        $CDE = str_replace("-", " ", $CDE);
+        $data['Esp'] = $this->config_model->GTREsperaCDE($CDE);
+        //echo "<pre>"; print_r($data); echo "</pre>";
+        $this->load->view('gtr/main/tiendasEspera.php',  $data);
+    }
+
+    function cde($oficina = null)
     {
+        if ($oficina == null) {
+            redirect('/gtr', 'refresh');
+        }
         //$this->output->cache(60);
         $this->benchmark->mark('inicio');
         $data['title'] = str_replace("-", " ", $oficina) . " GTR";
@@ -73,9 +98,9 @@ class Test extends CI_Controller
             //echo "<pre>"; print_r($data); echo "</pre>";
 
             $this->load->view('templates/header', $data);
-            $this->load->view('test/includes/sidebarGTR', $data);
-            $this->load->view('test/includes/endSidebar', $data);
-            $this->load->view('test/index', $data);
+            $this->load->view('gtr/includes/sidebarGTR', $data);
+            $this->load->view('gtr/includes/endSidebar', $data);
+            $this->load->view('gtr/index', $data);
             
             $this->load->view('templates/footer', $data);
         }else {
@@ -86,8 +111,6 @@ class Test extends CI_Controller
          //$this->chartActividadAsesores($oficina, $data['ipCifrada']);
 
         $this->benchmark->mark('fin');
-
-        //echo " " . $this->benchmark->elapsed_time('inicio', 'fin');
     }
 
     function dashboardEncabezado($ipCifrada)
@@ -101,7 +124,7 @@ class Test extends CI_Controller
 
         $data['gtr'] = $this->test_model->getGTR();
 
-        $this->load->view('test/paneles/dashboardEncabezado',$data);
+        $this->load->view('gtr/paneles/dashboardEncabezado',$data);
         //echo "<pre>"; print_r($data['gtr']); echo "</pre>";
 
     }
@@ -124,13 +147,13 @@ class Test extends CI_Controller
             $col['colas'] = $this->test_model->getColas($terminal);
             $col['servicios'] = $this->test_model->getServicios($idTurno);
 
-            $this->load->view('test/turno_detalles',$col);
+            $this->load->view('gtr/turno_detalles',$col);
 
             //echo "<pre>"; print_r($col); echo "</pre>";
         //}
     }
 
-    function renderRacsTiempoReal($oficina, $ipCifrada)
+    function renderRacsTiempoReal2($oficina, $ipCifrada)
     {
         //if ($this->input->is_ajax_request()) {
             
@@ -159,13 +182,35 @@ class Test extends CI_Controller
                 
                 $this->chartEstadoAsesores($oficina, $ipCifrada);
 
-                $this->load->view('test/racsTiempoReal', $data);
+                $this->load->view('gtr/racsTiempoReal', $data);
             }
             
         //}
     }
 
-    function renderClientesEsperaTiempoReal($oficina, $ipCifrada)
+    function renderRacsTiempoReal($oficina, $ipCifrada = null)
+    {
+        //if ($this->input->is_ajax_request()) {
+            
+        
+            $oficina = trim(str_replace("-", " ", $oficina));
+            //echo($oficina);
+
+            $data['row'] = $this->config_model->getRacsTiempoReal($oficina);
+
+          
+            if (is_array($data['row'])) {
+                
+                //echo "<pre>"; print_r($data['row']); echo "</pre>";
+                $this->chartEstadoAsesores($oficina, $ipCifrada);
+
+                $this->load->view('gtr/racsTiempoReal', $data);
+            }
+            
+        //}
+    }
+
+        function renderClientesEsperaTiempoReal($oficina, $ipCifrada)
     {
         //if ($this->input->is_ajax_request()) {
 
@@ -180,11 +225,27 @@ class Test extends CI_Controller
             $data['clientesEspera'] = $this->test_model->getClientesEsperaTiempoReal();
 
             //$developer = $this->test_model->developer();
-            //echo "<pre>"; print_r($developer); echo "</pre>";
+            //echo "<pre>"; print_r($data); echo "</pre>";
 
             $this->chartCientesEspera($oficina, $ipCifrada);
 
-            $this->load->view('test/ClientesEsperaTiempoReal', $data);
+            $this->load->view('gtr/ClientesEsperaTiempoReal', $data);
+        //}
+    }
+
+
+    function renderClientesEsperaTiempoReal2($cde, $ipCifrada = null)
+    {
+        //if ($this->input->is_ajax_request()) {
+            $cde = trim(str_replace("-", " ", $cde));
+
+            $data['clientesEspera'] = $this->config_model->getClientesEspera($cde);
+
+            //echo "<pre>"; print_r($data); echo "</pre>";
+
+            //$this->chartCientesEspera($cde, $ipCifrada);
+
+            $this->load->view('gtr/ClientesEsperaTiempoReal', $data);
         //}
     }
 
@@ -210,7 +271,7 @@ class Test extends CI_Controller
                 $data['total'] = $data['total'] + $value['tiempo_Sin_Turno'];
             } 
             //echo "<pre>"; print_r($data['sinturno']); echo "</pre>";
-            $this->load->view('test/sin_turno', $data);
+            $this->load->view('gtr/sin_turno', $data);
         //}
     }
 
@@ -225,7 +286,7 @@ class Test extends CI_Controller
             $oficina = str_replace("-", " ", $oficina);
 
             $data['sinturnoTiempoReal'] = $this->test_model->getLaborTiempoReal($oficina, 'Sin turno');
-            $this->load->view('test/sin_turnoTiempoReal', $data);
+            $this->load->view('gtr/sin_turnoTiempoReal', $data);
         //}
     }
 
@@ -241,7 +302,7 @@ class Test extends CI_Controller
             // foreach ($data['Historico'] as $key => $value) {
             //     $data['total'] = $data['total'] + $value['tiempo_Labor']-3600;
             // } 
-            $this->load->view('test/historico', $data);
+            $this->load->view('gtr/historico', $data);
 
             //echo "<pre>"; print_r($data['AlmuerzoHistorico']); echo "</pre>";
     }
@@ -259,8 +320,8 @@ class Test extends CI_Controller
         foreach ($data['Historico'] as $key => $value) {
             $data['total'] = $data['total'] + $value['tiempo_Labor'];
         } 
-        $this->load->view('test/historico', $data);
-        //$this->load->view('test/bano-no-justificado', $data);
+        $this->load->view('gtr/historico', $data);
+        //$this->load->view('gtr/bano-no-justificado', $data);
     }
 
     function renderLaborAdministrativaHistorico($ipCifrada)
@@ -276,8 +337,8 @@ class Test extends CI_Controller
             $data['total'] = $data['total'] + $value['tiempo_Labor'];
         } 
 
-        $this->load->view('test/historico', $data);
-        //$this->load->view('test/Labor-Administrativa-historico', $data);
+        $this->load->view('gtr/historico', $data);
+        //$this->load->view('gtr/Labor-Administrativa-historico', $data);
     }
 
     function chartCientesEspera($oficina, $ipCifrada)
@@ -323,13 +384,93 @@ class Test extends CI_Controller
             
             $dataJSON['jsonCodificado'] = str_replace("ESPERANDO", "data", $dataJSON['jsonCodificado']);
             //echo $dataJSON['jsonCodificado'];
-            $this->load->view('test/charts/chartCientesEsperaView', $dataJSON);
+            $this->load->view('gtr/charts/chartCientesEsperaView', $dataJSON);
             //echo "<pre>"; print_r($data); echo "</pre>";
 
         //}
     }
 
-    function chartEstadoAsesores($oficina, $ipCifrada)
+    function chartEstadoAsesores($oficina, $ipCifrada = NULL)
+    {
+
+        $oficina = str_replace("-", " ", $oficina);
+
+        $contador = 0;
+        $data['series'] = $this->config_model->getChartEstadoAsesores($oficina);
+
+        while ( $contador <= 2 && !is_array($data['series'])) {
+            $contador = $contador + 1;
+
+            $data['series'] = $this->test_model->getChartEstadoAsesores($oficina);
+        }
+
+        //echo "<pre>"; print_r($data['series']); echo "</pre>";
+
+        if (is_array($data['series'])) {
+
+            foreach ($data['series'] as $key => $value) {
+                $data['series'][$key]['data'] = array(0 => $value['']);
+                unset($data['series'][$key]['']);
+
+                if ($value['LABOR']  == "Disponible") {
+                     $data['series'][$key]['color'] = "rgb(67, 183, 96)";//
+
+                } elseif ($value['LABOR'] == "Desconectado") {
+                    $data['series'][$key]['color'] = "rgb(108, 108, 108)";//
+
+                } elseif ($value['LABOR'] == "Arranque Terminal") {
+                    $data['series'][$key]['color'] = "rgb(124, 124, 124)";
+
+                } elseif ($value['LABOR'] == "Fin de Jornada") {
+                    $data['series'][$key]['color'] = "rgb(31, 43, 82)";//
+
+                } elseif ($value['LABOR'] == "Cierre Arranque") {
+                    $data['series'][$key]['color'] = "rgb(140, 140, 140)";
+
+                } elseif ($value['LABOR'] == "Ocupado") {
+                    $data['series'][$key]['color'] = "rgb(62, 86, 166)";//
+
+                } elseif ($value['LABOR'] == "Capacitación") {
+                    $data['series'][$key]['color'] = "rgb(134, 101, 0)";//
+
+                } elseif ($value['LABOR'] == "Baño") {
+                    $data['series'][$key]['color'] = "rgb(202, 152, 0)";//
+
+                } elseif ($value['LABOR'] == "Break") {
+                    $data['series'][$key]['color'] = "rgb(223, 237, 58)";
+
+                } elseif ($value['LABOR'] == "Paso Primera Línea") {
+                    $data['series'][$key]['color'] = "rgb(255, 202, 40)";
+
+                } elseif ($value['LABOR'] == "Labor Administrativa") {
+                    $data['series'][$key]['color'] = "rgb(244, 121, 10)";//
+
+                } elseif ($value['LABOR'] == "Sin turno") {
+                   $data['series'][$key]['color'] = "rgb(202, 29, 15)";//
+
+                } elseif ($value['LABOR'] == "Almuerzo") {
+                   $data['series'][$key]['color'] = "rgb(137, 59, 195)";//
+
+                }elseif ($value['LABOR'] == "Orientador") {
+                   $data['series'][$key]['color'] = "rgb(45, 200, 255)";//
+
+                } elseif ($value['LABOR'] == "Llamando") {
+                   $data['series'][$key]['color'] = "rgb(159, 248, 156)";//rgba(159, 248, 156, 0.93)
+                }
+            }
+
+            //echo "<pre>"; print_r($data['series']); echo "</pre>";
+
+            $dataJSON['jsonCodificado'] = json_encode($data['series']);
+
+            $dataJSON['jsonCodificado'] = str_replace("LABOR", "name", $dataJSON['jsonCodificado']);
+            //echo "<pre>"; echo $dataJSON['jsonCodificado']; echo "</pre>";
+
+            $this->load->view('gtr/charts/chartEstadoAsesoresView', $dataJSON);
+        }
+    }
+
+    function chartEstadoAsesores2($oficina, $ipCifrada)
     {
         $this->inicializarModeloYdecodificarIP($ipCifrada);
 
@@ -343,6 +484,8 @@ class Test extends CI_Controller
 
             $data['series'] = $this->test_model->getChartEstadoAsesores($oficina);
         }
+
+        //echo "<pre>"; print_r($data['series']); echo "</pre>";
 
         if (is_array($data['series'])) {
 
@@ -404,7 +547,7 @@ class Test extends CI_Controller
             $dataJSON['jsonCodificado'] = str_replace("LABOR", "name", $dataJSON['jsonCodificado']);
             //echo "<pre>"; echo $dataJSON['jsonCodificado']; echo "</pre>";
 
-            $this->load->view('test/charts/chartEstadoAsesoresView', $dataJSON);
+            $this->load->view('gtr/charts/chartEstadoAsesoresView', $dataJSON);
 
         }
     }
@@ -584,7 +727,7 @@ class Test extends CI_Controller
             }
 
             
-            $this->load->view('test/charts/chartsActividadAsesores', $data);
+            $this->load->view('gtr/charts/chartsActividadAsesores', $data);
         }else {
             echo "Lo sentimos, aún no hay datos.";
         }
@@ -611,11 +754,11 @@ class Test extends CI_Controller
             $data['xAxisPS'][$key] = $value['HORA'];
         }
 
-        //$this->load->view('test/chartLineasKpis', $data);
+        //$this->load->view('gtr/chartLineasKpis', $data);
 
         //echo "<pre>"; print_r($data); echo "</pre>";
 
-        $this->load->view('test/charts/chartsNS_PS', $data);
+        $this->load->view('gtr/charts/chartsNS_PS', $data);
     }
 
     function renderVisitasHoy($oficina, $ipCifrada)
@@ -643,8 +786,17 @@ class Test extends CI_Controller
                 $data['VisitasAcumulado'][$key] = $data['VisitasAcumulado'][$key - 1] + $value['TotalTurnos'];
             }
         }
-        $this->load->view('test/charts/chartVisitas', $data);
+        $this->load->view('gtr/charts/chartVisitas', $data);
         //echo "<pre>"; print_r($data['VisitasAcumulado'] ); echo "</pre>";
+    }
+
+    function renderInfoCDE($Cod_pos)
+    {
+        $data['tienda_admin'] = $this->checkList_model->getInfoCDE($Cod_pos);
+        $data['coor'] = $this->checkList_model->getInfoCDEcoor($Cod_pos);
+
+        //echo "<pre>"; print_r($data); echo "</pre>";
+        $this->load->view('gtr/main/infocde', $data);
     }
 
 }

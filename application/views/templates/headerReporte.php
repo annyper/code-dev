@@ -10,6 +10,8 @@
         <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/lasd.css"); ?>">
         <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/templates.css"); ?>">
         <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/datepicker3.css"); ?>">
+        <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/theme.bootstrap_2.css"); ?>">
+
         
         <link rel="stylesheet" href="<?php echo base_url("jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.min.css"); ?>">
         
@@ -24,6 +26,7 @@
 
         <script src="<?php  echo base_url("bootstrap/js/jquery-2.1.0.min.js"); ?>"></script>
 		<script src="<?php echo base_url("bootstrap/js/general.js"); ?>"></script>
+		<script src="<?php echo base_url("bootstrap/js/reporte.js"); ?>"></script>        
 	</head>
 
 
@@ -43,28 +46,19 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
-			<?php $this->load->view('templates/nav-principal'); ?>
+			<?php if (isset($nav)): ?>
 
-			<ul class="nav navbar-nav">
-				<?php if (isset($oficina)): ?>
-					<li class="<?php if ($nav == 'analytics') { echo 'active';}?>"><a href="<?php echo site_url('analytics/index/' . $oficina); ?>">Analytics </a></li> 
-				<?php endif ?>
-			</ul>
+				<ul class="nav navbar-nav">
+					<li class="<?php if ($nav == 'kpiFechas') { echo 'active';}?>"><a href="<?php echo site_url('reporte'); ?>">KPIs</a></li>    			
+				</ul>
+				<ul class="nav navbar-nav">
+					<li class="<?php if ($nav == 'kpiCierreMes') { echo 'active';}?>"><a href="<?php echo site_url('reporte/cierreMes'); ?>">Cierre Mes</a></li>    			
+				</ul>
+			<?php endif ?>
+
 
 			<ul class="nav navbar-nav navbar-right">
-				<?php if (isset($oficina)): ?>
-					<li>
-						<a href="<?php echo site_url('gtr/cde/' . $oficina); ?>"><strong>CDE: </strong> <?php echo str_replace("-", " ", $oficina); ?></a>
-					</li>
-				<?php endif ?>
-		      <li>
-		      <?php if (isset($ip_info) && !empty($ip_info)): ?>
-		      	<?php $ip_digiturno = str_replace("\SQLEXPRESS", "", $ip_info['SER_SDSTRSERVIDOR']); ?>
-		      	<a href="<?php echo "http://" . $ip_digiturno . ":8888"; ?>" class="navbar-link" target="_blank">
-		      		<i class="fa fa-link fa-lg"></i> Ip: <?php echo $ip_digiturno; ?>
-		      	</a>
-		      <?php endif ?>
-		      </li>
+				
 		      
 		      <li class="dropdown">
 		        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dashboard <b class="caret"></b></a>

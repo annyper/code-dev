@@ -30,29 +30,6 @@
 
 		    </form>
 
-		    <script>
-		    	
-		    	$('#listaCDEbutton').on('click', function(e){
-		    		e.preventDefault();
-		    		var enlace = $('#listaCDE').val();
-		    		
-		    		enlace = "TIGO-" + enlace.replace(/ /g, "-");
-		    		$('#listaCDE').val("");
-		    		//console.log(enlace)
-		    		//self.location= enlace;
-		    		window.open(enlace);
-
-				});
-
-		    	$('#listaCDEform').on('submit', function(e){
-		    		e.preventDefault();
-		    		var enlace = $('#listaCDE').val();
-		    		
-		    		enlace = "TIGO-" + enlace.replace(/ /g, "-");
-		    		self.location= enlace;
-		    	});
-
-		    </script>
 <?php endif; ?>
 
 

@@ -13,8 +13,8 @@ class Analytics extends CI_Controller
 
         $this->load->helper('url');
         //error_reporting(0);
-        $this->load->model('test/config_model');
-        $this->load->model('test/test_model');
+        $this->load->model('gtr/config_model');
+        $this->load->model('gtr/test_model');
         $this->load->model('consolidados/checkList_model');
         $this->load->model('consolidados/Consolidados_model');
 
@@ -50,9 +50,9 @@ class Analytics extends CI_Controller
             $data['ipCifrada'] = str_replace("=", "", $data['ipCifrada']);
 
             $this->load->view('templates/header', $data);
-            $this->load->view('test/includes/sidebarAnalytics', $data);
+            $this->load->view('gtr/includes/sidebarAnalytics', $data);
                 $this->load->view('analytics/actividad', $data);
-            $this->load->view('test/includes/endSidebar', $data); 
+            $this->load->view('gtr/includes/endSidebar', $data); 
             $this->load->view('templates/footer', $data); 
 
         }elseif (is_string($oficina) && $oficina == "0"){

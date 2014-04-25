@@ -4,7 +4,7 @@
 						<a data-toggle="collapse" data-parent="#accordion" href="#collapseNS-visitas">
 	         				 Visitas <span></span>
 	        			</a>
-                        <a href="<?php echo site_url('test/renderVisitasHoy/' . $oficina); ?>" type="button" id="btnVisitas" class="btn btn-primary"><i class="fa fa-flash"></i> Generar</a>
+                        <a href="<?php echo site_url('gtr/renderVisitasHoy/' . $oficina); ?>" type="button" id="btnVisitas" class="btn btn-primary"><i class="fa fa-flash"></i> Generar</a>
 				    </h3>
 				</div>
 				<div id="collapseNS-visitas" class="panel-collapse collapse in">

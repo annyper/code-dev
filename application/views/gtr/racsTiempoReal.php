@@ -15,7 +15,7 @@
 								<?php //$CDE = $this->test_model->getServicios($turnos['TER_PKSTRID']); ?>
 
 								<h5 class="media-heading text-primary ajaxLink">	
-									<a href="<?php echo site_url('test/cargarModalTurnoAjax/' . $terminal . '/' . $turnos['TER_PKSTRID']); ?>" 
+									<a href="<?php echo site_url('gtr/cargarModalTurnoAjax/' . $terminal . '/' . $turnos['TER_PKSTRID']); ?>" 
 										class="fontSize1_5" data-toggle="modal" data-target="#myModal">
 										<?php echo strtoupper($turnos['NOMBRE']); ?>
 									</a>

@@ -139,6 +139,9 @@ a.Matbar2:hover{
 .fontSize1_5{
   font-size: 0.85em !important;
 }
+.fontSize1_8{
+  font-size: 1em !important;
+}
 .fontSize2{
   font-size: 1.2em !important;
 }
@@ -374,6 +377,19 @@ a.Matbar2:hover{
   top: o;
 }
 
+.formato-color-rojo, .formato-color-amarillo, .formato-color-verde{
+  padding: 4px;
+  border-radius: 4px;
+}
+.formato-color-rojo{
+  background-color: rgba(215, 44, 44, 1);
+}
+.formato-color-amarillo{
+  background-color: rgba(255, 194, 14, 1);
+}
+.formato-color-verde{
+  background-color: rgba(67, 183, 96, 1);
+}
 /********************************************/
 .tabla-notas{
   
@@ -381,7 +397,7 @@ a.Matbar2:hover{
 }
 table tbody tr:hover{
 /*  border:solid 2px !important;*/
-  color: #0088cc;
+  /*color: #0088cc;*/
 }
 .tabla-notas .tabla-cabecera{
   color: #0088cc;

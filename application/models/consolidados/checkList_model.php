@@ -121,6 +121,44 @@ class CheckList_model extends CI_model
             return $query->result_array();
       }
     }
+
+    function getInfoCDE($Cod_pos){
+
+    	$query = $this->db->query("SELECT * FROM bd_cded_cde_pda.tiendas as tiend
+			join  bd_cded_cde_pda.administradores as admin
+			on admin.Tiendas_cod_pos = tiend.Cod_Pos
+			join bd_cded_cde_pda.horarios as hor
+			on hor.Tiendas_cod_pos = tiend.Cod_Pos
+			where Cod_Pos = '$Cod_pos'
+			and Dia = 'lunes'");
+
+	    if (!$query) {
+	        $query = 0;
+	        //echo "se generó una mala consulta";
+	    }
+	    else
+	    {
+	        return $query->row_array();
+	    }
+    }
+
+    function getInfoCDEcoor($Cod_pos){
+
+    	$query = $this->db->query("SELECT Cod_Pos, Regional, Tienda, Identificacion, Nombre, Apellido, 
+    		Movil_1, `Movil 2` as Movil_2, Correo FROM bd_cded_cde_pda.tiendas as tiend
+			join  bd_cded_cde_pda.coordinadores_db as coor
+			on coor.Tiendas_cod_pos = tiend.Cod_Pos
+			where Cod_Pos = '$Cod_pos'");
+
+	    if (!$query) {
+	        $query = 0;
+	        //echo "se generó una mala consulta";
+	    }
+	    else
+	    {
+	        return $query->result_array();
+	    }
+    }
 }
 
  ?>

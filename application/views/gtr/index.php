@@ -3,17 +3,11 @@
 
 		<div id="dashboardEncabezado-titulo">
 			<a href=""></a>
-			<a href="<?php echo site_url('test/dashboardEncabezado'); ?>"></a>
+			<a href="<?php echo site_url('gtr/dashboardEncabezado'); ?>"></a>
 		</div>
 			
 		<div class="row">
-			<div id="dashboardEncabezado" class="col-md-8 col-sm-8">
-				<script>
-					var ipCifrada = $('.containerIP').attr('id');
-					var enlaceLoad3 = $('#dashboardEncabezado-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
-					$('#dashboardEncabezado').load(enlaceLoad3);
-				</script>
-			</div>
+			<div id="dashboardEncabezado" class="col-md-8 col-sm-8"></div>
 
 			<div class="col-md-4 col-sm-4">
 			<?php $this->load->view('templates/datalist'); ?>
@@ -28,7 +22,8 @@
 							<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
 		         				 Estado de los asesores <span class="fontSize0"><?php echo $of['oficina2']; ?></span>
 		        			</a>
-		        			<a href="<?php echo site_url('test/renderRacsTiempoReal/' . $oficina); ?>"></a>
+		        			<a href="<?php echo site_url('gtr/renderRacsTiempoReal/' . $oficina); ?>"></a>
+		        			<a href="<?php echo site_url('gtr/renderRacsTiempoReal2/' . $oficina); ?>"></a>
 	        			</h3>
 					</div>
 					<div id="collapseOne" class="panel-collapse collapse in">
@@ -37,26 +32,7 @@
 							<div id="estadoAsesoresChart" style="min-width: 45%; height: 110px; margin: 0 auto">
 							</div>
 
-							<div id="estadoAsesores">
-								<script>
-									var ipCifrada = $('.containerIP').attr('id');
-									var enlaceLoad1 = $('#estadoAsesores-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
-									 console.log(enlaceLoad1)
-									$('#estadoAsesores').html('<p class="text-center"><i class="fa fa-refresh fa-spin fa-2x text-success"></i></p>');
-									
-									$.get( enlaceLoad1, function( data ) {
-									  	if (data != 0) {
-									  		$( "#estadoAsesores" ).html( data );
-									  	} else if (data == 0) {
-									  		$( "#estadoAsesores" ).text("ola k ase");
-									  	};
-
-									}).fail(function() {
-									    alert( "Up's ha ocurrido un error" );
-									});
-
-								</script>
-							</div>
+							<div id="estadoAsesores"></div>
 							
 						</div>
 					</div>
@@ -71,8 +47,8 @@
 							<a data-toggle="collapse" data-parent="#accordion" href="#collapseClientes">
 		         				 Clientes en espera <span class="fontSize0"><?php echo $of['oficina2']; ?></span>
 		        			</a>
-		        			<a href="<?php echo site_url('test/renderClientesEsperaTiempoReal/' . $oficina); ?>"></a>
-		        			<a href="<?php echo site_url('test/chartCientesEspera/' . $oficina); ?>"></a>
+		        			<a href="<?php echo site_url('gtr/renderClientesEsperaTiempoReal/' . $oficina); ?>"></a>
+		        			<a href="<?php echo site_url('gtr/chartCientesEspera/' . $oficina); ?>"></a>
 	        			</h3>
 					</div>
 					<div id="collapseClientes" class="panel-collapse collapse in">
@@ -80,20 +56,7 @@
 							<div id="loquesea"></div>
 							<div id="estadoSala" style="min-width: 45%; height: 100px; margin: 0 auto"></div>
 
-							<div id="clientesEspera">
-								<script>
-									var ipCifrada = $('.containerIP').attr('id');
-									var enlaceLoad1 = $('#clientesEspera-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
-									 console.log(enlaceLoad1)
-									$('#clientesEspera').html('<p class="text-center"><i class="fa fa-refresh fa-spin fa-2x text-success"></i></p>');
-									$('#clientesEspera').load(enlaceLoad1, function( response, status, xhr ) {
-									  if ( status == "error" ) {
-									    var msg = "Error  NOT found ";
-									    $( "#clientesEspera" ).html( msg + xhr.status + " " + xhr.statusText );
-									  }
-									});
-								</script>
-							</div>
+							<div id="clientesEspera"></div>
 			
 						</div>
 					</div>
@@ -106,19 +69,19 @@
 	<div class="container">
 		<div class="row" id="actividad-acumulada">
 			<div class="col-sm-6 col-md-3" id="sinTurno" style="padding-right: 5px;padding-left: 5px;">
-				<?php $this->load->view('test/paneles/panelSinTurno', $of); ?>
+				<?php $this->load->view('gtr/paneles/panelSinTurno', $of); ?>
 			</div>
 			
 			<div class="col-sm-6 col-md-3" id="almuerzo" style="padding-right: 5px;padding-left: 5px;">
-				<?php $this->load->view('test/paneles/panelAlmuerzo', $of); ?>
+				<?php $this->load->view('gtr/paneles/panelAlmuerzo', $of); ?>
 			</div>
 
 			<div class="col-sm-6 col-md-3" id="Control-disponibles" style="padding-right: 5px;padding-left: 5px;">
-				<?php $this->load->view('test/paneles/panelLaborAdministrativa', $of); ?>
+				<?php $this->load->view('gtr/paneles/panelLaborAdministrativa', $of); ?>
 			</div>
 
 			<div class="col-sm-6 col-md-3" id="AHT-alto" style="padding-right: 5px;padding-left: 5px;">
-				<?php $this->load->view('test/paneles/panelBano', $of); ?>
+				<?php $this->load->view('gtr/paneles/panelBano', $of); ?>
 			</div>
 		</div>
 	</div>
@@ -128,13 +91,13 @@
 
 		<div class="row" id="estadisticas">
 			<div class="col-md-12">
-				<?php $this->load->view('test/paneles/estadisticas'); ?>
+				<?php $this->load->view('gtr/paneles/estadisticas'); ?>
 			</div>
 		</div>
 
 		<div class="row" id="visitasPanel">
 			<div class="col-md-12">
-				<?php $this->load->view('test/paneles/visitasVista'); ?>
+				<?php $this->load->view('gtr/paneles/visitasVista'); ?>
 			</div>
 		</div>
 	</div>
@@ -143,7 +106,7 @@
 
 		<div class="row" id="timelineEstadoAsesores">
 			<div class="col-md-12">
-				<?php $this->load->view('test/paneles/timelineEstadoAsesores'); ?>
+				<?php $this->load->view('gtr/paneles/timelineEstadoAsesores'); ?>
 			</div>
 		</div>
 	</div>

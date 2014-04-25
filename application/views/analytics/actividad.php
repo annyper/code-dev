@@ -1,4 +1,4 @@
-<div class="container containerIP" id="<?php echo $ipCifrada; ?>">
+s<div class="container containerIP" id="<?php echo $ipCifrada; ?>">
 	
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4" style="margin: 10px;">
@@ -15,11 +15,11 @@
 								<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
 			         				 Actividad de los asesores <span></span>
 			        			</a>
-			        			<a href="<?php echo site_url('test/chartActividadAsesores'); ?>"></a>	
+			        			<a href="<?php echo site_url('gtr/chartActividadAsesores'); ?>"></a>	
 			        		</div>
 							
 							<div class="col-md-3">
-			        			<?php echo form_open('test/chartActividadAsesoresForm', array('class' => 'formAjaxClic form-inline')) ?>
+			        			<?php echo form_open('gtr/chartActividadAsesoresForm', array('class' => 'formAjaxClic form-inline')) ?>
 			        				<div class="form-group">
 			        					<div class="input-group">
 	                                        <input type="text" name="fechaActividadAsesor" id="datepickerActividadAsesor" placeholder="Ingrese la fecha" required class="form-control">
@@ -60,7 +60,7 @@
 								<a data-toggle="collapse" data-parent="#accordion" href="#collapseChecklist">
 			         				 Check list de apertura <span></span>
 			        			</a>
-			        			<a href="<?php echo site_url('test/chartActividadAsesores'); ?>"></a>	
+			        			<a href="<?php echo site_url('gtr/chartActividadAsesores'); ?>"></a>	
 			        		</div>
 							
 							<div class="col-md-9">

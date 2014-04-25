@@ -21,7 +21,7 @@ class Welcome extends CI_Controller {
 	{
 		$this->load->view('welcome_message');
 		date_default_timezone_set('America/Bogota');
-		echo date('H:i:s') . ' ';
+		echo date('Y-m-d H:i:s') . ' ';
 
 		$pieces = explode(":", date('H:i:s'));
 		echo '</br>' . ($pieces[0]*3600 + $pieces[1]*60 + $pieces[2]);

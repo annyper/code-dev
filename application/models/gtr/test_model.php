@@ -59,8 +59,8 @@ class Test_model extends CI_model
 		try {
 
 			$query = $this->dbCDE->query("SELECT * FROM (
-				SELECT [TRA_FKSTRTIPOCLIENTE], [TRA_FKUNITURNO], [TRA_FKSTRSERVICIO], [SER_SDSTRNOMBRE]
-					  ,[TRA_SDINTSECUENCIA], [TRA_SDINTESTADO], [TRA_FKSTRSELECTOR], [TRA_FKUNICOLA]
+				SELECT [TRA_FKSTRTIPOCLIENTE], [TRA_FKUNITURNO], [TRA_FKSTRSERVICIO], [SER_SDSTRNOMBRE] AS NOMBRETRANS
+					  ,[TRA_SDINTSECUENCIA], [TRA_SDINTESTADO], [TRA_FKSTRSELECTOR], [TRA_FKUNICOLA] AS IDCOLA
 					  ,q.[LOG_SDSTRUSUARIO], q.[LOG_SDDATMODIFICACION], q.[TRA_SDINTNUMEROTRANS]
 				  FROM [DIGITURNO13].[dbo].[DG45_TRANSACCIONES] AS q
 				  JOIN [DIGITURNO13].[dbo].[DG45_SERVICIOS] AS p
@@ -70,12 +70,12 @@ class Test_model extends CI_model
 				  ON q.[TRA_FKSTRSUBSERVICIO] = t.[SUB_PKSTRID]
 				  WHERE [TRA_FKSTRHARDWARERECEPTOR] IS NULL) AS PAM
 
-			JOIN (SELECT [TUR_PKUNIGUID],[TUR_SDSTRTURNO],[TUR_SDSTRCODCLIENTE],[TUR_SDSTRNOMBRECLIENTE],[LOG_SDSTRUSUARIO]
+			JOIN (SELECT [TUR_PKUNIGUID],[TUR_SDSTRTURNO] AS TURNO,[TUR_SDSTRCODCLIENTE] AS NUMEROCLIENTE,[TUR_SDSTRNOMBRECLIENTE] AS NOMBRECLIENTE,[LOG_SDSTRUSUARIO]
 				FROM [DIGITURNO13].[dbo].[DG45_TURNOS]) AS j
 			ON PAM.[TRA_FKUNITURNO] = j.[TUR_PKUNIGUID]
 
 			JOIN (SELECT [TUR_SDSTRTURNO],[TSA] FROM [DIGITURNO13].[dbo].[INFO_TURNO]) AS TIEMPOS
-			ON j.[TUR_SDSTRTURNO] = TIEMPOS.[TUR_SDSTRTURNO]
+			ON j.TURNO = TIEMPOS.[TUR_SDSTRTURNO]
 			ORDER BY TSA DESC");
 
 			if (!$query) {
@@ -255,14 +255,6 @@ class Test_model extends CI_model
 
 			$query = $this->dbCDE->query("SELECT TOP 1000 NOMBRE, SL, PS, PUNTUALES, ATENDIDOS, VISITAS FROM [DIGITURNO13].[dbo].[GTR]");
 
-			$query3 = $this->dbCDE->query("SELECT TOP 1000	SUCURSAL,	ROUND(CAST(AVG(CASE WHEN ESTADO = 'ATENDIDO' THEN TIEMPOATENCION END) AS FLOAT)/60,1) as AHT,
-						ROUND(CAST(AVG(TIEMPOESPERA) AS FLOAT)/60,1) as ASA
-				FROM dbo.VW_REPORTE_DIGITURNO
-				WHERE CAST(FECHA_CREACION_TURNO AS DATE) = cast(getdate() as date) --CONVERT(CHAR(10), SYSDATETIME(), 103)
-				AND ESTADO IN ('ATENDIDO','ABANDONADO')
-				GROUP BY REGIONAL, SUCURSAL");
-		
-
 			$query2 = $this->dbCDE->query("SELECT ([TUR_SDSTRTURNO]) as esperando, 
 	                        DATEDIFF(MINUTE,TRA_SDDATHORASOLICITUD,SYSDATETIME()) AS Tiempo, 
 	                        CONVERT(VARCHAR(16), TRA_SDDATHORASOLICITUD,121) as Hora_solicitud
@@ -317,17 +309,6 @@ class Test_model extends CI_model
 					$numeradorPercepcionActual = ($b15_30*0.6) + ($b30_45*1.2) + ($b45_60*2.4) + ($b60*4.8);
 
 					$data['PercepcionEsperada'] = 1 - (($numeradorPercepcionHistorica + $numeradorPercepcionActual)/($data['ATENDIDOS'] + count($data2)));
-					
-					if (!$query3) {
-						$dataAHT_ASA = $query3->row_array();
-						
-						//if (!empty($dataAHT_ASA)) {
-							$data['AHT'] = $dataAHT_ASA['AHT'];
-							$data['ASA'] = $dataAHT_ASA['ASA'];
-							//echo "<pre>"; print_r($data); echo "</pre>";
-						//}
-						//echo "<pre>"; print_r($data); echo "</pre>";
-					}
 
 					return $data;
 					//echo "<pre>"; print_r($data); echo "</pre>";

@@ -5,7 +5,7 @@
 						<a data-toggle="collapse" data-parent="#accordion" href="#collapseActividadAsesores">
 	         				 Actividad de los asesores <span></span>
 	        			</a>
-                        <a href="<?php echo site_url('test/chartActividadAsesores'); ?>" type="button" id="btnActividadAsesores" class="btn btn-default"><i class="fa fa-flash"></i> Generar</a>
+                        <a href="<?php echo site_url('gtr/chartActividadAsesores'); ?>" type="button" id="btnActividadAsesores" class="btn btn-default"><i class="fa fa-flash"></i> Generar</a>
 				    </h3>
 
 				</div>
