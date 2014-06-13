@@ -18,11 +18,18 @@
 	</thead>
 	<tbody id="tablaGTResperaBody" style="color: black;">
 		<?php foreach ($Esp as $key => $value): ?>
+		<?php 
+			$ipCifrada = $this->encrypt->encode($value['ip']);
+            
+            $ipCifrada = str_replace("/", "-", $ipCifrada);
+            $ipCifrada = str_replace("+", "_", $ipCifrada);
+            $ipCifrada = str_replace("=", "", $ipCifrada);
+		 ?>
 		<tr>		
 			<td><?php echo $value['REGIONAL']; ?></td>
 			<td class="text-primary tiendaLink">
-				<a class="lanzador" href="<?php echo site_url('gtr/renderRacsTiempoReal') . '/' . str_replace(" ", "-", trim($value['NOMBRE'])); ?>" 
-					id="<?php echo site_url('gtr/renderClientesEsperaTiempoReal') . '/' . str_replace(" ", "-", trim($value['NOMBRE'])); ?>">
+				<a class="lanzador" data-cde="<?php echo $value['NOMBRE']; ?>" href="<?php echo site_url('gtr/renderRacsTiempoReal2') . '/' . str_replace(" ", "-", trim($value['NOMBRE'])) . '/' . $ipCifrada; ?>" 
+					id="<?php echo site_url('gtr/renderClientesEsperaTiempoReal') . '/' . str_replace(" ", "-", trim($value['NOMBRE'])) . '/' . $ipCifrada; ?>">
 					<strong class="fontSize1_5"><?php echo $value['NOMBRE']; ?></strong>
 				</a>
 			</td>
@@ -53,7 +60,11 @@
 			<td colspan="10">
 				<div class="btn-group">				
 					<a href="<?php echo site_url('gtr/cde') . '/' . str_replace(" ", "-", trim($value['NOMBRE'])); ?>" target="_blank" class="btn btn-default btn-sm" > Ver CDE</a>
-					<a href="<?php echo site_url('analytics/index') . '/' . str_replace(" ", "-", trim($value['NOMBRE'])); ?>" target="_blank" class="btn btn-default btn-sm" > Ver Analytics</a>
+					
+					<a href="<?php echo site_url('analytics/index') . '/' . str_replace(" ", "-", trim($value['NOMBRE'])); ?>" 
+						target="_blank" class="btn btn-default btn-sm" > Ver Analytics</a>
+					<a href="<?php echo site_url('gtr/editInfoCDE') . '/' . $value['COD_POS']; ?>" 
+						target="_blank" class="btn btn-info btn-sm" ><i class="fa fa-pencil-square-o fa-lg"></i> Editar</a>
 				</div>
 				<div class="panel panel-default">
 					<div class="panel-body infoCDEcomp">
@@ -73,6 +84,7 @@
 
 	$('.botonInfoCDE').on('click', function(e){
 		e.preventDefault();
+		
 		var enlace = $(this).find('a').attr('href');
 		console.log(enlace);
 		$(this).parent().parent().next().toggleClass("desaparecer");
@@ -100,10 +112,12 @@
        	console.log(enlace);
        	console.log(enlace2);
        	$('#mainEstadoRacs').html('<i class="fa fa-refresh fa-spin"></i>');
-       	$('#mainEstadoRacs').load(enlace);
+       	$('#mainEstadoRacs').load(enlace);       	
+       	$('#mainEstadoRacs-titulo .nombreTienda').html($(this).text());
 
        	$('#mainClientesEspera').html('<i class="fa fa-refresh fa-spin"></i>');
        	$('#mainClientesEspera').load(enlace2);
+       	$('#mainClientesEspera-titulo .nombreTienda').html($(this).text());
 		
 		timer = setInterval( function() 
     	{
@@ -116,7 +130,8 @@
     	}, 7000);
 	});
 
-	$(function(){
+	//$(function(){
+
 		$("#tablaGTRespera").tablesorter({
 			theme : 'blue'
 		});
@@ -137,6 +152,6 @@
 			};
 		});
 
-	});
+	//});
 
 </script>

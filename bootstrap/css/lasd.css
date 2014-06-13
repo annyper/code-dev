@@ -195,9 +195,6 @@ a.Matbar2:hover{
 .padding0{
   padding: 5%;
 }
-.padding1{
-  
-}
 
 .margen1{
   margin-top: 8%;
@@ -827,4 +824,9 @@ background-color: rgba(39, 53, 102, 1) !important;
 
 .col-md-16 {
   width: 12.5%;
+}
+
+.col-md-clear{
+  padding-left: 1px;
+  padding-right: 1px;
 }

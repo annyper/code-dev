@@ -18,7 +18,7 @@ if(isset($kpi) and is_array($kpi) ){
 	foreach ($kpi as $key => $option){
 		if($option['segmento']=='CDE' && !(is_null($option['metaact'])) && $option['unidad'] == '%'){			
 			?>
-			,['<?php echo utf8_encode($option['indicador']);?>','<?php echo round( $option['metaact'] *100, 2); ?>','<?php echo round( $option['valorant2'] *100, 2); ?>'
+			,['<?php echo ($option['indicador']);?>','<?php echo round( $option['metaact'] *100, 2); ?>','<?php echo round( $option['valorant2'] *100, 2); ?>'
 			  ,'<?php echo round( $option['valorant'] *100, 2); ?>','<?php echo round( $option['valoract'] *100, 2); ?>']
 			<?php
 		}
@@ -32,7 +32,7 @@ if(isset($kpi) and is_array($kpi) ){
 	foreach ($kpi as $key => $option){
 		if($option['segmento']=='CONTACT CENTER' && !(is_null($option['metaact'])) && $option['unidad'] == '%'){
 			?>
-			,['<?php echo utf8_encode($option['indicador']);?>','<?php echo round( $option['metaact'] *100, 2); ?>','<?php echo round( $option['valorant2'] *100, 2); ?>'
+			,['<?php echo ($option['indicador']);?>','<?php echo round( $option['metaact'] *100, 2); ?>','<?php echo round( $option['valorant2'] *100, 2); ?>'
 			  ,'<?php echo round( $option['valorant'] *100, 2); ?>','<?php echo round( $option['valoract'] *100, 2); ?>']
 			<?php
 		}
@@ -46,7 +46,7 @@ if(isset($kpi) and is_array($kpi) ){
 	foreach ($kpi as $key => $option){
 		if($option['segmento']=='DIGITAL' && !(is_null($option['metaact'])) && $option['unidad'] == '%'){
 			?>
-			,['<?php echo utf8_encode($option['indicador']);?>','<?php echo round( $option['metaact'] *100, 2); ?>','<?php echo round( $option['valorant2'] *100, 2); ?>'
+			,['<?php echo ($option['indicador']);?>','<?php echo round( $option['metaact'] *100, 2); ?>','<?php echo round( $option['valorant2'] *100, 2); ?>'
 			  ,'<?php echo round( $option['valorant'] *100, 2); ?>','<?php echo round( $option['valoract'] *100, 2); ?>']
 			<?php
 		}
@@ -137,7 +137,7 @@ $(function(){
 									foreach ($kpi as $key => $option){													
 								?><tr>
 									<td><?php echo $option['segmento'];?></td>
-									<td><?php echo htmlEntities( $option['indicador'], ENT_QUOTES | ENT_IGNORE, "Windows-1252");?></td>
+									<td><?php echo ( $option['indicador']);?></td>
 
 									<?php 	if($option['unidad'] == '%'){?>			
 										<td><?php echo number_format(round( $option['valorant2']*100, 1), 1).$option['unidad'];?></td> 

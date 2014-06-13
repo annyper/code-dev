@@ -127,13 +127,8 @@ class Config_model extends CI_model
           GROUP BY LABOR");
 
         //return $query->result_array();
-        if (!$query) {
-          $query = 0;
-          //echo "se generó una mala consulta";
-        }
-        else
-        {
-          //print_r($query->result_array());
+        if ($query) {
+          
           return $query->result_array();
         }
       }
@@ -160,38 +155,43 @@ class Config_model extends CI_model
 
         if ($Regional != null) {
 
-            $consulta = "SELECT *, cast(fecha_ahora as date) as fecha FROM (  
-              SELECT * FROM [TIGOCENTRAL].[dbo].[INFO_GTR_ESPERA] AS TABLA_COMPLETA
-              JOIN (
-              SELECT NOMBRE AS NOMBRE2, max(fecha_ahora) as fecha_max FROM [TIGOCENTRAL].[dbo].[INFO_GTR_ESPERA]
-              group by nombre) AS AGRUPADO
+            $consulta = "SELECT * from (
+            SELECT *, cast(fecha_ahora as date) as fecha FROM (  
+                          SELECT * FROM [TIGOCENTRAL].[dbo].[INFO_GTR_ESPERA] AS TABLA_COMPLETA
+                          JOIN (
+                          SELECT NOMBRE AS NOMBRE2, max(fecha_ahora) as fecha_max FROM [TIGOCENTRAL].[dbo].[INFO_GTR_ESPERA]
+                          group by nombre) AS AGRUPADO
 
-              ON TABLA_COMPLETA.NOMBRE = AGRUPADO.NOMBRE2 AND TABLA_COMPLETA.FECHA_AHORA = AGRUPADO.FECHA_MAX ) AS TABLET
-            WHERE REGIONAL = '$Regional'
+                          ON TABLA_COMPLETA.NOMBRE = AGRUPADO.NOMBRE2 AND TABLA_COMPLETA.FECHA_AHORA = AGRUPADO.FECHA_MAX ) AS TABLET
+                    WHERE REGIONAL = '$Regional'
+                  ) as espera
+            left join (SELECT SUBSTRING(SER_SDSTRDESCRIPCION, 5, 200) as CDE, [SER_SDSTRSERVIDOR] as ip
+              FROM [TIGOCENTRAL].[dbo].[DG45_SERVIDORES_REP]) as ips
+            on espera.nombre = ips.CDE
             ORDER by Regional, cast(fecha_max as date) desc, SL, PS";
             
         }else{
 
-            $consulta = "SELECT * FROM (  
-              SELECT *, cast(fecha_ahora as date) as fecha FROM [TIGOCENTRAL].[dbo].[INFO_GTR_ESPERA] AS TABLA_COMPLETA
-              JOIN (
-              SELECT NOMBRE AS NOMBRE2, max(fecha_ahora) as fecha_max FROM [TIGOCENTRAL].[dbo].[INFO_GTR_ESPERA]
-              group by nombre) AS AGRUPADO
+            $consulta = "SELECT * from (
+            SELECT *, cast(fecha_ahora as date) as fecha FROM (  
+                          SELECT * FROM [TIGOCENTRAL].[dbo].[INFO_GTR_ESPERA] AS TABLA_COMPLETA
+                          JOIN (
+                          SELECT NOMBRE AS NOMBRE2, max(fecha_ahora) as fecha_max FROM [TIGOCENTRAL].[dbo].[INFO_GTR_ESPERA]
+                          group by nombre) AS AGRUPADO
 
-              ON TABLA_COMPLETA.NOMBRE = AGRUPADO.NOMBRE2 AND TABLA_COMPLETA.FECHA_AHORA = AGRUPADO.FECHA_MAX ) AS TABLET
+                          ON TABLA_COMPLETA.NOMBRE = AGRUPADO.NOMBRE2 AND TABLA_COMPLETA.FECHA_AHORA = AGRUPADO.FECHA_MAX ) AS TABLET
+                  ) as espera
+            left join (SELECT SUBSTRING(SER_SDSTRDESCRIPCION, 5, 200) as CDE, [SER_SDSTRSERVIDOR] as ip
+              FROM [TIGOCENTRAL].[dbo].[DG45_SERVIDORES_REP]) as ips
+            on espera.nombre = ips.CDE
             ORDER by Regional, cast(fecha_max as date) desc, SL, PS";
         }
         
         $query = $this->BDCentral->query($consulta);
 
-        if (!$query) {
+        if ($query) {
 
-        $query = 0;
-        }
-        else
-        {
-        //print_r($query->result_array());
-        return $query->result_array();
+          return $query->result_array();
         }
 
     }
@@ -203,25 +203,26 @@ class Config_model extends CI_model
                     WHERE NOMBRE LIKE '%$CDE%'
                     order by Regional, SL, PS";
 
-        $consulta = "SELECT *, cast(fecha_ahora as date) as fecha FROM (  
-          SELECT * FROM [TIGOCENTRAL].[dbo].[INFO_GTR_ESPERA] AS TABLA_COMPLETA
-          JOIN (
-          SELECT NOMBRE AS NOMBRE2, max(fecha_ahora) as fecha_max FROM [TIGOCENTRAL].[dbo].[INFO_GTR_ESPERA]
-          group by nombre) AS AGRUPADO
+        $consulta = "SELECT * from (
+            SELECT *, cast(fecha_ahora as date) as fecha FROM (  
+                          SELECT * FROM [TIGOCENTRAL].[dbo].[INFO_GTR_ESPERA] AS TABLA_COMPLETA
+                          JOIN (
+                          SELECT NOMBRE AS NOMBRE2, max(fecha_ahora) as fecha_max FROM [TIGOCENTRAL].[dbo].[INFO_GTR_ESPERA]
+                          group by nombre) AS AGRUPADO
 
-          ON TABLA_COMPLETA.NOMBRE = AGRUPADO.NOMBRE2 AND TABLA_COMPLETA.FECHA_AHORA = AGRUPADO.FECHA_MAX ) AS TABLET
-        WHERE NOMBRE LIKE '%$CDE%'";
+                          ON TABLA_COMPLETA.NOMBRE = AGRUPADO.NOMBRE2 AND TABLA_COMPLETA.FECHA_AHORA = AGRUPADO.FECHA_MAX ) AS TABLET
+               WHERE NOMBRE LIKE '%$CDE%'
+                  ) as espera
+            left join (SELECT SUBSTRING(SER_SDSTRDESCRIPCION, 5, 200) as CDE, [SER_SDSTRSERVIDOR] as ip
+              FROM [TIGOCENTRAL].[dbo].[DG45_SERVIDORES_REP]) as ips
+            on espera.nombre = ips.CDE
+            ORDER by Regional, cast(fecha_max as date) desc, SL, PS";
                 
         $query = $this->BDCentral->query($consulta);
 
-        if (!$query) {
+        if ($query) {
 
-        $query = 0;
-        }
-        else
-        {
-        //print_r($query->result_array());
-        return $query->result_array();
+          return $query->result_array();
         }
 
     }

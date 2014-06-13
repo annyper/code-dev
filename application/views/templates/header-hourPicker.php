@@ -9,8 +9,8 @@
         <link rel="stylesheet" href="<?php echo base_url("font-awesome/css/font-awesome.min.css"); ?>">
         <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/lasd.css"); ?>">
         <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/templates.css"); ?>">
-        <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/datepicker3.css"); ?>">
-        
+
+        <link rel="stylesheet" href="http://eonasdan.github.io/bootstrap-datetimepicker/content/bootstrap-datetimepicker.css">
         <link rel="stylesheet" href="<?php echo base_url("jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.min.css"); ?>">
         
         <!--<script src="<?php  echo base_url("bootstrap/js/jquery-2.1.0.min.js"); ?>"></script>-->

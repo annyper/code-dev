@@ -18,7 +18,12 @@
 		<tr>
 			
 			<td><?php echo $value['REGIONAL']; ?></td>
-			<td><?php echo $value['TIENDA']; ?></td>
+			<td>
+				<a class="lanzadorDataModal" href="#" data-url="<?php echo site_url('cocinfo/checkListDeAperturaPorTienda/' . $datetimeInicio . '/' . $datetimeFin . '/' . str_replace(' ', '-', trim($value['TIENDA']))); ?>"
+					data-toggle="modal" data-target="#myModal">
+					<?php echo $value['TIENDA']; ?>
+				</a>
+			</td>
 			<td><?php echo $value['Impuntual']; ?></td>
 			<td><?php echo $value['Puntual']; ?></td>
 			<td><?php echo $value['No_abre']; ?></td>
@@ -29,8 +34,36 @@
 	</tbody>
 </table>
 
+<!-- Modal -->
+<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Detalle del Checklist por CDE</h4>
+      </div>
+      <div class="modal-body">
+
+      </div>
+    </div>
+  </div>
+</div>
+
 
 	<script>
+			
+			$('.lanzadorDataModal').on('click', function(event) {
+
+				event.preventDefault();
+		            
+		        var enlace = $(this).attr('data-url');
+		        console.log(enlace);
+		        $('.modal-body').html('<i class="icon-spinner icon-spin icon-5x spin-center"></i>');
+
+		        $('.modal-body').load(enlace);
+
+		    });
+
 			$(function () {
 	        $('#GraficoCheck').highcharts({
 	            chart: {

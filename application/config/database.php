@@ -46,7 +46,7 @@
 */
 
 $active_group = 'default';
-$active_record = FALSE;
+$active_record = TRUE;
 
 $db['default']['hostname'] = '10.65.52.22';//:1433';
 $db['default']['username'] = 'sa';
@@ -83,7 +83,7 @@ $db['centromedellin']['stricton'] = FALSE;
 $db['bd_cded_cde_pda1']['hostname'] = '10.66.6.240';//10.74.31.30
 $db['bd_cded_cde_pda1']['username'] = 'ricardo';
 $db['bd_cded_cde_pda1']['password'] = 'ricardo';
-$db['bd_cded_cde_pda1']['database'] = '';
+$db['bd_cded_cde_pda1']['database'] = 'bd_cded_cde_pda';
 $db['bd_cded_cde_pda1']['dbdriver'] = 'mysql';
 $db['bd_cded_cde_pda1']['dbprefix'] = '';
 $db['bd_cded_cde_pda1']['pconnect'] = FALSE;

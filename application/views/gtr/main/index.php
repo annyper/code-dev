@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" style="width: 95%;">
 	<div class="row">
 		<div class="col-md-7 col-sm-7" style="padding-right: 1px;padding-left: 2px;">
 			<div class="row">
@@ -36,11 +36,14 @@
 							    <input type="radio" name="options" value="Suroccidente" id="EsperaOption5"> Suroccidente
 							  </label>
 							</div>
+							<a class="tooltipShow pull-right" data-toggle="tooltip" data-placement="auto" title="¡Ahora se actualiza automáticamente!">(?)</a>
 						</div>
 
 						<div id="listaCDEs" style="overflow:auto; overflow-x:hidden; max-height:650px;"></div>
 						<?php //$this->load->view('gtr/main/tiendasEspera.php') ?>
-
+						<div>
+						<a href="<?php echo site_url('gtr/editInfoCDE'); ?>" target="_blank"><i class="fa fa-link"></i> Agregar CDE</a>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -80,7 +83,7 @@
 						<div class="panel-heading">
 							<h3 class="panel-title" id="mainClientesEspera-titulo">
 								<a data-toggle="collapse" data-parent="#accordion" href="#collapseClientes">
-			         				 Clientes en espera <span class="fontSize0 nombreTienda"></span>
+			         				 Clientes en espera <span class="fontSize1_5 nombreTienda"></span>
 			        			</a>
 			        			<a href="<?php echo site_url('gtr/renderClientesEsperaTiempoReal/Tigo-Centro-Medellin'); ?>"></a>
 			        			<a href="<?php echo site_url('gtr/chartCientesEspera/Tigo-Centro-Medellin'); ?>"></a>

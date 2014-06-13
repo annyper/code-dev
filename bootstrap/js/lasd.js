@@ -51,7 +51,7 @@ $(function(){
     	{
     		var ipCifrada = $('.containerIP').attr('id');
     	    var enlace = $(idTitulo + ' a:eq(1)').attr('href') + '/' + ipCifrada;
-       	    console.log(enlace)
+       	    //console.log(enlace)
        	    //$(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-refresh fa-spin"></i>');
     	    $(idBody).load(enlace);
     	    //$(idTitulo + ' a span').html('<i class="font-color-blanco fa fa-check"></i>')
@@ -206,8 +206,8 @@ $(function(){
 
 			error: function(jqXHR,estado,error){
 				
-				console.log(estado)
-				console.log(error)
+				console.log(estado);
+				console.log(error);
 			},
 			complete: function(jqXHR, estado){
 				console.log(estado)
@@ -228,13 +228,15 @@ $(function(){
 	});
 
 	//========== F O R M U L A R I O S  ==================================================================
-		$('form.formajax').on('submit', function(e) {
+		$('form').filter('.formajax').on('submit', function(event) {
 
-			e.preventDefault();
+			event.preventDefault();
 
 			var ran=Math.floor(Math.random()*1000000);
 
 			var enlace = $(this).attr('action');
+			console.log(enlace);
+			console.log($(this).serialize());
 
 			$(this).attr('id', ran);
 
@@ -247,6 +249,32 @@ $(function(){
 			});
 			
 
+		});
+
+		$('form').on('change', '.inputajax', function(event){
+			event.preventDefault();
+			var hora = $(this).val();
+			var form = $(this).closest('form');
+			var el = $(this);
+			var enlace = form.attr('action') + '/' + $(this).data('dia') + '/' + $(this).data('hora');
+
+			var serializeForm = $(this).serialize();
+
+			$.post(enlace, serializeForm, function(data) {
+				//$('#checkListApertura').html(data);
+				//console.log($(this));
+				if (data == 1) {
+					el.closest('td').addClass('has-success');
+				};
+
+			});
+
+			console.log(enlace);
+
+		});
+		$('form').on('submit', '.inputajax', function(event){
+			event.preventDefault();
+			console.log('submit');
 		});
 
 		$('form.formAjaxClic').on('submit', function(e){
@@ -275,6 +303,15 @@ $(function(){
 
 		});
 
+		$('form').on('click', '.boton-borrar', function(event){
+			event.preventDefault();
+			var enlace = $(this).data('url');
+			var form = $(this).closest('form');
+
+			form.load(enlace);
+			//console.log(enlace);
+		});
+
 		function actualizarFormAjaxClick(idBody, url, serializeForm){
 
 	    		var ipCifrada = $('.containerIP').attr('id');
@@ -299,19 +336,26 @@ $(function(){
 		//-------------------------------------------------------------------------------------
 				var ipCifrada = $('.containerIP').attr('id');
 				
-				var enlaceLoad1 = $('#estadoAsesores-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
+				var enlaceLoad1 = $('#estadoAsesores-titulo a:eq(2)').attr('href')+ '/' + ipCifrada;
 				 
 				$('#estadoAsesores').html('<p class="text-center"><i class="fa fa-refresh fa-spin fa-2x text-success"></i></p>');
+				//console.log(enlaceLoad1);
+				if (ipCifrada != undefined ) {
+
+					$.get( enlaceLoad1, function( data ) {
+					  	if (data != 0) {
+					  		$( "#estadoAsesores" ).html( data );
+					  	} else if (data == 0) {
+					  		$( "#estadoAsesores" ).text("ola k ase");
+					  	};
+					}).fail(function() {
+						console.log('error')
+					});
+
+
+				};
 				
-				$.get( enlaceLoad1, function( data ) {
-				  	if (data != 0) {
-				  		$( "#estadoAsesores" ).html( data );
-				  	} else if (data == 0) {
-				  		$( "#estadoAsesores" ).text("ola k ase");
-				  	};
-				}).fail(function() {
-					//alert( "Up's ha ocurrido un error" );
-				});
+
 
 
 				var enlaceLoadCliEspera = $('#clientesEspera-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
@@ -339,7 +383,7 @@ $(function(){
 
 				function Encabezado(){
 					var enlaceLoad3 = $('#dashboardEncabezado-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
-					console.log(enlaceLoad3);
+					//console.log(enlaceLoad3);
 					$('#dashboardEncabezado').html('<p class="text-center"><i class="fa fa-refresh fa-spin fa-2x" style="color: #eee;"></i></p>');
 				
 					$('#dashboardEncabezado').load(enlaceLoad3);
@@ -348,7 +392,7 @@ $(function(){
 
 				function panelSinturno(){
 					var enlaceLoad4 = $('#sinTurnoAcumulado-titulo a:eq(1)').attr('href')+ '/' + ipCifrada;
-					console.log(enlaceLoad4)
+					//console.log(enlaceLoad4)
 					//$('#Acumulado').html('<p class="text-center"><i class="fa fa-refresh fa-spin fa-2x text-danger"></i></p>');
 					$('#sinTurnoAcumulado').load(enlaceLoad4);
 				};
@@ -405,18 +449,20 @@ $(function(){
 		//-------------------------------------------------------------------------------------
 		//			JS en las vistas.
 		//-------------------------------------------------------------------------------------
-
+				var timerBusquedaCDE
 				$('#busquedaCDE').on('keyup' ,function(){
 						
 						var valor = $(this).val().replace(" ", "-");
 						var enlace = $('#hiddenURI').attr('value') + "/" + valor;
 
+						clearInterval(timerBusquedaCDE);
+
 						if (valor.length > 2) {
 							
-							setTimeout(function(){
-								console.log(enlace);
-								$('#listaCDEs').load(enlace);
-							},500);
+							//setTimeout(function(){
+							console.log(enlace);
+							$('#listaCDEs').load(enlace);
+							//},500);
 							
 						};
 					
@@ -425,19 +471,41 @@ $(function(){
 
 				$('#uriPais').on('click', function(e){
 					e.preventDefault();
+
+					clearInterval(timerBusquedaCDE);
+
 					var enlace = $(this).attr('href');
 					$('#listaCDEs').html('<p class="text-center"><i class="fa fa-spinner fa-spin" style="font-size: 9em; color:#ccc"></i></p>');
 					$('#listaCDEs').load(enlace);
 				});
 
+				
 				$('#busquedaCDEregional label input:radio').on('change', function(e){
 					e.preventDefault();
 					var region = $(this).attr('value');
 					var enlace = $('#uriPais').attr('href') + '/' + region;
 
+					clearInterval(timerBusquedaCDE);
+				
+
 					$('#listaCDEs').html('<p class="text-center"><i class="fa fa-spinner fa-spin" style="font-size: 9em; color:#ccc"></i></p>');
 					$('#listaCDEs').load(enlace);
+
+					timerBusquedaCDE = setInterval( function() 
+					{
+						$('#listaCDEs').load(enlace);
+						console.log('actualizado')
+					}, 120000);
 				});
+
+			$('.tooltipShow').tooltip();
+
+
+			$('.oculatarToggle').on('click', function(event){
+				event.preventDefault();
+				$('.oculatarToggleTarget').toggleClass('hidden');
+
+			});
 
 
 });

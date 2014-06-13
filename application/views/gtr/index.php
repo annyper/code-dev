@@ -1,5 +1,5 @@
 	<?php $of['oficina2'] = str_replace("-", " ", $oficina); ?>
-	<div class="container containerIP" id="<?php echo $ipCifrada; ?>">
+	<div class="container containerIP" id="<?php echo $ipCifrada; ?>" style="width: 95%;">
 
 		<div id="dashboardEncabezado-titulo">
 			<a href=""></a>
@@ -66,7 +66,7 @@
 
 		</div>
 	</div>
-	<div class="container">
+	<div class="container" style="width: 95%;">
 		<div class="row" id="actividad-acumulada">
 			<div class="col-sm-6 col-md-3" id="sinTurno" style="padding-right: 5px;padding-left: 5px;">
 				<?php $this->load->view('gtr/paneles/panelSinTurno', $of); ?>
@@ -87,7 +87,7 @@
 	</div>
 
 
-	<div class="container">
+	<div class="container" style="width: 95%;">
 
 		<div class="row" id="estadisticas">
 			<div class="col-md-12">
@@ -102,7 +102,7 @@
 		</div>
 	</div>
 
-	<div class="container">
+	<div class="container" style="width: 95%;">
 
 		<div class="row" id="timelineEstadoAsesores">
 			<div class="col-md-12">

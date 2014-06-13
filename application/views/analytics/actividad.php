@@ -1,4 +1,4 @@
-s<div class="container containerIP" id="<?php echo $ipCifrada; ?>">
+s<div class="container containerIP" id="<?php echo $ipCifrada; ?>" style="width: 95%;">
 	
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4" style="margin: 10px;">

@@ -6,7 +6,10 @@
 			</div>
  		</footer>
 		
-		
+		<script src="http://eonasdan.github.io/bootstrap-datetimepicker/scripts/moment.js"></script>
+		<script src="http://eonasdan.github.io/bootstrap-datetimepicker/scripts/bootstrap-datetimepicker.js"></script>
+
+
 		<script src="<?php  echo base_url("jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"); ?>"></script>
 		<script src="<?php  echo base_url("bootstrap/js/bootstrap.min.js"); ?>"></script>
 		<script src="<?php echo base_url("bootstrap/js/bootstrap-datepicker.js"); ?>"></script>

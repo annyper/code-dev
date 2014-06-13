@@ -3,14 +3,14 @@
 
 						<div class="row well-white marcador-borde-verde bloque-top">
 
-							<div class="col-sm-2 fontSize1_5">
+							<div class="col-sm-2 fontSize1_5 col-md-clear">
 								<?php $claseLabel = "label label-". str_replace(" ", "-", $turnos['LABOR']) . " label-default"; ?>
 								<div class="<?php echo $claseLabel; ?> fontSize1" 
 									style="display: inline-block;padding: .4em .6em .4em;white-space: normal;"><?php echo $turnos['LABOR']; ?>
 								</div>
 							</div>
 
-							<div class="col-sm-4">
+							<div class="col-sm-4 col-md-clear">
 								<?php $terminal = str_replace(" ", "-", $turnos['TERMINAL']); ?>
 								<?php //$CDE = $this->test_model->getServicios($turnos['TER_PKSTRID']); ?>
 
@@ -24,11 +24,11 @@
 
 								
 							</div>
-							<div class="col-sm-3 fontSize1_5">
+							<div class="col-sm-3 fontSize1_5 col-md-clear">
 								<?php echo gmdate('H:i:s',$turnos['TIEMPO']*60); ?>
 								<span class="pull-right"><a><?php echo $turnos['TURNO']; ?></a></span>
 							</div>
-							<div class="col-sm-3 fontSize1_5">
+							<div class="col-sm-3 fontSize1_5 col-md-clear">
 								<?php echo $turnos['TERMINAL']; ?>
 							</div>
 						</div>

@@ -79,7 +79,8 @@ class Gtr extends CI_Controller
         //$data['oficina'] = str_replace("-", " ", $oficina);
         $data['oficina'] = $oficina;
 
-        $data['ip_info'] = $this->checkList_model->getIP($oficina);
+        //$data['ip_info'] = $this->checkList_model->getIP($oficina);
+        $data['ip_info'] = $this->config_model->getIP($oficina);
         $data['listaCDEs'] = $this->checkList_model->getListaNombresCDEs();
         //echo "<pre>"; print_r($data['ip_info']); echo "</pre>";
 
@@ -157,7 +158,7 @@ class Gtr extends CI_Controller
     {
         //if ($this->input->is_ajax_request()) {
             
-            //$ipCifrada = urldecode($ipCifrada);
+            $ipCifradaChart = $ipCifrada;
             $ipCifrada = str_replace("-", "/", $ipCifrada);
             $ipCifrada = str_replace("_", "+", $ipCifrada);
             $ipCifrada = str_replace("á", "=", $ipCifrada);
@@ -180,7 +181,7 @@ class Gtr extends CI_Controller
             
             if (is_array($data['row'])) {
                 
-                $this->chartEstadoAsesores($oficina, $ipCifrada);
+                $this->chartEstadoAsesores2($oficina, $ipCifradaChart);
 
                 $this->load->view('gtr/racsTiempoReal', $data);
             }
@@ -210,7 +211,7 @@ class Gtr extends CI_Controller
         //}
     }
 
-        function renderClientesEsperaTiempoReal($oficina, $ipCifrada)
+    function renderClientesEsperaTiempoReal($oficina, $ipCifrada)
     {
         //if ($this->input->is_ajax_request()) {
 
@@ -797,6 +798,142 @@ class Gtr extends CI_Controller
 
         //echo "<pre>"; print_r($data); echo "</pre>";
         $this->load->view('gtr/main/infocde', $data);
+    }
+
+    function insertInfoCde()
+    {
+        $this->form_validation->set_rules('Cod_Pos', 'Código Pos del CDE', 'trim|required|xss_clean|htmlspecialchars');
+
+        if ($this->form_validation->run()) {
+    
+                $Cod_Pos = $this->checkList_model->setCDE();
+                //echo $Cod_Pos;
+                redirect('/gtr/editInfoCDE/' . $this->input->post('Cod_Pos'), 'refresh');
+
+        }else{
+                redirect('/gtr/editInfoCDE/', 'refresh');
+        }
+    }
+
+    function editInfoCDE($Cod_pos = null)
+    {
+
+
+        $data['title'] = 'GTR';
+        $data['lasd'] = 'COC';
+        $data['nav'] = 'Edición CDE';
+
+        if ($Cod_pos == null) {
+            $this->load->view('templates/header-hourPicker', $data);
+            $this->load->view('gtr/main/insertInfoCde', $data);
+            $this->load->view('templates/footer', $data);
+            return;
+        }
+        //$this->form_validation->set_rules('rut_institucion', 'Rut de la institucion', 'trim|required|max_length[11]|xss_clean|htmlspecialchars');
+        //$this->form_validation->set_rules('nombre_institucion', 'Nombre de la institucion', 'trim|required|xss_clean|htmlspecialchars');
+        //$this->form_validation->set_rules('rector_institucion', 'Nombre del rector', 'trim|required|xss_clean|htmlspecialchars');
+
+            if ($this->form_validation->run()) {
+                $data['alerta'] = $this->admin_model->setInstitucion();
+
+                if ($data['alerta'] == 0) {
+                    $data['mensaje'] = "Formulario guardado satisfactoriamente";
+                    $data['clase'] = 'alert-success';
+                    $this->load->view('templates/alerta', $data);
+                }
+                elseif ($data['alerta'] == 1) {
+                    $data['mensaje'] = "Institucion ya existe";
+                    $data['clase'] = 'alert-danger';
+                    $this->load->view('templates/alerta', $data);
+                }
+            }
+            else
+            {
+                $data['mensaje'] = validation_errors();
+                $data['Cod_pos'] = $Cod_pos;
+                $data['tienda_admin'] = $this->checkList_model->getInfoCDE($Cod_pos);
+                $data['coor'] = $this->checkList_model->getInfoCDEcoor($Cod_pos);
+                $data['horario'] = $this->checkList_model->getHorario($Cod_pos);
+
+                //echo "<pre>"; print_r($data); echo "</pre>";
+                $data['oficina'] = $data['tienda_admin']['Tienda'];
+
+                $this->load->view('templates/header-hourPicker', $data);
+                $this->load->view('gtr/main/editInfoCde', $data);
+                $this->load->view('templates/footer', $data);
+                
+                //$data['clase'] = 'alert-danger';
+                //$this->load->view('templates/alerta', $data);
+            }
+    
+    }
+    function sethorarioController($Cod_Pos, $Dia, $nombreColumna){
+        $data['alerta'] = $this->checkList_model->setHorario($Cod_Pos, $Dia, $nombreColumna);
+            
+            if ($data['alerta'] == 1) {
+                $data['mensaje'] = "Horario guardado satisfactoriamente";
+                $data['clase'] = 'alert-success';
+                $this->load->view('templates/includes/alerta', $data);
+            }
+            elseif ($data['alerta'] == 0) {
+                $data['mensaje'] = "Error, sorry :P";
+                $data['clase'] = 'alert-danger';
+                $this->load->view('templates/includes/alerta', $data);
+            }
+        //echo $data;
+    }
+
+    function DataCDE($dataform, $Cod_pos, $aux = null){
+        if ($dataform == 'dataCDE') {
+
+            $data['alerta'] = $this->checkList_model->updateDataCDE($Cod_pos);
+
+        }elseif ($dataform == 'dataCoor') {
+
+            $data['alerta'] = $this->checkList_model->updateDataCoor($Cod_pos, $aux);
+
+        }elseif ($dataform == 'dataAdmin') {
+            
+            $data['alerta'] = $this->checkList_model->updateDataAdmin($Cod_pos, $aux);
+        }
+
+        if ($data['alerta'] == 1) {
+            $data['mensaje'] = "Guardado satisfactoriamente";
+            $data['clase'] = 'alert-success';
+            $this->load->view('templates/includes/alerta', $data);
+        }
+        elseif ($data['alerta'] == 0) {
+            $data['mensaje'] = "Error, sorry :P";
+            $data['clase'] = 'alert-danger';
+            $this->load->view('templates/includes/alerta', $data);
+        }
+        
+    }
+
+    function inserDAtaCDE($Cod_pos){
+
+        $this->form_validation->set_rules('identificacion', 'Identificacion asesor', 'trim|required|xss_clean|htmlspecialchars');
+
+        if ($this->form_validation->run()) {
+    
+                $this->checkList_model->setCoor($Cod_pos);
+
+                redirect('/gtr/editInfoCDE/' . $Cod_pos, 'refresh');
+
+        }else{
+                redirect('/gtr/editInfoCDE/' . $Cod_pos, 'refresh');
+        }
+    }
+
+    function deleteCoor($id)
+    {
+        if ($this->input->is_ajax_request()) {
+            
+            $this->checkList_model->deleteCoor($id);
+            $data['mensaje'] = "Coordinador eliminado";
+            $data['clase'] = 'alert-danger';
+            $this->load->view('templates/includes/alerta', $data);
+        }
     }
 
 }

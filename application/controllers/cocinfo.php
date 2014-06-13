@@ -24,11 +24,20 @@ class Cocinfo extends CI_Controller
 
 	}
 
-	function horariosCDE(){
+	function horariosCDE($cod_pos = null){
 
-        $data['data'] = $this->checkList_model->getHorario();
-        echo "string";
+        $data['data'] = $this->checkList_model->getHorario($cod_pos);
+        
         echo "<pre>"; print_r($data['data']); echo "</pre>";
+    }
+
+    function checkListDeAperturaPorTienda($datetimeInicio, $datetimeFin, $CDE)
+    {
+        $CDE = str_replace("-", " ", $CDE);
+        $data['data'] = $this->checkList_model->getCheckListPorCDE($datetimeInicio, $datetimeFin, $CDE);
+        $this->load->view('analytics/detalleChecklistCDE', $data);
+
+        //echo "<pre>"; print_r($data); echo "</pre>";
     }
 
     function checkListDeApertura(){
@@ -63,14 +72,14 @@ class Cocinfo extends CI_Controller
 			}else{
 				$filtro = "WHERE REGIONAL in (" . $filtro . ")";
 			}
-            $datetimeInicio = $fechaConsultadaInicio;
-            $datetimeFin = $fechaConsultadaFin;      
+            $data['datetimeInicio'] = $fechaConsultadaInicio;
+            $data['datetimeFin'] = $fechaConsultadaFin;      
 
-	        $data['data'] = $this->checkList_model->getCheckListDeApertura($datetimeInicio, $datetimeFin, $filtro);
+	        $data['data'] = $this->checkList_model->getCheckListDeApertura($data['datetimeInicio'], $data['datetimeFin'], $filtro);
 	        
 	        $this->load->view('analytics/checklist', $data);
 	        
-	        //echo "<pre>"; print_r($data['data']); echo "</pre>";
+	        //echo "<pre>"; print_r($data); echo "</pre>";
 
         }
 

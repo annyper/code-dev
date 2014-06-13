@@ -1,8 +1,8 @@
 							<script>
-								$(function () {
+								//$(function () {
 									
-									var ipCifrada = $('.containerIP').attr('id');
-									var enlaceLoad4 = $('#clientesEspera-titulo a:eq(2)').attr('href')+ '/' + ipCifrada;
+									//var ipCifrada = $('.containerIP').attr('id');
+									//var enlaceLoad4 = $('#clientesEspera-titulo a:eq(2)').attr('href')+ '/' + ipCifrada;
 									
 									var options = {
 							            chart: {
@@ -52,7 +52,7 @@
 							            },
 							                series: <?php echo $jsonCodificado; ?>
 							        };
-							        //console.log(options);
+
 							        $('#estadoAsesoresChart').highcharts(options);
-							    });
+							    //});
 							</script>

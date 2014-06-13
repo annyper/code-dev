@@ -1,7 +1,7 @@
 <?php if (isset($tienda_admin) && !empty($tienda_admin)): ?>
-
 <div class="alert alert-info fontSize2">
 	<p><strong>Horario:</strong> <?php echo $tienda_admin['Horario']; ?></p>
+	<p><strong>Ciudad:</strong> <?php echo $tienda_admin['Ciudad'] . ', '; ?><strong> Clasificación:</strong> <?php echo $tienda_admin['ClasificacionCDE']; ?></p>
 	<p><strong>Direccion:</strong> <?php echo $tienda_admin['Direccion']; ?></p>
 </div>
 
