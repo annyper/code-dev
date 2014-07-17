@@ -35,24 +35,24 @@
                                     <?php echo $value['Dia'] ?></td>
                                 <td>
                                     <div class="">
-                                        <input data-date-format="hh:mm a" data-hora="Apertura1" data-dia="<?php echo $value['Dia'] ?>" type="text" name="hora-text" id="" value="<?php echo $value['Apertura1']; ?>" class="form-control inputajax datetimepicker1" style="cursor:pointer" >
+                                        <input data-date-format="hh:mm A" data-hora="Apertura1" data-dia="<?php echo $value['Dia'] ?>" type="text" name="hora-text" id="" value="<?php echo $value['Apertura1']; ?>" class="form-control inputajax datetimepicker1" style="cursor:pointer" >
                                     </div>
                                 </td> 
                                 <td>
                                     <div class="">
-                                        <input data-hora="Cierre1" data-dia="<?php echo $value['Dia'] ?>" type="text" name="hora-text" id="" value="<?php echo $value['Cierre1']; ?>" class="form-control  inputajax datetimepicker1" style="cursor:pointer">
+                                        <input data-date-format="hh:mm A" data-hora="Cierre1" data-dia="<?php echo $value['Dia'] ?>" type="text" name="hora-text" id="" value="<?php echo $value['Cierre1']; ?>" class="form-control  inputajax datetimepicker1" style="cursor:pointer">
                                     </div>
                                     
                                 </td> 
                                 <td>
                                     <div class="">
-                                        <input data-hora="Apertura2" data-dia="<?php echo $value['Dia'] ?>" type="text" name="hora-text" id="" value="<?php echo $value['Apertura2']; ?>" class="form-control  inputajax datetimepicker1" style="cursor:pointer">
+                                        <input data-date-format="hh:mm A" data-hora="Apertura2" data-dia="<?php echo $value['Dia'] ?>" type="text" name="hora-text" id="" value="<?php echo $value['Apertura2']; ?>" class="form-control  inputajax datetimepicker1" style="cursor:pointer">
                                     </div>
                                     
                                 </td>
                                 <td>
                                     <div class="">
-                                        <input data-hora="Cierre2" data-dia="<?php echo $value['Dia'] ?>" type="text" name="hora-text" id="" value="<?php echo $value['Cierre2']; ?>" class="form-control  inputajax datetimepicker1" style="cursor:pointer">
+                                        <input data-date-format="hh:mm A" data-hora="Cierre2" data-dia="<?php echo $value['Dia'] ?>" type="text" name="hora-text" id="" value="<?php echo $value['Cierre2']; ?>" class="form-control  inputajax datetimepicker1" style="cursor:pointer">
                                     </div>
                                 </td>                  
                             </tr>
@@ -135,7 +135,7 @@
                         <p><strong>Celular 1:</strong><input type="text" name="CelAdmin" value="<?php echo $tienda_admin['Movil_1']; ?>" placeholder="Celular Administrador" required class="form-control"></p>
                         <p><strong>Celular 2:</strong><input type="text" name="CelAdmin2" value="<?php echo $tienda_admin['Movil_2']; ?>" placeholder="Celular Administrador" class="form-control"></p>
 
-                        <p><i class="glyphicon glyphicon-envelope"></i><strong> Correo:</strong> <input type="email" name="emailAdmin" value="<?php echo $tienda_admin['Correo']; ?>" placeholder="Correo Administrador" required class="form-control">
+                        <p><i class="glyphicon glyphicon-envelope"></i><strong> Correo:</strong> <input type="email" name="emailAdmin" value="<?php echo $tienda_admin['Correo']; ?>" placeholder="Correo Administrador" class="form-control">
                         </p>
 
                         <div class="hidden panel panel-danger">
@@ -195,7 +195,7 @@
                                             </p>
 
                                             <p><i class="glyphicon glyphicon-envelope"></i><strong> Correo:</strong> <input type="email" 
-                                                name="emailCor" placeholder="Correo Coordinador" required class="form-control">
+                                                name="emailCor" placeholder="Correo Coordinador" class="form-control">
                                             </p>
 
                                             <div class="margen">
@@ -239,7 +239,7 @@
                                             </p>
 
                                             <p><i class="glyphicon glyphicon-envelope"></i><strong> Correo:</strong> <input type="email" 
-                                                name="emailCor<?php //echo $Identificacion; ?>" value="<?php echo $value['Correo']; ?>" placeholder="Correo Coordinador" required class="form-control">
+                                                name="emailCor<?php //echo $Identificacion; ?>" value="<?php echo $value['Correo']; ?>" placeholder="Correo Coordinador" class="form-control">
                                             </p>
 
                                             <div class="margen">

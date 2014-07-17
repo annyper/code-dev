@@ -39,7 +39,7 @@
 							<a class="tooltipShow pull-right" data-toggle="tooltip" data-placement="auto" title="¡Ahora se actualiza automáticamente!">(?)</a>
 						</div>
 
-						<div id="listaCDEs" style="overflow:auto; overflow-x:hidden; max-height:650px;"></div>
+						<div id="listaCDEs" style="overflow:auto; overflow-x:hidden;"></div>
 						<?php //$this->load->view('gtr/main/tiendasEspera.php') ?>
 						<div>
 						<a href="<?php echo site_url('gtr/editInfoCDE'); ?>" target="_blank"><i class="fa fa-link"></i> Agregar CDE</a>

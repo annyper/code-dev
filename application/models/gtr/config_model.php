@@ -60,8 +60,7 @@ class Config_model extends CI_model
 
     function getListaNombresCDEs()
     {
-      $query = $this->BDCentral->query("SELECT TOP 1000 [OFI_SDSTRNOMBRE] as cde, [OFI_SDSTRREGION] as regional,[OFI_SDSTRCIUDAD] as ciudad
-            FROM [TIGOCENTRAL].[dbo].[DG45_OFICINAS]");
+      $query = $this->BDCentral->query("SELECT SER_SDSTRDESCRIPCION as cde FROM DG45_SERVIDORES_REP");
 
       if (!$query) {
             $query = 0;

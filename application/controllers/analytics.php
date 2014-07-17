@@ -35,13 +35,13 @@ class Analytics extends CI_Controller
         //echo "<h1>hola mundo<h1>";
         $data['title'] = 'Analytics';
         $data['lasd'] = 'COC';
-        $data['listaCDEs'] = $this->checkList_model->getListaNombresCDEs();
+        $data['listaCDEs'] = $this->config_model->getListaNombresCDEs();
         $data['nav'] = 'analytics';
 
         if (is_string($oficina) && $oficina != "0") {
 
             $data['oficina'] = $oficina;
-            $data['ip_info'] = $this->checkList_model->getIP($oficina);
+            $data['ip_info'] = $this->config_model->getIP($oficina);
 
             $data['ipCifrada'] = $this->encrypt->encode($data['ip_info']['SER_SDSTRSERVIDOR']);
             

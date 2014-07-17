@@ -76,13 +76,11 @@ class Gtr extends CI_Controller
         $data['lasd'] = 'COC';
         $data['nav'] = 'gtr';
 
-        //$data['oficina'] = str_replace("-", " ", $oficina);
         $data['oficina'] = $oficina;
 
-        //$data['ip_info'] = $this->checkList_model->getIP($oficina);
         $data['ip_info'] = $this->config_model->getIP($oficina);
-        $data['listaCDEs'] = $this->checkList_model->getListaNombresCDEs();
-        //echo "<pre>"; print_r($data['ip_info']); echo "</pre>";
+        $data['listaCDEs'] = $this->config_model->getListaNombresCDEs();
+        //echo "<pre>"; print_r($data['listaCDEs']); echo "</pre>";
 
         if (isset($data['ip_info']) && !empty($data['ip_info'])) {
 

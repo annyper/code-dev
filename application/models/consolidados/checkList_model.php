@@ -226,6 +226,17 @@ class CheckList_model extends CI_model
 	    }
     }
 
+
+	function get_hvc($celular){
+
+		$query = $this->db->query("SELECT * FROM bd_cded_cde_pda.hvc WHERE MSISDN = '$celular'");
+		if ($query) {
+			$resultado = json_encode($query->row_array(), JSON_UNESCAPED_UNICODE);
+			return $resultado;
+
+		}
+	}
+
     /**
 	U P D A T E S
 */
@@ -277,13 +288,13 @@ class CheckList_model extends CI_model
 			$apellido = $this->input->post('ApellidoCor');
 			$identificacion = $this->input->post('identificacion');
 			$Movil_1 = $this->input->post('CelCor');
-			//$Movil_2 = $this->input->post('tipo');
+			$Movil_2 = $this->input->post('CelCor2');
 			$correo = $this->input->post('emailCor');
 			//$Cod_Pos2 = $this->input->post('clasificacion');
 
 			$string = "UPDATE  bd_cded_cde_pda.coordinadores_db 
 				SET Nombre = '$nombre', Apellido = '$apellido', Identificacion = '$identificacion', 
-				Movil_1 = '$Movil_1', Correo = '$correo'
+				Movil_1 = '$Movil_1', Movil_2 = '$Movil_2', Correo = '$correo'
 				where Tiendas_Cod_Pos = '$Cod_Pos' and Identificacion = '$Identificacion'";
 
 		//$this->db->where('Cod_Pos', $Cod_Pos);
@@ -328,7 +339,7 @@ class CheckList_model extends CI_model
 	function setCoor($Cod_Pos){
 
 		$data = array(
-               'Tiendas_Cod_Pos' =>  $this->input->post('Cod_Pos') ,
+               'Tiendas_Cod_Pos' =>  $Cod_Pos,
                'Identificacion' => $this->input->post('identificacion') ,
                'Nombre' => $this->input->post('nombreCor') ,
                'Apellido' => $this->input->post('ApellidoCor'),
@@ -336,6 +347,7 @@ class CheckList_model extends CI_model
                'Movil_2' => $this->input->post('CelCor2'),
                'Correo' => $this->input->post('emailCor')
             );
+		echo "<pre>"; print_r($data); echo "</pre>";
 
 		$this->db->insert('coordinadores_db', $data); 
 	}
