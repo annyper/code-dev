@@ -1,7 +1,8 @@
 <?php if (isset($row) and is_array($row)): ?>					
 					<?php foreach ($row as $key => $turnos): ?>
 
-						<div class="row well-white marcador-borde-verde bloque-top">
+						<div class="row well-white marcador-borde-verde bloque-top"  data-container="body" 
+						data-toggle="popover" data-placement="left" data-content="Vivamus sagitti">
 
 							<div class="col-sm-2 fontSize1_5 col-md-clear">
 								<?php $claseLabel = "label label-". str_replace(" ", "-", $turnos['LABOR']) . " label-default"; ?>
@@ -10,8 +11,9 @@
 								</div>
 							</div>
 
+														
 							<div class="col-sm-4 col-md-clear">
-								<?php $terminal = str_replace(" ", "-", $turnos['TERMINAL']); ?>
+								<?php $terminal = str_replace(" ", "_", $turnos['TERMINAL']); ?>
 								<?php //$CDE = $this->test_model->getServicios($turnos['TER_PKSTRID']); ?>
 
 								<h5 class="media-heading text-primary ajaxLink">	
@@ -28,8 +30,17 @@
 								<?php echo gmdate('H:i:s',$turnos['TIEMPO']*60); ?>
 								<span class="pull-right"><a><?php echo $turnos['TURNO']; ?></a></span>
 							</div>
-							<div class="col-sm-3 fontSize1_5 col-md-clear">
+							<div class="col-sm-2 fontSize1_5 col-md-clear">
 								<?php echo $turnos['TERMINAL']; ?>
+							</div>
+
+							
+
+
+							<div class="col-sm-1 col-md-clear">
+								<a class="tooltipShow" data-toggle="tooltip" 
+								title="<div>ATENDIDOS: <?php echo $turnos['ATENDIDOS'] ?></div><div>AHT_min: <?php echo $turnos['AHT_min'] ?></div>" 
+								data-html="true"><span class="fa fa-plus-square-o fa-lg"></span></a>
 							</div>
 						</div>
 					<?php endforeach; ?>
@@ -45,6 +56,8 @@
 			$('.cuerpoModalDelForo').load(enlace_foro);
 
 		});
+
+		$('.tooltipShow').tooltip();
 </script>
 
 <?php endif;  ?>

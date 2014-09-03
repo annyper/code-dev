@@ -83,6 +83,15 @@ class Analytics extends CI_Controller
 
     }
 
+// 
+    function actividadWorstOffender($codPos){
+        $ip = $this->config_model->getIPbyPos($codPos); //***************
+        $this->test_model->inicializar($ip);
+
+        echo $this->test_model->actividadWorstOffenderModel();
+
+    }
+
 }
 
  ?>

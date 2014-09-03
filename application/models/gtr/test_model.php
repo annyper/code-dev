@@ -165,17 +165,47 @@ class Test_model extends CI_model
 
 	function getActividadHistorico($datetimeInicio, $datetimeFin, $labor, $tiempoMinimo = 0)
 	{
-		$query = $this->dbCDE->query("SELECT * FROM (
+		
+		$queryString = "SELECT * FROM (
 				SELECT fecha, username, nombre, ISNULL(SUM(CAST(TIEMPO AS FLOAT)),0) as tiempo_Labor, sucursal, regional
 					FROM [dbo].[Funcion_Actividad_Fecha] ('$datetimeInicio','$datetimeFin')
 					WHERE LABOR = '$labor' AND CARGO = 'Asesor'
 					GROUP BY fecha, username, NOMBRE, sucursal, regional
 					) AS ASDASD
 					WHERE tiempo_Labor >= $tiempoMinimo
-				ORDER BY tiempo_Labor DESC");
+				ORDER BY tiempo_Labor DESC";
+		//echo $queryString;
+
+		$query = $this->dbCDE->query($queryString);
+
+		
 
 		return $query->result_array();
 	}
+
+	function actividadWorstOffenderModel(){
+
+		$fechaInicial = $this->input->get('fechaInicial') . ' 08:00:00';
+		$fechaFinal = $this->input->get('fechaFinal') . ' 22:00:00';
+
+		if ($fechaInicial and $fechaFinal) {
+			$query = $this->dbCDE->query("SELECT * FROM (
+				SELECT fecha, UPPER(nombre) nombre, labor, ISNULL(SUM(tiempo),0) as tiempo_Labor, cargo, sucursal, regional
+					FROM [dbo].[Actividad_por_hora] ('$fechaInicial','$fechaFinal')
+					WHERE NOMBRE != 'SELECTOR' -- AND LABOR = 'Disponible'
+					GROUP BY fecha, nombre, labor, cargo, sucursal, regional		
+			) AS hello
+			ORDER BY LABOR, tiempo_Labor DESC");
+		
+			if ($query) {
+				$resultado = json_encode($query->result_array(), JSON_UNESCAPED_UNICODE);
+				return $resultado;
+
+			}
+		}
+	}
+
+
 
 	function  getChartClientesEspera($oficina)
 	{
@@ -248,6 +278,8 @@ class Test_model extends CI_model
 			return $query->result_array();
 		}
 	}
+
+
 
 	function getGTR()
 	{
@@ -351,6 +383,48 @@ class Test_model extends CI_model
 		{
 			//print_r($query->result_array());
 			return $query->result_array();
+		}
+	}
+
+	function getNShistorico($fecha){
+		$string = "SELECT OFI_SDSTRNOMBRE, SAL_FKSTROFICINA, OFI_SDSTRREGION, AVG(ESPERA) AS AVG_ESPERA, AVG(LLAMADO) AS AVG_LLAMADO, AVG(ATENCION) AS AVG_ATENCION, 
+			HORA, FECHA, SUM(puntual) AS puntual, SUM(IMPUNTUAL) AS IMPUNTUAL FROM (
+				SELECT *,
+					CASE WHEN ESPERA <= 900 THEN 1 ELSE 0 END AS puntual, 
+					CASE WHEN ESPERA > 900 THEN 1 ELSE 0 END AS IMPUNTUAL
+				FROM DBO.INFO_TURNOS('$fecha','$fecha')
+				WHERE ESTADO = 'ATENDIDO' OR ESTADO = 'ABANDONADO'
+			) AS Tabla1
+			GROUP BY OFI_SDSTRNOMBRE, SAL_FKSTROFICINA, OFI_SDSTRREGION, FECHA, HORA";
+		
+		$query = $this->dbCDE->query($string);
+
+		if ($query) {
+			return json_encode($query->result_array(), JSON_NUMERIC_CHECK|JSON_UNESCAPED_UNICODE);
+		}
+	}
+
+	function getPShistorico($fecha){
+		$string = "SELECT OFI_SDSTRNOMBRE, SAL_FKSTROFICINA, OFI_SDSTRREGION, AVG(ESPERA) AS AVG_ESPERA, AVG(LLAMADO) AS AVG_LLAMADO, AVG(ATENCION) AS AVG_ATENCION,
+				ESTADO, HORA, FECHA, SUM([0-15]) AS [0-15], SUM([15-30]) AS [15-30], SUM([30-45]) AS [30-45], SUM([45-60]) AS [45-60], SUM([MAS-60]) AS [MAS-60],
+				SUM(ATENDIDOS) AS ATENDIDOS
+			 FROM (
+				SELECT *,
+					CASE WHEN ESPERA <= 900 THEN 1 ELSE 0 END AS [0-15], 
+					CASE WHEN ESPERA > 900 AND ESPERA <= 1800 THEN 1 ELSE 0 END AS [15-30],
+					CASE WHEN ESPERA > 1800 AND ESPERA <= 2700 THEN 1 ELSE 0 END AS [30-45],
+					CASE WHEN ESPERA > 2700 AND ESPERA <= 3600 THEN 1 ELSE 0 END AS [45-60],
+					CASE WHEN ESPERA > 3600 THEN 1 ELSE 0 END AS [MAS-60],
+					1 AS ATENDIDOS
+				FROM DBO.INFO_TURNOS('$fecha','$fecha')
+				WHERE ESTADO = 'ATENDIDO'
+			) AS Tabla1
+			GROUP BY OFI_SDSTRNOMBRE, SAL_FKSTROFICINA, OFI_SDSTRREGION, ESTADO, FECHA, HORA";
+		
+		$query = $this->dbCDE->query($string);
+
+		if ($query) {
+			return json_encode($query->result_array(), JSON_NUMERIC_CHECK|JSON_UNESCAPED_UNICODE);
 		}
 	}
 

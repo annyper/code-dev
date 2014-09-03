@@ -13,19 +13,6 @@ class Hvc_model extends CI_model
         $this->load->database('bd_cded_cde_pda1');
 	}
 
-	function getHorario($cod_pos = null)
-	{
-		if ($cod_pos == null) {
-			$query = $this->db->query("SELECT * FROM bd_cded_cde_pda.horario_view");
-		}else{
-			$query = $this->db->query("SELECT * FROM bd_cded_cde_pda.horario_view
-				where Cod_pos = '$cod_pos'");
-		}
-		
-
-		return $query->result_array();
-
-	}
 
 	function get_hvc($celular){
 		

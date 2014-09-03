@@ -11,6 +11,7 @@
 
 
 		<script src="<?php  echo base_url("jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"); ?>"></script>
+		<script src="<?php  echo base_url("bootstrap/js/underscore-min.js"); ?>"></script>
 		<script src="<?php  echo base_url("bootstrap/js/bootstrap.min.js"); ?>"></script>
 		<script src="<?php echo base_url("bootstrap/js/bootstrap-datepicker.js"); ?>"></script>
 		<script src="<?php echo base_url("bootstrap/js/locales/bootstrap-datepicker.es.js"); ?>"></script>

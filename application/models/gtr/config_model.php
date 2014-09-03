@@ -36,6 +36,17 @@ class Config_model extends CI_model
         }
     }
 
+    function getIPbyPos($CodPos){
+
+        $query = $this->BDCentral->query("SELECT [DIR_IP] FROM [TIGOCENTRAL].[dbo].[INFORMACION_CDE]
+                                           WHERE COD_POS = '$CodPos'");
+        if ($query) {
+
+            $resultado = $query->row_array();
+            return $resultado['DIR_IP'];
+        }
+    }
+
     function getAcumuladoDia($regional)
     {
         $query = $this->BDCentral->query("SELECT TOP 100 [Region]
@@ -167,7 +178,7 @@ class Config_model extends CI_model
             left join (SELECT SUBSTRING(SER_SDSTRDESCRIPCION, 5, 200) as CDE, [SER_SDSTRSERVIDOR] as ip
               FROM [TIGOCENTRAL].[dbo].[DG45_SERVIDORES_REP]) as ips
             on espera.nombre = ips.CDE
-            ORDER by Regional, cast(fecha_max as date) desc, SL, PS";
+            ORDER by Regional, cast(fecha_max as date) desc, PS, SL";
             
         }else{
 
@@ -183,7 +194,8 @@ class Config_model extends CI_model
             left join (SELECT SUBSTRING(SER_SDSTRDESCRIPCION, 5, 200) as CDE, [SER_SDSTRSERVIDOR] as ip
               FROM [TIGOCENTRAL].[dbo].[DG45_SERVIDORES_REP]) as ips
             on espera.nombre = ips.CDE
-            ORDER by Regional, cast(fecha_max as date) desc, SL, PS";
+            ORDER by cast(fecha_max as date) desc, PS, SL";
+            //ORDER by Regional, cast(fecha_max as date) desc, PS, SL";
         }
         
         $query = $this->BDCentral->query($consulta);

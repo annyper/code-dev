@@ -142,7 +142,7 @@
                             <div class="panel-heading">
                               <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                  Danger Zone
+                                  Danger Zone (sección par elimiar el Coordinador)
                                 </a>
                               </h4>
                             </div>
@@ -229,6 +229,7 @@
 
                                             <p><strong>Número de identificación:</strong>
                                                 <input type="number" name="identificacion<?php //echo $Identificacion; ?>" value="<?php echo $value['Identificacion']; ?>" placeholder="No. identificación Coordinador" required class="form-control">
+                                                <input type="hidden" name="id" value="<?php echo $value['id']; ?>" placeholder="No." required class="form-control">
                                             </p>
                                             
                                             <p><strong>Celular 1:</strong>
@@ -251,7 +252,7 @@
                                                 <div class="panel-heading">
                                                   <h4 class="panel-title">
                                                     <a data-toggle="collapse" data-parent="#accordion" href="#collap<?php echo $key; ?>">
-                                                      Danger Zone
+                                                      Danger Zone <small class="text-danger">(sección para elimiar al Coordinador)</small class="text-danger">
                                                     </a>
                                                   </h4>
                                                 </div>

@@ -1,3 +1,64 @@
+// Ejecuta multiples CDEs al tiempo
+var multiQuery = {
+	// Cuando cargue el DOM
+	//p.fetch("http://10.66.6.241:82/code-dev/gtr/getDatosApertura", "apertura");
+
+	datosIPs: [],
+
+	datosConsulta : {},
+
+	consultaCDE: function (url, cod_pos) {
+		url = url || '';
+		if (url === '') {return};
+
+		url = url + '/' + cod_pos
+
+		var puntero = this;
+		$.ajax(url,{
+			type: 'GET',
+			dataType: 'json',
+			success: function(result){
+
+				puntero.datosConsulta[cod_pos] = result;
+				//puntero.exe();
+			}
+
+		});
+	},
+	exe: function(url){
+
+		url = url || '';		
+		if (url === '') {return};
+
+		var datosIPs = this.datosIPs;
+		for (var i = 0; i < datosIPs.length; i++) {			
+			this.consultaCDE(url, datosIPs[i]['COD_POS']);
+		}
+
+	},
+	loadIPs: function (regional, url) {
+		regional = regional || '';
+		url = url || '';
+
+		var url = 'http://10.66.6.241:82/code-dev/Staff/getListaCodPos/' + regional;
+
+		var puntero = this;
+		$.ajax(url,{
+			type: 'GET',
+			dataType: 'json',
+			success: function(result){
+
+				puntero.datosIPs = result;
+				console.log("Ip's cargadas");
+				//puntero.exe(url);
+			}
+
+		});
+	}
+
+};
+
+
 /*
 ** Al hacer clic sobre la entidades estas desapareco o aparece.
 */
@@ -499,6 +560,7 @@ $(function(){
 				});
 
 			$('.tooltipShow').tooltip();
+			$('.opop').popover('show')
 
 
 			$('.oculatarToggle').on('click', function(event){
