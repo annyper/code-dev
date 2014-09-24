@@ -555,7 +555,7 @@ $(function(){
 					timerBusquedaCDE = setInterval( function() 
 					{
 						$('#listaCDEs').load(enlace);
-						console.log('actualizado00')
+						console.log('actualizado')
 					}, 120000);
 				});
 

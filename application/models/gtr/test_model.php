@@ -198,8 +198,9 @@ class Test_model extends CI_model
 			ORDER BY LABOR, tiempo_Labor DESC");
 		
 			if ($query) {
-				$resultado = json_encode($query->result_array(), JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK|JSON_PRETTY_PRINT);
+				$resultado = json_encode($query->result_array(), JSON_UNESCAPED_UNICODE);
 				return $resultado;
+
 			}
 		}
 	}
@@ -395,8 +396,7 @@ class Test_model extends CI_model
 				WHERE ESTADO = 'ATENDIDO' OR ESTADO = 'ABANDONADO'
 			) AS Tabla1
 			GROUP BY OFI_SDSTRNOMBRE, SAL_FKSTROFICINA, OFI_SDSTRREGION, FECHA, HORA";
-		echo $string;
-
+		
 		$query = $this->dbCDE->query($string);
 
 		if ($query) {
