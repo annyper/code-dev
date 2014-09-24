@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app="appApp">
+<head>
+	<meta charset="UTF-8">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/code-dev/bootstrap/css/lasd.css" rel="stylesheet">
+	<link href="/code-dev/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+	<style>
+		.positionAbs{
+			display: block;
+			top: inherit !important;
+			left: inherit !important;
+            z-index: 1000;
+		}
+		.positionRel{
+			display: block;
+			position: fixed;
+			top: 100px !important;
+			left: 40% !important;
+		}
+	</style>
+
+</head>
+
+<body class="container" style="padding-top: 70px;">
+
+	<ls-header ng-controller="header1"></ls-header>
+
+	<div ng-view=""></div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.js"></script>
+	<script src="https://code.angularjs.org/1.2.25/angular-route.min.js"></script>
+	<script src="https://code.jquery.com/jquery-2.1.1.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script src="http://underscorejs.org/underscore.js"></script>
+
+	<script src="app.js"></script>
+	<script src="controllers/integracionSMS.js"></script>
+	<script src="directivas/navbar.js"></script>
+	
+
+</body>
+
+</html>

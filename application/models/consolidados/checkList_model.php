@@ -11,6 +11,26 @@ class CheckList_model extends CI_model
 	{
 		parent::__construct();
 		$this->load->database('bd_cded_cde_pda1');
+
+		//$this->dbGTR = $this->load->database('gtr', true);
+	}
+
+	function validarSiExiste($tabla, $campo, $valor)
+	{
+		$string = "SELECT * FROM $tabla where $campo = '$valor'";
+		//echo $string;
+		$query = $this->db->query($string);
+		if ($query) {
+			return count($query->result_array());
+		}
+	}
+
+	function getClientesSMS(){
+		$query = $this->db->query("SELECT * FROM gtr.cliente");
+
+		if ($query) {
+			return json_encode($query->result_array(), JSON_NUMERIC_CHECK|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+		}
 	}
 
 	function getHorario($cod_pos = null)
@@ -343,12 +363,36 @@ function actividadWorstOffenderModel(){
 		$apellido = $this->input->post('ApellidoCor');
 		$identificacion = $this->input->post('identificacion');
 		$Movil_1 = $this->input->post('CelCor');
+		$Movil_1hidden = $this->input->post('CelCorHidden');
+
 		$Movil_2 = $this->input->post('CelCor2');
 		$correo = $this->input->post('emailCor');
 
 		$id = $this->input->post('id');
 
 			//$Cod_Pos2 = $this->input->post('clasificacion');
+
+		$existe = $this->validarSiExiste('gtr.cliente', 'CELULAR', $Movil_1hidden);
+		$nombreCompleto = strtoupper($nombre . ' ' . $apellido);
+		
+		if ($existe == 1) {
+			
+			$stringAdmCDE = "UPDATE gtr.cliente
+			SET CELULAR = '$Movil_1', NOMBRE = '$nombreCompleto'
+			WHERE CELULAR = '$Movil_1hidden'";
+			echo $stringAdmCDE;
+
+			$query2 = $this->db->query($stringAdmCDE);
+
+		}elseif($existe == 0){
+
+			$stringAdmCDE = "INSERT INTO gtr.cliente
+			(CELULAR,NOMBRE,CARGO,TIPO_CLIENTE)
+			VALUES
+			('$Movil_1','$nombreCompleto','COORDINADOR CDE','ADM')";
+			echo $stringAdmCDE;
+			$query2 = $this->db->query($stringAdmCDE);
+		}
 
 		$string = "UPDATE  bd_cded_cde_pda.coordinadores_db 
 		SET Nombre = '$nombre', Apellido = '$apellido', Identificacion = '$identificacion', 
@@ -359,7 +403,7 @@ function actividadWorstOffenderModel(){
 		//$query = $this->db->update('tiendas', $data, array('Cod_Pos' => $Cod_Pos ));
 		$query = $this->db->query($string);
 
-		if ($query) {
+		if ($query  && $query2) {
 			return 1;
 		}else{
 			return 0;
@@ -372,9 +416,33 @@ function actividadWorstOffenderModel(){
 		$apellido = $this->input->post('apellidoAdmin');
 		$identificacion = $this->input->post('identificacionAdmin');
 		$Movil_1 = $this->input->post('CelAdmin');
+
+		$Movil_1hidden = $this->input->post('CelAdminHiden');
 			//$Movil_2 = $this->input->post('tipo');
 		$correo = $this->input->post('emailAdmin');
 			//$Cod_Pos2 = $this->input->post('clasificacion');
+		$existe = $this->validarSiExiste('gtr.cliente', 'CELULAR', $Movil_1hidden);
+
+		$nombreCompleto = strtoupper($nombre . ' ' . $apellido);
+		
+		if ($existe == 1) {
+			
+			$stringAdmCDE = "UPDATE gtr.cliente
+			SET CELULAR = '$Movil_1', NOMBRE = '$nombreCompleto'
+			WHERE CELULAR = '$Movil_1hidden'";
+			echo $stringAdmCDE;
+
+			$query2 = $this->db->query($stringAdmCDE);
+
+		}elseif($existe == 0){
+
+			$stringAdmCDE = "INSERT INTO gtr.cliente
+			(CELULAR,NOMBRE,CARGO,TIPO_CLIENTE)
+			VALUES
+			('$Movil_1','$nombreCompleto','ADMINISTRADOR','ADM')";
+			echo $stringAdmCDE;
+			$query2 = $this->db->query($stringAdmCDE);
+		}
 
 		$string = "UPDATE  bd_cded_cde_pda.administradores 
 		SET Nombre = '$nombre', Apellido = '$apellido', Identificacion = '$identificacion', 
@@ -385,7 +453,7 @@ function actividadWorstOffenderModel(){
 		//$query = $this->db->update('tiendas', $data, array('Cod_Pos' => $Cod_Pos ));
 		$query = $this->db->query($string);
 
-		if ($query) {
+		if ($query && $query2) {
 			return 1;
 		}else{
 			return 0;
@@ -394,6 +462,29 @@ function actividadWorstOffenderModel(){
 	/**
 	I N S E R T
 	*/
+	function setIp(){
+		$data = array('ip' => $_SERVER['REMOTE_ADDR']);
+
+		$this->db->insert('ipcliente', $data); 
+	}
+
+	function setClienteSMS(){
+		//$data = $this->input->post();
+
+		$llamada = file_get_contents('php://input');
+		//echo "<pre>"; print_r(json_decode($data, TRUE)); echo "</pre>";
+
+		$data = json_decode($llamada, TRUE);
+
+		$query = $this->dbGTR->insert('cliente', $data);
+		if ($query) {
+			echo "1";
+		}else{
+			echo "0";
+		}
+	}
+
+
 	function setCoor($Cod_Pos){
 
 		$data = array(
@@ -405,6 +496,20 @@ function actividadWorstOffenderModel(){
 			'Movil_2' => $this->input->post('CelCor2'),
 			'Correo' => $this->input->post('emailCor')
 			);
+
+		$Movil_1 = $data['Movil_1'];
+		$existe = $this->validarSiExiste('gtr.cliente', 'CELULAR', $Movil_1);
+		$nombreCompleto = strtoupper($this->input->post('nombreCor') . ' ' . $this->input->post('ApellidoCor'));
+		
+		if($existe == 0){
+
+			$stringAdmCDE = "INSERT INTO gtr.cliente
+			(CELULAR,NOMBRE,CARGO,TIPO_CLIENTE)
+			VALUES
+			('$Movil_1','$nombreCompleto','COORDINADOR CDE','ADM')";
+			//echo $stringAdmCDE;
+			$query2 = $this->db->query($stringAdmCDE);
+		}
 		//echo "<pre>"; print_r($data); echo "</pre>";
 
 		$this->db->insert('coordinadores_db', $data); 
@@ -431,6 +536,28 @@ function actividadWorstOffenderModel(){
 			'Movil_2' => $this->input->post('CelAdmin2'),
 			'Correo' => $this->input->post('emailAdmin')
 			);
+
+		// ****************************************************************+
+		$CELULAR = $dataAdmin['Movil_1'];
+		$NOMBRE = $dataAdmin['Nombre'] . ' ' . $dataAdmin['Apellido'];
+		$CARGO = 'ADMINISTRADOR CDE';
+		$TIPO_CLIENTE = 'ADM';
+		$COD_CDE = $dataAdmin['Tiendas_Cod_Pos'];
+		$REGIONAL = $dataCDE['Regional'];
+		$CDE = strtoupper($dataCDE['Tienda']);
+
+		$stringAdmCDE = "INSERT INTO gtr.cliente
+			(CELULAR,NOMBRE,CARGO,TIPO_CLIENTE,COD_CDE,REGIONAL)
+			VALUES
+			('$CELULAR','$NOMBRE','$CARGO','$TIPO_CLIENTE','$COD_CDE','$REGIONAL')";
+
+		$stringInfoCDESMS = "INSERT INTO gtr.infocde
+			(CODPOS,REGION,CDE,ACTIVO)
+			VALUES
+			('$COD_CDE', '$REGIONAL', '$CDE','1')";
+		
+		// *******************************************************************+
+
 		$dataCoor = array(
 			'Tiendas_Cod_Pos' => $this->input->post('Cod_Pos') ,
 			'Identificacion' => $this->input->post('identificacionCoor') ,
@@ -440,6 +567,18 @@ function actividadWorstOffenderModel(){
 			'Movil_2' => $this->input->post('CelAdmin2'),
 			'Correo' => $this->input->post('CelCoor2')
 			);
+
+		$CELULARCor = $this->input->post('CelCoor');
+		$NOMBRECor = $this->input->post('nombreCoor') . ' ' . $this->input->post('apellidoCoor');
+		$CARGOCor = 'COORDINADOR CDE';
+
+		$stringCorCDE = "INSERT INTO gtr.cliente
+			(CELULAR,NOMBRE,CARGO,TIPO_CLIENTE,COD_CDE,REGIONAL)
+			VALUES
+			('$CELULARCor','$NOMBRECor','$CARGOCor','$TIPO_CLIENTE','$COD_CDE','$REGIONAL')";
+		//*************************************************************************************
+
+
 		$dataHorario = array(
 			'Tiendas_Cod_Pos' => $this->input->post('Cod_Pos') ,
 			'Dia' => 'Lunes',
@@ -477,8 +616,15 @@ function actividadWorstOffenderModel(){
 			),
 		);
 
-		$this->db->insert('tiendas', $dataCDE); 
-		$this->db->insert('administradores', $dataAdmin);
+		$this->db->insert('tiendas', $dataCDE);
+
+		$queryInfoCDESMS = $this->db->query($stringInfoCDESMS);
+		if ($queryInfoCDESMS) {
+			$this->db->query($stringAdmCDE);
+			$this->db->query($stringCorCDE);
+		}
+
+		$this->db->insert('administradores', $dataAdmin);		
 		$this->db->insert('coordinadores_db', $dataCoor);
 		$this->db->insert('horarios', $dataHorario);
 		$this->db->insert_batch('horarios', $dataRestoHorario);
@@ -492,9 +638,31 @@ function actividadWorstOffenderModel(){
 	*/
 	function deleteCoor($id)
 	{
-		$query = "DELETE FROM bd_cded_cde_pda.coordinadores_db
-		where id = '$id'";
-		$this->db->query($query);
+		$query1 = $this->db->query("SELECT Movil_1 FROM bd_cded_cde_pda.coordinadores_db where id = '$id'");
+		if ($query1) {
+			$data = $query1->row_array();
+			$celular = $data['Movil_1'];
+			$this->db->query("DELETE FROM gtr.cliente where CELULAR = '$celular'");
+
+			$this->db->query("DELETE FROM bd_cded_cde_pda.coordinadores_db where id = '$id'");
+		}
+		
+	}
+
+	function deleteCDEall($cod_pos){
+
+		if ($cod_pos == '') {
+			return;
+		}
+
+		$this->db->query("DELETE FROM bd_cded_cde_pda.coordinadores_db where Tiendas_Cod_Pos = '$cod_pos'");
+		$this->db->query("DELETE FROM bd_cded_cde_pda.administradores where Tiendas_Cod_Pos = '$cod_pos'");
+		$this->db->query("DELETE FROM bd_cded_cde_pda.horarios where Tiendas_Cod_Pos = '$cod_pos'");		
+		$this->db->query("DELETE FROM bd_cded_cde_pda.tiendas where Cod_Pos = '$cod_pos'");
+
+		$this->db->query("DELETE FROM gtr.cliente where COD_CDE = '$cod_pos'");
+		$this->db->query("DELETE FROM gtr.infocde where CODPOS = '$cod_pos'");
+ 
 	}
 }
 

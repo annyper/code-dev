@@ -30,13 +30,13 @@
 							    <input type="radio" name="options" value="Noroccidente" id="EsperaOption3"> Noroccidente
 							  </label>
 							  <label class="btn btn-default">
-							    <input type="radio" name="options" value="Oriente" id="EsperaOption4"> Oriente
+							    <input type="radio" name="options" value="Oriente" id="EsperaOption4"> Oriente-Suroccidente
 							  </label>
-							  <label class="btn btn-default">
+<!-- 							  <label class="btn btn-default">
 							    <input type="radio" name="options" value="Suroccidente" id="EsperaOption5"> Suroccidente
-							  </label>
+							  </label> -->
 							</div>
-							<a class="tooltipShow pull-right" data-toggle="tooltip" data-placement="auto" title="¡Ahora se actualiza automáticamente!">(?)</a>
+							
 						</div>
 
 						<div id="listaCDEs" style="overflow:auto; overflow-x:hidden;"></div>

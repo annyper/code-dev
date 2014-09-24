@@ -14,7 +14,7 @@ class Gtr extends CI_Controller
 		date_default_timezone_set('America/Bogota');
 
 		//session_start();
-		//error_reporting(0);
+		error_reporting(0);
 		$this->load->helper('url');
 
 		$this->load->model('gtr/config_model');
@@ -41,7 +41,8 @@ class Gtr extends CI_Controller
 		//$data['row'] = $this->config_model->getRacsTiempoReal('tigo centro medellin');
 		//$data['cliEsp'] = $this->config_model->getClientesEspera('5000435');
 
-
+		// ingresa la ip origen
+		$this->checkList_model->setIp();
 		//echo "<pre>"; print_r($data); echo "</pre>";
 		$this->load->view('templates/header', $data);
 		
@@ -900,6 +901,10 @@ function sethorarioController($Cod_Pos, $Dia, $nombreColumna){
 		//echo $data;
 }
 
+function lol(){
+	$this->checkList_model->validarSiExiste('gtr.cliente', '3008030225');
+}
+
 function DataCDE($dataform, $Cod_pos, $aux = null){
 	if ($dataform == 'dataCDE') {
 
@@ -950,16 +955,21 @@ function inserDAtaCDE($Cod_pos){
 		//echo "</pre>";
 	}
 
-function deleteCoor($id)
-{
-	if ($this->input->is_ajax_request()) {
+	function deleteCoor($id){
 		
-		$this->checkList_model->deleteCoor($id);
-		$data['mensaje'] = "Coordinador eliminado";
-		$data['clase'] = 'alert-danger';
-		$this->load->view('templates/includes/alerta', $data);
+		if ($this->input->is_ajax_request()) {
+			
+			$this->checkList_model->deleteCoor($id);
+			$data['mensaje'] = "Coordinador eliminado";
+			$data['clase'] = 'alert-danger';
+			$this->load->view('templates/includes/alerta', $data);
+		}
 	}
-}
+
+	function deleteCDEall($cod_pos){
+
+		$this->checkList_model->deleteCDEall($cod_pos);
+	}
 
 }
 

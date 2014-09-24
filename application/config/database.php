@@ -97,5 +97,22 @@ $db['bd_cded_cde_pda1']['autoinit'] = TRUE;
 $db['bd_cded_cde_pda1']['stricton'] = FALSE;
 $db['bd_cded_cde_pda1']['port'] = 3306;
 
+$db['gtr']['hostname'] = '10.66.6.240';//10.74.31.30
+$db['gtr']['username'] = 'ricardo';
+$db['gtr']['password'] = 'ricardo';
+$db['gtr']['database'] = 'gtr';
+$db['gtr']['dbdriver'] = 'mysql';
+$db['gtr']['dbprefix'] = '';
+$db['gtr']['pconnect'] = FALSE;
+$db['gtr']['db_debug'] = TRUE;
+$db['gtr']['cache_on'] = FALSE;
+$db['gtr']['cachedir'] = '';
+$db['gtr']['char_set'] = 'utf8';
+$db['gtr']['dbcollat'] = 'utf8_general_ci';
+$db['gtr']['swap_pre'] = '';
+$db['gtr']['autoinit'] = TRUE;
+$db['gtr']['stricton'] = FALSE;
+$db['gtr']['port'] = 3306;
+
 /* End of file database.php */
 /* Location: ./application/config/database.php */

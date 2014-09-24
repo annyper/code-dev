@@ -1,7 +1,7 @@
 <?php //echo "<pre>"; print_r($Esp); echo "</pre>"; ?>
 
 <div class="">
-<table class="table table-hover table-striped fontSize1_5 " id="">
+<table class="table table-hover fontSize1_5 " id="">
 	<thead>
 		<tr style="cursor:s-resize">
 			<th>REGIONAL</th>
@@ -79,6 +79,7 @@
 </div>
 
 <script>
+
 	var timer;
 	var timer2;
 
@@ -102,7 +103,13 @@
 		$('#panelInfoCDE').removeClass("desaparecer");
 
 		clearInterval(timer);
-		clearInterval(timer2);		
+		clearInterval(timer2);
+		clearInterval(timer);
+		clearInterval(timer2);
+		clearInterval(timer);
+		clearInterval(timer2);
+		clearInterval(timer);
+		clearInterval(timer2);				
 
 		var oficina = $(this).attr('id');
 
@@ -111,6 +118,7 @@
 
        	console.log(enlace);
        	console.log(enlace2);
+       	$('#estadoAsesoresChart').html('');
        	$('#mainEstadoRacs').html('<i class="fa fa-refresh fa-spin"></i>');
        	$('#mainEstadoRacs').load(enlace);       	
        	$('#mainEstadoRacs-titulo .nombreTienda').html($(this).text());
