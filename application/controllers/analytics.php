@@ -16,10 +16,9 @@ class Analytics extends CI_Controller
         $this->load->model('gtr/config_model');
         $this->load->model('gtr/test_model');
         $this->load->model('consolidados/checkList_model');
+
         $this->load->model('consolidados/Consolidados_model');
-
-        //$this->load->model('consolidados/checkList_model');
-
+       
         $this->load->library('encrypt');
         $this->encrypt->set_cipher(MCRYPT_GOST);
 
@@ -87,9 +86,19 @@ class Analytics extends CI_Controller
     function actividadWorstOffender($codPos){
         $ip = $this->config_model->getIPbyPos($codPos); //***************
         $this->test_model->inicializar($ip);
-
+        echo "<pre>";
         echo $this->test_model->actividadWorstOffenderModel();
+        echo "</pre>";
+    }
 
+    function getClientesSMS(){
+        $data = $this->checkList_model->getClientesSMS();
+        echo $data;
+    }
+
+    function setClienteSMS(){
+        
+        $this->gtrSMS_model->setClienteSMS();
     }
 
 }
