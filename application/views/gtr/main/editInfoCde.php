@@ -132,7 +132,8 @@
                             <input type="number" name="identificacionAdmin" value="<?php echo $tienda_admin['Identificacion']; ?>" placeholder="No. identificación Administrador" required class="form-control">
                         </p>
                         <input type="hidden" name="CelAdminHiden" value="<?php echo $tienda_admin['Movil_1']; ?>">
-                        <p><strong>Celular 1:</strong><input type="text" name="CelAdmin" value="<?php echo $tienda_admin['Movil_1']; ?>" placeholder="Celular Administrador" required class="form-control"></p>
+                        <p><strong>Celular 1:</strong><small> Linea utilizada para los SMS de presidencia</small>
+                            <input type="text" name="CelAdmin" value="<?php echo $tienda_admin['Movil_1']; ?>" placeholder="Celular Administrador" required class="form-control"></p>
                         <p><strong>Celular 2:</strong><input type="text" name="CelAdmin2" value="<?php echo $tienda_admin['Movil_2']; ?>" placeholder="Celular Administrador" class="form-control"></p>
 
                         <p><i class="glyphicon glyphicon-envelope"></i><strong> Correo:</strong> <input type="email" name="emailAdmin" value="<?php echo $tienda_admin['Correo']; ?>" placeholder="Correo Administrador" class="form-control">
@@ -187,7 +188,7 @@
                                                 <input type="number" name="identificacion"  placeholder="No. identificación Coordinador" required class="form-control">
                                             </p>
                                             
-                                            <p><strong>Celular 1:</strong>
+                                            <p><strong>Celular 1:</strong><small> Linea utilizada para los SMS de presidencia</small>
                                                 <input type="text" name="CelCor" placeholder="Celular Coordinador" required class="form-control">
                                             </p>
                                             <p><strong>Celular 2:</strong>
@@ -232,7 +233,7 @@
                                                 <input type="hidden" name="id" value="<?php echo $value['id']; ?>" placeholder="No." required class="form-control">
                                             </p>
                                             
-                                            <p><strong>Celular 1:</strong>
+                                            <p><strong>Celular 1:</strong><small> Linea utilizada para los SMS de presidencia</small>
                                              <input type="hidden" name="CelCorHidden" value="<?php echo $value['Movil_1']; ?>">
                                                 <input type="text" name="CelCor<?php //echo $Identificacion; ?>" value="<?php echo $value['Movil_1']; ?>" placeholder="Celular Coordinador" required class="form-control">
                                             </p>

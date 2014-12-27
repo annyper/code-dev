@@ -51,6 +51,10 @@ class Gtr extends CI_Controller
 		$this->load->view('templates/footer', $data); 
 	}
 
+	function setIp(){
+		$this->checkList_model->setIp();
+	}
+
 	function tiendasEspera($regional = null){
 
 		$data['Esp'] = $this->config_model->GTREspera($regional);

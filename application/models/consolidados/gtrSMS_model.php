@@ -16,6 +16,13 @@ class gtrSMS_model extends CI_model
 		/**
 	I N S E R T
 	*/
+	function getClienteIds($cel){
+		
+	}
+
+		/**
+	I N S E R T
+	*/
 	function setClienteSMS(){
 		//$data = $this->input->post();
 
@@ -23,7 +30,7 @@ class gtrSMS_model extends CI_model
 		//echo "<pre>"; print_r(json_decode($data, TRUE)); echo "</pre>";
 
 		$data = json_decode($llamada, true);
-		//print_r($data);
+		//echo "<pre>";print_r($data);echo "<pre>";
 
 		$query = $this->db->insert('cliente', $data);
 		if ($query) {
@@ -49,7 +56,7 @@ class gtrSMS_model extends CI_model
 		$data = json_decode($llamada, true);
 		
 		$this->db->where('ID', $id);
-		$this->db->update('cliente', $data); 
+		$query = $this->db->update('cliente', $data); 
 
 		if ($query) {
 			echo true;

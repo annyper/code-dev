@@ -9,8 +9,7 @@ class Reporte extends CI_Controller
 	{
 		parent::__construct();
         date_default_timezone_set('America/Bogota');
-
-        //session_start();
+        
         //error_reporting(0);
         $this->load->helper('url');
 

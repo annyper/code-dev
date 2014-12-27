@@ -12,7 +12,8 @@ angular
 	.module('appApp', [
 		'integracionSMS',
 		'ngRoute',
-		'AppNavbar'
+		'AppNavbar',
+		'ngCsv'
 	])
 	.config(function ($routeProvider) {
 		$routeProvider
@@ -21,7 +22,15 @@ angular
 				controller: 'cuController'
 			})
 			.when('/', {
-				template: '<h2>Hola mundo</h2>',
+				templateUrl: 'htmls/reportes.html',
+				controller: 'MultiCtrl'
+			})
+			.when('/dashboard',{
+				templateUrl: 'htmls/dashboard.html',
+				controller: 'DashBoard'
+			})
+			.when('/dashboard2', {
+				template: '<h1>¿Qué dijiste? Coroné!</h1>'
 			})
 			.otherwise({
 				redirectTo: '/sms'

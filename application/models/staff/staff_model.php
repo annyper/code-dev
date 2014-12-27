@@ -45,7 +45,7 @@ class Staff_model extends CI_model
 
 	function getListaCodPos($regional = ''){
 
-		if ($regional == '') {
+		if ($regional == '' || $regional == 'Pais') {
 			$string = "SELECT * FROM [TIGOCENTRAL].[dbo].[INFORMACION_CDE]
 					  WHERE CDE != 'TIGO CENTRALIZADO'";
 		}else{
@@ -55,7 +55,7 @@ class Staff_model extends CI_model
 
 		$query = $this->db->query($string);
 		if ($query) {
-			return json_encode($query->result_array(), JSON_NUMERIC_CHECK|JSON_UNESCAPED_UNICODE);
+			return json_encode($query->result_array(), JSON_NUMERIC_CHECK|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);
 		}
 	}
 

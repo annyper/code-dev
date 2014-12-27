@@ -68,7 +68,8 @@
                             <input type="number" name="identificacionAdmin" placeholder="No. identificación Administrador" required class="form-control">
                         </p>
                         
-                        <p><strong>Celular 1:</strong><input type="text" name="CelAdmin" placeholder="Celular Administrador" required class="form-control"></p>
+                        <p><strong>Celular 1:</strong><small>Linea utilizada para los SMS de presidencia</small>
+                            <input type="text" name="CelAdmin" placeholder="Celular Administrador" required class="form-control"></p>
                         <p><strong>Celular 2:</strong><input type="text" name="CelAdmin2" placeholder="Celular Administrador" class="form-control"></p>
 
                         <p><i class="glyphicon glyphicon-envelope"></i><strong> Correo:</strong> <input type="email" name="emailAdmin" placeholder="Correo Administrador" required class="form-control">
@@ -97,7 +98,8 @@
                             <input type="number" name="identificacionCoor" placeholder="No. identificación Coordinador" required class="form-control">
                         </p>
                         
-                        <p><strong>Celular 1:</strong><input type="text" name="CelCoor" placeholder="Celular Coordinador" required class="form-control"></p>
+                        <p><strong>Celular 1:</strong><small>Linea utilizada para los SMS de presidencia</small>
+                            <input type="text" name="CelCoor" placeholder="Celular Coordinador" required class="form-control"></p>
                         <p><strong>Celular 2:</strong><input type="text" name="CelCoor2" placeholder="Celular Coordinador" class="form-control"></p>
 
                         <p><i class="glyphicon glyphicon-envelope"></i><strong> Correo:</strong> <input type="email" name="emailCoor" placeholder="Correo Coordinador" required class="form-control">

@@ -45,12 +45,6 @@
 
 			<?php $this->load->view('templates/nav-principal'); ?>
 
-			<ul class="nav navbar-nav">
-				<?php if (isset($oficina)): ?>
-					<li class="<?php if ($nav == 'analytics') { echo 'active';}?>"><a href="<?php echo site_url('analytics/index/' . $oficina); ?>">Analytics </a></li> 
-				<?php endif ?>
-			</ul>
-
 			<ul class="nav navbar-nav navbar-right">
 				<?php if (isset($oficina)): ?>
 					<li>

@@ -38,13 +38,20 @@ class Config_model extends CI_model
 
     function getIPbyPos($CodPos){
 
+      try{
         $query = $this->BDCentral->query("SELECT [DIR_IP] FROM [TIGOCENTRAL].[dbo].[INFORMACION_CDE]
                                            WHERE COD_POS = '$CodPos'");
         if ($query) {
-
             $resultado = $query->row_array();
-            return $resultado['DIR_IP'];
+            if (isset($resultado) && !empty($resultado)) {
+              return $resultado['DIR_IP'];
+            }else{
+              return;
+            }
+            
         }
+      }catch(Exception $e){return;}
+
     }
 
     function getAcumuladoDia($regional)

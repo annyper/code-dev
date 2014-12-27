@@ -29,7 +29,8 @@ angular.module('AppNavbar', [])
 				{link: '/code-dev/gtr', nombre: 'GTR'},
 				{link: '/code-dev/analytics', nombre: 'Analytics'},
 				{link: '#/', nombre: 'Reportes'},
-				{link: '#/sms', nombre: 'SMS'}
+				{link: '#/sms', nombre: 'Directorio SMS'},
+				{link: '#/dashboard2', nombre: 'Dashboard'}
 			],
 			collapse:[
 				{link: '#/', nombre: 'Ayuda'},

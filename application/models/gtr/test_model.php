@@ -189,17 +189,22 @@ class Test_model extends CI_model
 		$fechaFinal = $this->input->get('fechaFinal') . ' 22:00:00';
 
 		if ($fechaInicial and $fechaFinal) {
-			$query = $this->dbCDE->query("SELECT * FROM (
-				SELECT fecha, UPPER(nombre) nombre, labor, ISNULL(SUM(tiempo),0) as tiempo_Labor, cargo, sucursal, regional
-					FROM [dbo].[Actividad_por_hora] ('$fechaInicial','$fechaFinal')
-					WHERE NOMBRE != 'SELECTOR' -- AND LABOR = 'Disponible'
-					GROUP BY fecha, nombre, labor, cargo, sucursal, regional		
-			) AS hello
-			ORDER BY LABOR, tiempo_Labor DESC");
-		
-			if ($query) {
-				$resultado = json_encode($query->result_array(), JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK|JSON_PRETTY_PRINT);
-				return $resultado;
+
+			try {
+				$query = $this->dbCDE->query("SELECT * FROM (
+					SELECT fecha, UPPER(nombre) nombre, labor, ISNULL(SUM(tiempo),0) as tiempo_Labor, cargo, sucursal, regional
+						FROM [dbo].[Actividad_por_hora] ('$fechaInicial','$fechaFinal')
+						WHERE NOMBRE != 'SELECTOR' -- AND LABOR = 'Disponible'
+						GROUP BY fecha, nombre, labor, cargo, sucursal, regional		
+				) AS hello
+				ORDER BY LABOR, tiempo_Labor DESC");
+			
+				if ($query) {
+					$resultado = json_encode($query->result_array(), JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK|JSON_PRETTY_PRINT);
+					return $resultado;
+				}
+			}catch(Exception $e){
+				return $e->getMessage();
 			}
 		}
 	}
@@ -275,6 +280,73 @@ class Test_model extends CI_model
 		{
 			//print_r($query->result_array());
 			return $query->result_array();
+		}
+	}
+
+	function acumulado(){
+		$query = "SELECT * FROM [dbo].[GTR]";
+
+		// Es la consulta de la vista [DIGITURNO_ACUMULADO_DIA] de Central
+		$query2 = "SELECT OFI.OFI_SDSTRREGION Region,OFI.OFI_PKSTRID COD_POS, OFI.OFI_SDSTRNOMBRE CDE,
+				    RIGHT(SAL.SAL_SDSTRNOMBRE,2) Sala,
+				    SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO IN (3,7) THEN 1 ELSE 0 END) TotalTurnos,
+				 	SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END) TotalturnosAtendidos,                   
+					SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO IN (7) THEN 1 ELSE 0 END) TotalturnosAbandonados,
+					SUM(CASE WHEN HISTRA.TSA < 900 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END) Puntuales,
+					CASE WHEN ((SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END)
+						-SUM(CASE WHEN HISTRA.TSA BETWEEN 900 AND 1799 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END)*(0.6)
+						-SUM(CASE WHEN HISTRA.TSA BETWEEN 1800 AND 2699 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END)*(1.2)
+						-SUM(CASE WHEN HISTRA.TSA BETWEEN 2700 AND 3599 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END)*(2.4)
+						-SUM(CASE WHEN HISTRA.TSA >= 3600 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END)*(4.8))
+					/(CASE WHEN SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END)=0 THEN 1 ELSE 
+						SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END) END)
+					) < 0 THEN 0 ELSE 
+					((SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END)
+						-SUM(CASE WHEN HISTRA.TSA BETWEEN 900 AND 1799 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END)*(0.6)
+						-SUM(CASE WHEN HISTRA.TSA BETWEEN 1800 AND 2699 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END)*(1.2)
+						-SUM(CASE WHEN HISTRA.TSA BETWEEN 2700 AND 3599 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END)*(2.4)
+						-SUM(CASE WHEN HISTRA.TSA >= 3600 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END)*(4.8))
+					/(CASE WHEN SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END)=0 THEN 1 ELSE 
+						SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END) END)
+					) END Percepcion,
+				                AVG(HISTRA.TSA)/60 ASASeg,
+				                (SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO = 3 THEN HISTRA.THT ELSE 0 END )/60)/
+				                               (CASE WHEN SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END) = 0 THEN 1 ELSE 
+				                               SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END) END ) AHTSeg,   
+				                SUM(CASE WHEN HISTRA.TSA < 300 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END) Entre0_5,
+				                SUM(CASE WHEN HISTRA.TSA BETWEEN 300 AND 899 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END) Entre5_15,
+				                SUM(CASE WHEN HISTRA.TSA BETWEEN 900 AND 1799 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END) Entre15_30,
+				                SUM(CASE WHEN HISTRA.TSA BETWEEN 1800 AND 2699 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END) Entre30_45,
+				                SUM(CASE WHEN HISTRA.TSA BETWEEN 2700 AND 3599 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END) Entre45_60,
+				                SUM(CASE WHEN HISTRA.TSA >= 3600 AND HISTRA.HISTRA_SDINTESTADO = 3 THEN 1 ELSE 0 END) Mayor60,
+					SUM(CASE WHEN HISTRA.TSA < 900 AND HISTRA.HISTRA_SDINTESTADO IN (7) THEN 1 ELSE 0 END) AbandonadosPuntuales,
+					CASE WHEN SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO IN (7,3) THEN 1 ELSE 0 END) <= 0 THEN 0 ELSE
+					CAST( SUM(CASE WHEN HISTRA.TSA < 900 AND HISTRA.HISTRA_SDINTESTADO IN (7,3) THEN 1 ELSE 0 END) AS FLOAT)
+					/CAST( SUM(CASE WHEN HISTRA.HISTRA_SDINTESTADO IN (7,3) THEN 1 ELSE 0 END) AS FLOAT) END NivelServicio
+
+				FROM DG45_OFICINAS OFI 
+				JOIN DG45_SALAS SAL ON SAL.SAL_FKSTROFICINA=OFI.OFI_PKSTRID
+				LEFT OUTER JOIN ( 
+				                               SELECT H.HISTRA_FKSTRSALA, MAX(H.HISTRA_SDINTESTADO) HISTRA_SDINTESTADO,
+				                               SUM(CASE WHEN H.HISTRA_SDINTESTADO = 3 THEN 
+				                                               convert (float,DATEDIFF(s, H.HISTRA_SDDATHORALLEGADA,H.HISTRA_SDDATHORAFINALIZACION))
+				                                               ELSE 0 END ) THT,
+				                               SUM(convert (float,DATEDIFF(s, H.HISTRA_SDDATHORASOLICITUD,H.HISTRA_SDDATHORALLAMADO))) TSA
+				                               FROM DG45_HISTRANSACCIONES H       
+				                               WHERE H.HISTRA_SDDATHORASOLICITUD BETWEEN CAST(GETDATE () AS DATE) AND GETDATE ()
+				                               AND H.HISTRA_SDINTESTADO IN (3,5,7) 
+				                               GROUP BY  H.HISTRA_FKSTRSALA,H.HISTRA_FKUNITURNO
+				                ) HISTRA              
+				ON HISTRA.HISTRA_FKSTRSALA = SAL.SAL_PKSTRID 
+				GROUP BY OFI.OFI_SDSTRREGION, OFI.OFI_PKSTRID, OFI.OFI_SDSTRNOMBRE, SAL.SAL_SDSTRNOMBRE";
+
+		try {
+			$result = $this->dbCDE->query($query2);
+			if (!empty($result)) {
+				return json_encode($result->row_array(), JSON_NUMERIC_CHECK|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);
+			}
+		} catch (Exception $e) {
+			return 0;
 		}
 	}
 
@@ -395,7 +467,6 @@ class Test_model extends CI_model
 				WHERE ESTADO = 'ATENDIDO' OR ESTADO = 'ABANDONADO'
 			) AS Tabla1
 			GROUP BY OFI_SDSTRNOMBRE, SAL_FKSTROFICINA, OFI_SDSTRREGION, FECHA, HORA";
-		echo $string;
 
 		$query = $this->dbCDE->query($string);
 
@@ -483,6 +554,28 @@ class Test_model extends CI_model
 			return $query->result_array();
 		}
 	}
+
+	function logingChecklist($user = null, $pass = null){
+          
+          if ($user == null || $pass == null) {
+          	return;
+          }
+
+          $consulta="SELECT [USU_PKSTRID],[USU_SDSTRNOMBRE],[USU_SDBOLACTIVO],[USU_SDSTRCLAVE],
+          			[ACC_PFKSTRUSUARIO] ,[ACC_PFKSTROFICINA] ,[ACC_SDINTNIVEL] 
+          			FROM [DIGITURNO13].[dbo].[DG45_USUARIOS]
+					JOIN [DIGITURNO13].[dbo].[DG45_ACCESO_USUARIOS]
+					ON [USU_PKSTRID] = [ACC_PFKSTRUSUARIO]
+					WHERE [ACC_SDINTNIVEL] = 1 and [USU_PKSTRID] = '$user' 
+					and [USU_SDSTRCLAVE] = '$pass'";
+
+		  $query = $this->dbCDE->query($consulta);
+
+		  if ($query) {
+		  	return $query->row_array();
+		  }
+          //echo "<pre>";print_r($data);echo "<pre>";
+    }
 
 }
 					

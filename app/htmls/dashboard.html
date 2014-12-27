@@ -1,0 +1,39 @@
+<div ng-controller="DashBoard">
+	<input type="text" ng-model="regional" class="">
+	<a href="" class="btn btn-default" ng-click="getIpList()">lorem</a>
+
+	<table class="table table-striped table-condensed table-bordered" style="width:100%">
+	  <tr>
+	    <th>CDE</th>
+	    <th>Turno</td>
+	    <th>ATT</th>
+	   	<th>%ABA</th>
+	    <th>%NS</td>
+	    <th>%PS</th>
+	    <th>ASA Min</th>
+	    <th>AHT Min</th>
+	    <th>0-5 Min</th>
+	    <th>5-15 Min</th>
+	    <th>15-30 Min</th>
+	    <th>30-45 Min</th>
+	    <th>45-60 Min</th>
+	    <th>>60 Min</th>
+	  </tr>
+	  <tr ng-repeat="value in dataList">
+	    <td>{{value['CDE']}}</td> 
+	   	<td>{{value['TotalTurnos']}}</td> 
+	    <td>{{value['TotalturnosAtendidos']}}</td>
+	   	<td>{{(1-(value['TotalturnosAtendidos']/value['TotalTurnos']))*100 | number : 1}}</td>
+	    <td>{{value['NivelServicio']*100 | number : 1}}</td> 
+	    <td>{{value['Percepcion']*100 | number : 1}}</td>
+	    <td>{{value['ASASeg'] | number : 1}}</td>
+	    <td>{{value['AHTSeg'] | number : 1}}</td>
+	    <td>{{value['Entre0_5']}}</td> 
+	    <td>{{value['Entre5_15']}}</td>
+	    <td>{{value['Entre15_30']}}</td>
+	    <td>{{value['Entre30_45']}}</td>
+	    <td>{{value['Entre45_60']}}</td>
+	    <td>{{value['Mayor60']}}</td>
+	  </tr>
+	</table>
+</div>

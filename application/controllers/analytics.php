@@ -13,6 +13,7 @@ class Analytics extends CI_Controller
 
         $this->load->helper('url');
         //error_reporting(0);
+        session_start();
         $this->load->model('gtr/config_model');
         $this->load->model('gtr/test_model');
         $this->load->model('consolidados/checkList_model');
@@ -85,10 +86,12 @@ class Analytics extends CI_Controller
 // 
     function actividadWorstOffender($codPos){
         $ip = $this->config_model->getIPbyPos($codPos); //***************
-        $this->test_model->inicializar($ip);
-        echo "<pre>";
-        echo $this->test_model->actividadWorstOffenderModel();
-        echo "</pre>";
+        
+        if (isset($ip)) {
+            $this->test_model->inicializar($ip);
+            echo $this->test_model->actividadWorstOffenderModel();
+        }
+        
     }
 
     function getClientesSMS(){
@@ -99,6 +102,56 @@ class Analytics extends CI_Controller
     function setClienteSMS(){
         
         $this->gtrSMS_model->setClienteSMS();
+    }
+
+    function logingChecklist(){
+        
+        $data = file_get_contents('php://input');        
+        $data = json_decode($data, true);
+
+        if (!isset($data['cde']) ) { return;}
+        $this->test_model->inicializar($data['cde']);
+
+        $session = $this->test_model->logingChecklist($data['user'], $data['pass']);
+
+        if (count($session) > 0) {
+            $session['USU_SDSTRCLAVE'] = md5($session['USU_SDSTRCLAVE'] . rand(999,100000));
+            
+            $_SESSION['key'] =  $session['USU_SDSTRCLAVE'];
+
+            $sessionJSON = json_encode($session, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT);
+            //echo "<pre>"; print_r($session); echo "</pre>";
+            echo $sessionJSON;
+            //echo $_SESSION['key'];
+        }
+        
+    }
+    function keyValidate($key = null){
+        if (isset($_SESSION['key'])) {
+            if ($key == null || $key !=  $_SESSION['key']) {
+                session_destroy();
+                return;
+            }else if($key ==  $_SESSION['key']) {
+                echo "true";
+            }else{
+                return;
+            }
+        }
+    }
+
+    function insertChecklist(){
+
+        $data = file_get_contents('php://input');        
+        $data = json_decode($data, true);
+
+        $this->checkList_model->insertChecklist($data);
+    }
+
+    function getCheckListCDE($paginacion){
+        $data = file_get_contents('php://input');        
+        $data = json_decode($data, true);
+        $paginacion = $paginacion*10;
+        echo $this->checkList_model->getCheckListCDE($data['ACC_PFKSTROFICINA'], $paginacion);
     }
 
 }

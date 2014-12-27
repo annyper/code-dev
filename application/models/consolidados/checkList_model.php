@@ -50,14 +50,14 @@ class CheckList_model extends CI_model
 	function getCheckListDeApertura($datetimeInicio, $datetimeFin, $filtro = null)
 	{
 
-		$query = $this->db->query("SELECT REGIONAL, TIENDA,  SUM(check_list = 0) Impuntual, SUM(check_list = 1) Puntual, SUM(check_list = 2) No_abre,   
+		$query = $this->db->query("SELECT REGIONAL, TIENDA,  SUM(check_list = 0) Impuntual, SUM(check_list = 3) Noregistro, SUM(check_list = 1) Puntual, SUM(check_list = 2) No_abre,   
 			(SUM(check_list = 1)/SUM(check_list != 2))*100 Puntualidad
 			FROM (
 				SELECT fechaa, DiaNum, Cod_pos, Dia, Apertura1, Cierre1, fecha_sis, regional, Tienda, ph_ase_total, ph_ase_segturno,
-				case when Apertura1 = 'null' or Apertura1 is NULL THEN 2
-				WHEN CAST(fecha_sis as time) > CAST(ADDTIME(Apertura1, '00:31:00') as time) THEN 0
-				WHEN fecha_sis IS NULL THEN 0
-				WHEN CAST(fecha_sis as time) <= CAST(ADDTIME(Apertura1, '00:31:00') as time) THEN 1
+				case when Apertura1 = 'null' or Apertura1 is NULL or Apertura1 = '' THEN 2
+				WHEN CAST(fecha_sis as time) > ADDTIME(str_to_date(CONCAT( CAST(Apertura1 as time) , ' ', SUBSTRING(Apertura1, -2)),'%r'), '00:31:00') THEN 0
+				WHEN fecha_sis IS NULL THEN 3
+				WHEN CAST(fecha_sis as time) <= ADDTIME(str_to_date(CONCAT( CAST(Apertura1 as time) , ' ', SUBSTRING(Apertura1, -2)),'%r'), '00:31:00') THEN 1
 				END AS Check_list
 				FROM(
 					SELECT * FROM (
@@ -108,7 +108,7 @@ ON ANITA.FECHAa = COC.FECHA_APERTURA AND ANITA.TIENDA = COC.INFO_CDE
 ORDER BY fechaa ) AS CONSULTA_CKECK
 $filtro
 GROUP BY REGIONAL, TIENDA
-ORDER BY REGIONAL, PUNTUALIDAD DESC");
+ORDER BY REGIONAL, PUNTUALIDAD DESC, TIENDA");
 
 return $query->result_array();
 
@@ -117,10 +117,10 @@ return $query->result_array();
 function getCheckListPorCDE($datetimeInicio, $datetimeFin, $CDE)
 {
 	$query = $this->db->query("	SELECT fechaa, Dia, Apertura1, cast(fecha_sis as time) hora_ingreso, regional, Tienda,
-		case when Apertura1 = 'null' or Apertura1 is NULL THEN 'No abre'
-		WHEN CAST(fecha_sis as time) > CAST(ADDTIME(Apertura1, '00:31:00') as time) THEN 'Impuntual'
+		case when Apertura1 = 'null' or Apertura1 is NULL or Apertura1 = '' THEN 'No abre'
+		WHEN CAST(fecha_sis as time) > ADDTIME(str_to_date(CONCAT( CAST(Apertura1 as time) , ' ', SUBSTRING(Apertura1, -2)),'%r'), '00:31:00') THEN 'Impuntual'
 		WHEN fecha_sis IS NULL THEN 'No montó checklist'
-		WHEN CAST(fecha_sis as time) <= CAST(ADDTIME(Apertura1, '00:31:00') as time) THEN 'Puntual'
+		WHEN CAST(fecha_sis as time) <= ADDTIME(str_to_date(CONCAT( CAST(Apertura1 as time) , ' ', SUBSTRING(Apertura1, -2)),'%r'), '00:31:00') THEN 'Puntual'
 		END AS Check_list
 		FROM(
 			SELECT * FROM (
@@ -310,6 +310,21 @@ function actividadWorstOffenderModel(){
 	}
 }
 
+	function getCheckListCDE($Cod_Pos, $paginacion){
+		
+		$query = "SELECT * FROM bd_cded_cde_pda.checklist
+				where ch_codPos = '$Cod_Pos'
+				order by ch_log desc
+				limit " . $paginacion . ", 10";
+
+		$resultado = $this->db->query($query);
+		if ($resultado) {
+			return json_encode($resultado->result_array(), JSON_NUMERIC_CHECK|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+		}
+
+
+	}
+
 
 
 	/**
@@ -463,7 +478,8 @@ function actividadWorstOffenderModel(){
 	I N S E R T
 	*/
 	function setIp(){
-		$data = array('ip' => $_SERVER['REMOTE_ADDR']);
+		$data = array('ip' => $_SERVER['REMOTE_ADDR'],
+					'user_agent' => $_SERVER['HTTP_USER_AGENT']);
 
 		$this->db->insert('ipcliente', $data); 
 	}
@@ -632,6 +648,11 @@ function actividadWorstOffenderModel(){
 
 		return $dataCDE['Cod_Pos'];
 	}
+
+	 function insertChecklist($data){
+		
+		$this->db->insert('checklist', $data);
+    }
 
 	/**
 	D E L E T E S
