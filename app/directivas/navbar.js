@@ -30,6 +30,7 @@ angular.module('AppNavbar', [])
 				{link: '/code-dev/analytics', nombre: 'Analytics'},
 				{link: '#/', nombre: 'Reportes'},
 				{link: '#/sms', nombre: 'Directorio SMS'},
+				{link: 'http://10.66.6.241:3000/checklist/#/checklist/8deedcd3508f2d84eafb4317e4dfb1ee', nombre: 'Checklist'},
 				{link: '#/dashboard2', nombre: 'Dashboard'}
 			],
 			collapse:[

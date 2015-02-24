@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/lasd.css"); ?>">
         <link rel="stylesheet" href="<?php echo base_url("bootstrap/css/templates.css"); ?>">
 
-        <link rel="stylesheet" href="http://eonasdan.github.io/bootstrap-datetimepicker/content/bootstrap-datetimepicker.css">
+        <link rel="stylesheet" href="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/master/build/css/bootstrap-datetimepicker.min.css">
         <link rel="stylesheet" href="<?php echo base_url("jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.min.css"); ?>">
         
         <!--<script src="<?php  echo base_url("bootstrap/js/jquery-2.1.0.min.js"); ?>"></script>-->

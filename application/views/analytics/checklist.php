@@ -8,7 +8,7 @@
 			<th>REGIONAL</th>
 			<th>CDE</th>
 			<th>IMPUNTUAL</th>
-			<!-- <th>NO REGISTRA</th> -->
+			<th>NO REGISTRA</th>
 			<th>PUNTUAL</th>
 			<th>NO ABRE</th>
 			<th>PUNTUALIDAD</th>
@@ -26,7 +26,7 @@
 				</a>
 			</td>
 			<td><?php echo $value['Impuntual']; ?></td>
-		<!-- 	<td><?php echo $value['Noregistro']; ?></td> -->
+			<td><?php echo $value['Noregistro']; ?></td>
 			<td><?php echo $value['Puntual']; ?></td>
 			<td><?php echo $value['No_abre']; ?></td>
 			<td><?php echo number_format($value['Puntualidad'], 2) . '%'; ?></td>

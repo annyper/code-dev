@@ -871,6 +871,8 @@ function editInfoCDE($Cod_pos = null)
 	}
 	else
 	{
+		//echo $Cod_pos;
+
 		$data['mensaje'] = validation_errors();
 		$data['Cod_pos'] = $Cod_pos;
 		$data['tienda_admin'] = $this->checkList_model->getInfoCDE($Cod_pos);

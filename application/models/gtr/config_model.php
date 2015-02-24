@@ -53,6 +53,21 @@ class Config_model extends CI_model
       }catch(Exception $e){return;}
 
     }
+      function getIPS(){
+
+        $consulta = "SELECT [SER_SDSTRDESCRIPCION] as nombre
+              ,[SER_SDSTRSERVIDOR] as ipservidor
+              ,[SER_SDSTRHOST] as ip
+              ,[SER_SDSTRNOMBREBASE] as base
+          FROM [TIGOCENTRAL].[dbo].[DG45_SERVIDORES_REP]
+          where [SER_SDSTRDESCRIPCION] !=  '001 TIGOCENTRAL'";
+          
+        $query = $this->BDCentral->query($consulta);
+        if ($query) {
+          return json_encode($query->result_array(), JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK|JSON_PRETTY_PRINT);
+        }
+
+    }
 
     function getAcumuladoDia($regional)
     {

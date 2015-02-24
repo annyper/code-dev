@@ -94,6 +94,24 @@ class Analytics extends CI_Controller
         
     }
 
+    function getIPS(){
+        echo $this->config_model->getIPS();        
+    }
+
+    function getIPSmysql(){
+
+        echo $this->checkList_model->getIPSmysql();
+    }
+
+    function setIPSmysql(){
+        $data = file_get_contents('php://input');   
+        echo $data;     
+        //$data = json_decode($data, true);
+        //echo "string";
+        $this->checkList_model->setIPSmysql($data);
+    }
+
+
     function getClientesSMS(){
         $data = $this->checkList_model->getClientesSMS();
         echo $data;
@@ -154,6 +172,9 @@ class Analytics extends CI_Controller
         echo $this->checkList_model->getCheckListCDE($data['ACC_PFKSTROFICINA'], $paginacion);
     }
 
+    function getCheckListCDEid($Cod_Pos, $id){
+        echo $this->checkList_model->getCheckListCDEid($Cod_Pos, $id);
+    }
 }
 
  ?>

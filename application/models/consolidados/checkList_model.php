@@ -47,7 +47,70 @@ class CheckList_model extends CI_model
 
 	}
 
-	function getCheckListDeApertura($datetimeInicio, $datetimeFin, $filtro = null)
+	function getCheckListDeApertura($datetimeInicio, $datetimeFin, $filtro = null){
+		
+		$query = $this->db->query("SELECT REGIONAL, TIENDA,  SUM(check_list = 0) Impuntual, SUM(check_list = 3) Noregistro, SUM(check_list = 1) Puntual, SUM(check_list = 2) No_abre,   
+			(SUM(check_list = 1)/SUM(check_list != 2))*100 Puntualidad
+			FROM (
+				SELECT fechaa, Dia, Apertura1, cast(ch_log as time) hora_ingreso, regional, Tienda,
+					case when Apertura1 = 'null' or Apertura1 is NULL or Apertura1 = '' THEN 2
+					WHEN CAST(ch_log as time) > ADDTIME(str_to_date(CONCAT( CAST(Apertura1 as time) , ' ', SUBSTRING(Apertura1, -2)),'%r'), '00:31:00') THEN 0
+					WHEN ch_log IS NULL THEN 3
+					WHEN CAST(ch_log as time) <= ADDTIME(str_to_date(CONCAT( CAST(Apertura1 as time) , ' ', SUBSTRING(Apertura1, -2)),'%r'), '00:31:00') THEN 1
+					END AS Check_list
+					FROM(
+						SELECT * FROM (
+							SELECT cast(ch_log as DATE) fechaa,
+							CASE WHEN CAST(ch_log AS DATE) IN ('01-01-2014','06-01-2014','24-03-2014','17-04-2014','18-04-2014','01-05-2014','02-06-2014','23-06-2014','30-06-2014','30-06-2014','20-07-2014','07-08-2014','18-08-2014','13-10-2014','03-11-2014','17-11-2014','08-12-2014','25-12-2014','01-01-2015','12-01-2015','23-03-2015','02-04-2015','03-04-2015','01-05-2015','18-05-2015','08-06-2015','15-06-2015','29-06-2015','20-07-2015','07-08-2015','17-08-2015','12-10-2015','02-11-2015','16-11-2015','08-12-2015','25-12-2015','01-01-2016','11-01-2016','21-03-2016','24-03-2016','25-03-2016','01-05-2016','09-05-2016','30-05-2016','06-06-2016','04-07-2016','20-07-2016','07-08-2016','15-08-2016','17-10-2016','07-11-2016','14-11-2016','08-12-2016','25-12-2016','01-01-2017','09-01-2017','20-03-2017','13-04-2017','14-04-2017','01-05-2017','29-05-2017','19-06-2017','26-06-2017','03-07-2017','20-07-2017','07-08-2017','21-08-2017','16-10-2017','06-11-2017','13-11-2017','08-12-2017','25-12-2017')
+							THEN 7 ELSE date_format(ch_log, '%w') END AS diaA
+							FROM bd_cded_cde_pda.checklist
+							WHERE cast(ch_log as DATE)             >= '$datetimeInicio'
+							AND cast(ch_log as DATE)               <= '$datetimeFin'
+							GROUP BY FECHAa
+						) AS HOLA
+						JOIN (
+							SELECT *, CASE WHEN Dia = 'Domingo' then 0 WHEN Dia = 'Lunes' then 1 WHEN Dia = 'Martes' then 2 WHEN Dia = 'Miercoles' then 3 WHEN Dia = 'Jueves' then 4 WHEN Dia = 'Viernes' then 5 WHEN Dia = 'Sabado' then 6 WHEN Dia = 'Festivos' then 7
+							end as DiaNum
+							FROM bd_cded_cde_pda.horario_view
+							WHERE Tipo in ('Tienda Propia', 'corporativo')
+						) AS PAPA
+						ON HOLA.diaA = PAPA.DiaNum
+						order by Tienda, fechaa
+					) ANITA
+
+					LEFT JOIN (
+						SELECT * FROM (
+							SELECT * FROM (
+								SELECT  cd_id as id, ch_log, CAST(ch_log AS DATE) AS fecha_apertura, ch_usuario, ch_nombre, ch_codPos
+									FROM bd_cded_cde_pda.checklist
+									WHERE cast(ch_log as DATE)             >= '$datetimeInicio'
+									AND cast(ch_log as DATE)               <= '$datetimeFin'
+							) THOR
+							JOIN (
+								SELECT FECHA, min(id2) as id2 FROM (
+									SELECT cd_id as id2, CAST(ch_log AS DATE) fecha, ch_log, ch_usuario, ch_nombre, ch_codPos
+									FROM bd_cded_cde_pda.checklist
+									WHERE cast(ch_log as DATE)             >= '$datetimeInicio'
+									AND cast(ch_log as DATE)               <= '$datetimeFin'
+									ORDER BY ch_log DESC
+								) MAMA
+								GROUP BY FECHA, ch_codPos
+							) ODIN
+							ON THOR.id = ODIN.id2
+						) TAB
+					) AS COC
+
+				ON ANITA.FECHAa = COC.FECHA_APERTURA AND ANITA.Cod_Pos = COC.ch_codPos
+				ORDER BY fechaa
+			) AS CONSULTA_CKECK
+			$filtro
+			GROUP BY REGIONAL, TIENDA
+			ORDER BY REGIONAL, PUNTUALIDAD DESC, TIENDA");
+
+		return $query->result_array();
+	}
+
+	function getCheckListDeApertura22($datetimeInicio, $datetimeFin, $filtro = null)
 	{
 
 		$query = $this->db->query("SELECT REGIONAL, TIENDA,  SUM(check_list = 0) Impuntual, SUM(check_list = 3) Noregistro, SUM(check_list = 1) Puntual, SUM(check_list = 2) No_abre,   
@@ -62,7 +125,7 @@ class CheckList_model extends CI_model
 				FROM(
 					SELECT * FROM (
 						SELECT cast(fecha_sis as DATE) fechaa,
-						CASE WHEN CAST(fecha_sis AS DATE) IN ('2013-12-25', '2013-12-08', '2013-11-11', '2013-11-04', '2013-10-14', '2013-08-19', '2013-08-07', '2013-07-20', '2013-07-01', '2013-06-10', '2013-06-03', '2013-05-13', '2013-05-01', '2013-03-29', '2013-03-28', '2013-03-25', '2013-01-07', '2013-01-01','2014-01-01','2014-01-06','2014-03-24','2014-04-17','2014-04-18','2014-05-01','2014-06-02','2014-06-23','2014-06-30','2014-06-30','2014-07-20','2014-08-07','2014-08-18','2014-10-13','2014-11-03','2014-11-17','2014-12-08','2014-12-25')
+						CASE WHEN CAST(fecha_sis AS DATE) IN ('01-01-2014','06-01-2014','24-03-2014','17-04-2014','18-04-2014','01-05-2014','02-06-2014','23-06-2014','30-06-2014','30-06-2014','20-07-2014','07-08-2014','18-08-2014','13-10-2014','03-11-2014','17-11-2014','08-12-2014','25-12-2014','01-01-2015','12-01-2015','23-03-2015','02-04-2015','03-04-2015','01-05-2015','18-05-2015','08-06-2015','15-06-2015','29-06-2015','20-07-2015','07-08-2015','17-08-2015','12-10-2015','02-11-2015','16-11-2015','08-12-2015','25-12-2015','01-01-2016','11-01-2016','21-03-2016','24-03-2016','25-03-2016','01-05-2016','09-05-2016','30-05-2016','06-06-2016','04-07-2016','20-07-2016','07-08-2016','15-08-2016','17-10-2016','07-11-2016','14-11-2016','08-12-2016','25-12-2016','01-01-2017','09-01-2017','20-03-2017','13-04-2017','14-04-2017','01-05-2017','29-05-2017','19-06-2017','26-06-2017','03-07-2017','20-07-2017','07-08-2017','21-08-2017','16-10-2017','06-11-2017','13-11-2017','08-12-2017','25-12-2017')
 						THEN 7 ELSE date_format(cast(fecha_sis as DATE), '%w') END AS diaA
 						FROM cocinfo.u_dmsapertura
 						WHERE cast(fecha_sis as DATE)             >= '$datetimeInicio'
@@ -114,8 +177,65 @@ return $query->result_array();
 
 }
 
-function getCheckListPorCDE($datetimeInicio, $datetimeFin, $CDE)
-{
+function getCheckListPorCDE($datetimeInicio, $datetimeFin, $CDE){
+
+	$query = $this->db->query("SELECT fechaa, Dia, Apertura1, cast(ch_log as time) hora_ingreso, regional, Tienda,
+		case when Apertura1 = 'null' or Apertura1 is NULL or Apertura1 = '' THEN 'No abre'
+		WHEN CAST(ch_log as time) > ADDTIME(str_to_date(CONCAT( CAST(Apertura1 as time) , ' ', SUBSTRING(Apertura1, -2)),'%r'), '00:31:00') THEN 'Impuntual'
+		WHEN ch_log IS NULL THEN 'No montó checklist'
+		WHEN CAST(ch_log as time) <= ADDTIME(str_to_date(CONCAT( CAST(Apertura1 as time) , ' ', SUBSTRING(Apertura1, -2)),'%r'), '00:31:00') THEN 'Puntual'
+		END AS Check_list
+		FROM(
+			SELECT * FROM (
+				SELECT cast(ch_log as DATE) fechaa,
+				CASE WHEN CAST(ch_log AS DATE) IN ('01-01-2014','06-01-2014','24-03-2014','17-04-2014','18-04-2014','01-05-2014','02-06-2014','23-06-2014','30-06-2014','30-06-2014','20-07-2014','07-08-2014','18-08-2014','13-10-2014','03-11-2014','17-11-2014','08-12-2014','25-12-2014','01-01-2015','12-01-2015','23-03-2015','02-04-2015','03-04-2015','01-05-2015','18-05-2015','08-06-2015','15-06-2015','29-06-2015','20-07-2015','07-08-2015','17-08-2015','12-10-2015','02-11-2015','16-11-2015','08-12-2015','25-12-2015','01-01-2016','11-01-2016','21-03-2016','24-03-2016','25-03-2016','01-05-2016','09-05-2016','30-05-2016','06-06-2016','04-07-2016','20-07-2016','07-08-2016','15-08-2016','17-10-2016','07-11-2016','14-11-2016','08-12-2016','25-12-2016','01-01-2017','09-01-2017','20-03-2017','13-04-2017','14-04-2017','01-05-2017','29-05-2017','19-06-2017','26-06-2017','03-07-2017','20-07-2017','07-08-2017','21-08-2017','16-10-2017','06-11-2017','13-11-2017','08-12-2017','25-12-2017')
+				THEN 7 ELSE date_format(ch_log, '%w') END AS diaA
+				FROM bd_cded_cde_pda.checklist
+				WHERE cast(ch_log as DATE)             >= '$datetimeInicio'
+				AND cast(ch_log as DATE)               <= '$datetimeFin'
+				GROUP BY FECHAa
+			) AS HOLA
+			JOIN (
+				SELECT *, CASE WHEN Dia = 'Domingo' then 0 WHEN Dia = 'Lunes' then 1 WHEN Dia = 'Martes' then 2 WHEN Dia = 'Miercoles' then 3 WHEN Dia = 'Jueves' then 4 WHEN Dia = 'Viernes' then 5 WHEN Dia = 'Sabado' then 6 WHEN Dia = 'Festivos' then 7
+				end as DiaNum
+				FROM bd_cded_cde_pda.horario_view
+				WHERE Tipo in ('Tienda Propia', 'corporativo')
+			) AS PAPA
+			ON HOLA.diaA = PAPA.DiaNum
+			order by Tienda, fechaa
+		) ANITA
+
+		LEFT JOIN (
+			SELECT * FROM (
+				SELECT * FROM (
+					SELECT  cd_id as id, ch_log, CAST(ch_log AS DATE) AS fecha_apertura, ch_usuario, ch_nombre, ch_codPos
+						FROM bd_cded_cde_pda.checklist
+						WHERE cast(ch_log as DATE)             >= '$datetimeInicio'
+						AND cast(ch_log as DATE)               <= '$datetimeFin'
+				) THOR
+				JOIN (
+					SELECT FECHA, min(id2) as id2 FROM (
+						SELECT cd_id as id2, CAST(ch_log AS DATE) fecha, ch_log, ch_usuario, ch_nombre, ch_codPos
+						FROM bd_cded_cde_pda.checklist
+						WHERE cast(ch_log as DATE)             >= '$datetimeInicio'
+						AND cast(ch_log as DATE)               <= '$datetimeFin'
+						ORDER BY ch_log DESC
+					) MAMA
+					GROUP BY FECHA, ch_codPos
+				) ODIN
+				ON THOR.id = ODIN.id2
+			) TAB
+		) AS COC
+
+	ON ANITA.FECHAa = COC.FECHA_APERTURA AND ANITA.Cod_Pos = COC.ch_codPos
+	where Tienda = '$CDE'
+	ORDER BY fechaa");
+	return $query->result_array();
+	
+}
+
+function getCheckListPorCDE22($datetimeInicio, $datetimeFin, $CDE){
+
 	$query = $this->db->query("	SELECT fechaa, Dia, Apertura1, cast(fecha_sis as time) hora_ingreso, regional, Tienda,
 		case when Apertura1 = 'null' or Apertura1 is NULL or Apertura1 = '' THEN 'No abre'
 		WHEN CAST(fecha_sis as time) > ADDTIME(str_to_date(CONCAT( CAST(Apertura1 as time) , ' ', SUBSTRING(Apertura1, -2)),'%r'), '00:31:00') THEN 'Impuntual'
@@ -125,54 +245,56 @@ function getCheckListPorCDE($datetimeInicio, $datetimeFin, $CDE)
 		FROM(
 			SELECT * FROM (
 				SELECT cast(fecha_sis as DATE) fechaa,
-				CASE WHEN CAST(fecha_sis AS DATE) IN ('2013-12-25', '2013-12-08', '2013-11-11', '2013-11-04', '2013-10-14', '2013-08-19', '2013-08-07', '2013-07-20', '2013-07-01', '2013-06-10', '2013-06-03', '2013-05-13', '2013-05-01', '2013-03-29', '2013-03-28', '2013-03-25', '2013-01-07', '2013-01-01','2014-01-01','2014-01-06','2014-03-24','2014-04-17','2014-04-18','2014-05-01','2014-06-02','2014-06-23','2014-06-30','2014-06-30','2014-07-20','2014-08-07','2014-08-18','2014-10-13','2014-11-03','2014-11-17','2014-12-08','2014-12-25')
+				CASE WHEN CAST(fecha_sis AS DATE) IN ('01-01-2014','06-01-2014','24-03-2014','17-04-2014','18-04-2014','01-05-2014','02-06-2014','23-06-2014','30-06-2014','30-06-2014','20-07-2014','07-08-2014','18-08-2014','13-10-2014','03-11-2014','17-11-2014','08-12-2014','25-12-2014','01-01-2015','12-01-2015','23-03-2015','02-04-2015','03-04-2015','01-05-2015','18-05-2015','08-06-2015','15-06-2015','29-06-2015','20-07-2015','07-08-2015','17-08-2015','12-10-2015','02-11-2015','16-11-2015','08-12-2015','25-12-2015','01-01-2016','11-01-2016','21-03-2016','24-03-2016','25-03-2016','01-05-2016','09-05-2016','30-05-2016','06-06-2016','04-07-2016','20-07-2016','07-08-2016','15-08-2016','17-10-2016','07-11-2016','14-11-2016','08-12-2016','25-12-2016','01-01-2017','09-01-2017','20-03-2017','13-04-2017','14-04-2017','01-05-2017','29-05-2017','19-06-2017','26-06-2017','03-07-2017','20-07-2017','07-08-2017','21-08-2017','16-10-2017','06-11-2017','13-11-2017','08-12-2017','25-12-2017')
 				THEN 7 ELSE date_format(fecha_apertura, '%w') END AS diaA
 				FROM cocinfo.u_dmsapertura
 				WHERE cast(fecha_sis as DATE)             >= '$datetimeInicio'
 				AND cast(fecha_sis as DATE)               <= '$datetimeFin'
 				AND info_canal                             = 'Tiendas Propias'
 				GROUP BY FECHAa) AS HOLA
-JOIN (
-	SELECT *, CASE WHEN Dia = 'Domingo' then 0 WHEN Dia = 'Lunes' then 1 WHEN Dia = 'Martes' then 2 WHEN Dia = 'Miercoles' then 3 WHEN Dia = 'Jueves' then 4 WHEN Dia = 'Viernes' then 5 WHEN Dia = 'Sabado' then 6 WHEN Dia = 'Festivos' then 7
-	end as DiaNum
-	FROM bd_cded_cde_pda.horario_view
-	WHERE Tipo in ('Tienda Propia', 'corporativo')) AS PAPA
-ON HOLA.diaA = PAPA.DiaNum
-order by Tienda, fechaa) ANITA
+	JOIN (
+		SELECT *, CASE WHEN Dia = 'Domingo' then 0 WHEN Dia = 'Lunes' then 1 WHEN Dia = 'Martes' then 2 WHEN Dia = 'Miercoles' then 3 WHEN Dia = 'Jueves' then 4 WHEN Dia = 'Viernes' then 5 WHEN Dia = 'Sabado' then 6 WHEN Dia = 'Festivos' then 7
+		end as DiaNum
+		FROM bd_cded_cde_pda.horario_view
+		WHERE Tipo in ('Tienda Propia', 'corporativo')) AS PAPA
+	ON HOLA.diaA = PAPA.DiaNum
+	order by Tienda, fechaa) ANITA
 
-LEFT JOIN (
+	LEFT JOIN (
 
-	SELECT * FROM
-	(SELECT * FROM
-		(SELECT  id, fecha_sis, CAST(fecha_sis AS DATE) AS fecha_apertura, usuario_id, usuario, info_regional, info_cde, ph_ase_total, ph_ase_segturno , info_canal
+		SELECT * FROM
+		(SELECT * FROM
+			(SELECT  id, fecha_sis, CAST(fecha_sis AS DATE) AS fecha_apertura, usuario_id, usuario, info_regional, info_cde, ph_ase_total, ph_ase_segturno , info_canal
+				FROM cocinfo.u_dmsapertura
+				WHERE cast(fecha_sis as DATE)             >= '$datetimeInicio'
+				AND cast(fecha_sis as DATE)               <= '$datetimeFin'
+				AND info_canal                             = 'Tiendas Propias'
+				) THOR
+	JOIN
+	(SELECT FECHA,
+		id2
+		FROM
+		(SELECT id as id2, CAST(fecha_sis AS DATE) fecha, fecha_sis, fecha_apertura, usuario_id, usuario, info_regional, info_cde, ph_ase_total, ph_ase_segturno , info_canal
 			FROM cocinfo.u_dmsapertura
 			WHERE cast(fecha_sis as DATE)             >= '$datetimeInicio'
 			AND cast(fecha_sis as DATE)               <= '$datetimeFin'
 			AND info_canal                             = 'Tiendas Propias'
-			) THOR
-JOIN
-(SELECT FECHA,
-	id2
-	FROM
-	(SELECT id as id2, CAST(fecha_sis AS DATE) fecha, fecha_sis, fecha_apertura, usuario_id, usuario, info_regional, info_cde, ph_ase_total, ph_ase_segturno , info_canal
-		FROM cocinfo.u_dmsapertura
-		WHERE cast(fecha_sis as DATE)             >= '$datetimeInicio'
-		AND cast(fecha_sis as DATE)               <= '$datetimeFin'
-		AND info_canal                             = 'Tiendas Propias'
-		ORDER BY fecha_sis DESC
-		) MAMA
-GROUP BY FECHA,
-info_cde
-) ODIN
-ON THOR.id = ODIN.id2
-) TAB
-) AS COC
-ON ANITA.FECHAa = COC.FECHA_APERTURA AND ANITA.TIENDA = COC.INFO_CDE
-where Tienda = '$CDE'
-ORDER BY fechaa");
+			ORDER BY fecha_sis DESC
+			) MAMA
+	GROUP BY FECHA,
+	info_cde
+	) ODIN
+	ON THOR.id = ODIN.id2
+	) TAB
+	) AS COC
+	ON ANITA.FECHAa = COC.FECHA_APERTURA AND ANITA.TIENDA = COC.INFO_CDE
+	where Tienda = '$CDE'
+	ORDER BY fechaa");
 
-return $query->result_array();
+	return $query->result_array();
 }
+
+
 
 function getIP($oficina)
 {
@@ -193,6 +315,24 @@ function getIP($oficina)
 		return $query->row_array();
 	}
 }
+
+function getIPSmysql(){
+	$query = $this->db->query("SELECT iplist FROM bd_cded_cde_pda.iplist");
+	
+	if ($query) {
+		$resultado = $query->row_array();
+		return $resultado['iplist'];
+	}
+
+}
+
+function setIPSmysql($data){
+	$data = array('iplist' => $data);
+
+	$this->db->where('id', 1);
+	$this->db->update('iplist', $data);
+}
+
 
 function getListaNombresCDEs()
 {
@@ -320,6 +460,19 @@ function actividadWorstOffenderModel(){
 		$resultado = $this->db->query($query);
 		if ($resultado) {
 			return json_encode($resultado->result_array(), JSON_NUMERIC_CHECK|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+		}
+
+
+	}
+
+	function getCheckListCDEid($Cod_Pos, $id){
+		
+		$query = "SELECT * FROM bd_cded_cde_pda.checklist
+				where cd_id = '$id' and ch_codPos = '$Cod_Pos' ";
+
+		$resultado = $this->db->query($query);
+		if ($resultado) {
+			return json_encode($resultado->row_array(), JSON_NUMERIC_CHECK|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
 		}
 
 
