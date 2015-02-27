@@ -569,5 +569,24 @@ $(function(){
 
 			});
 
+			$('.oculatarToggle2').on('click', function(event){
+				event.preventDefault();
+				$('.oculatarToggleTarget2').toggleClass('hidden');
+
+			});
+
+			$( ".changeArea" ).on( "click", "button", function( event ) {
+			    event.preventDefault();
+			    var confirmar = confirm("¿Está seguro que desea cambiarlo de CDE?");
+
+			    if (confirmar) {
+			    	var Cod_posNuevo = $(this).parent().find("select").val();
+			    	var enlace = $(this).data('url') + '/' + Cod_posNuevo;
+			    	var form = $(this).closest('form');
+			    	console.log(enlace);
+			    	form.load(enlace);
+			    }
+			    
+			});
 
 });

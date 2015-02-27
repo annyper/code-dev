@@ -351,8 +351,6 @@ function getListaNombresCDEs()
 function getInfoCDE($Cod_pos){
 
 	$query = $this->db->query("SELECT * FROM bd_cded_cde_pda.tiendas as tiend
-		join  bd_cded_cde_pda.administradores as admin
-		on admin.Tiendas_cod_pos = tiend.Cod_Pos
 		join bd_cded_cde_pda.horarios as hor
 		on hor.Tiendas_cod_pos = tiend.Cod_Pos
 		where Cod_Pos = '$Cod_pos'
@@ -368,6 +366,22 @@ function getInfoCDE($Cod_pos){
 	}
 }
 
+function getInfoCDEadmin($Cos_pos){
+
+	$query = $this->db->query("SELECT id_admin, Cod_Pos, Regional, Tienda, Identificacion, Nombre, Apellido, 
+		Movil_1, Movil_2 as Movil_2, Correo FROM bd_cded_cde_pda.tiendas as tiend
+		join  bd_cded_cde_pda.administradores as admin
+		on admin.Tiendas_cod_pos = tiend.Cod_Pos
+		where Cod_Pos = '$Cos_pos'");
+
+	if (!$query) {
+		$query = 0; //echo "se generó una mala consulta";
+	} else{
+		return $query->result_array();
+	}
+
+}
+
 function getInfoCDEcoor($Cod_pos){
 
 	$query = $this->db->query("SELECT id, Cod_Pos, Regional, Tienda, Identificacion, Nombre, Apellido, 
@@ -377,11 +391,17 @@ function getInfoCDEcoor($Cod_pos){
 		where Cod_Pos = '$Cod_pos'");
 
 	if (!$query) {
-		$query = 0;
-			//echo "se generó una mala consulta";
+		$query = 0; //echo "se generó una mala consulta";
+	} else{
+		return $query->result_array();
 	}
-	else
-	{
+}
+
+function getCDElist(){
+	$query =  $this->db->query("SELECT Cod_Pos, Regional, Ciudad, Tienda FROM bd_cded_cde_pda.tiendas");
+	if (!$query) {
+		$query = 0; //echo "se generó una mala consulta";
+	} else{
 		return $query->result_array();
 	}
 }
@@ -477,6 +497,7 @@ function actividadWorstOffenderModel(){
 
 
 	}
+
 
 
 
@@ -578,6 +599,18 @@ function actividadWorstOffenderModel(){
 		}
 	}
 
+	function updateCDEAdmin($id_admin, $Cod_PosOld, $Cod_posNuevo){
+		$string = "UPDATE  bd_cded_cde_pda.administradores SET Tiendas_Cod_Pos = '$Cod_posNuevo' where Tiendas_Cod_Pos = '$Cod_PosOld' and id_admin = '$id_admin'";
+		$query = $this->db->query($string);
+		if ($query) {return 1;}else{return 0;}
+	}
+
+	function updateCDECoor($id_coor, $Cod_PosOld, $Cod_posNuevo){
+		$string = "UPDATE  bd_cded_cde_pda.coordinadores_db SET Tiendas_Cod_Pos = '$Cod_posNuevo' where Tiendas_Cod_Pos = '$Cod_PosOld' and id = '$id_coor'";
+		$query = $this->db->query($string);
+		if ($query) {return 1;}else{return 0;}
+	}
+
 	function updateDataAdmin($Cod_Pos)
 	{
 		$nombre = $this->input->post('nombreAdmin');
@@ -598,7 +631,7 @@ function actividadWorstOffenderModel(){
 			$stringAdmCDE = "UPDATE gtr.cliente
 			SET CELULAR = '$Movil_1', NOMBRE = '$nombreCompleto'
 			WHERE CELULAR = '$Movil_1hidden'";
-			echo $stringAdmCDE;
+			//echo $stringAdmCDE;
 
 			$query2 = $this->db->query($stringAdmCDE);
 
@@ -608,7 +641,7 @@ function actividadWorstOffenderModel(){
 			(CELULAR,NOMBRE,CARGO,TIPO_CLIENTE)
 			VALUES
 			('$Movil_1','$nombreCompleto','ADMINISTRADOR','ADM')";
-			echo $stringAdmCDE;
+			//echo $stringAdmCDE;
 			$query2 = $this->db->query($stringAdmCDE);
 		}
 
@@ -616,7 +649,7 @@ function actividadWorstOffenderModel(){
 		SET Nombre = '$nombre', Apellido = '$apellido', Identificacion = '$identificacion', 
 		Movil_1 = '$Movil_1', Correo = '$correo'
 		where Tiendas_Cod_Pos = '$Cod_Pos'";
-
+		//echo $string;
 		//$this->db->where('Cod_Pos', $Cod_Pos);
 		//$query = $this->db->update('tiendas', $data, array('Cod_Pos' => $Cod_Pos ));
 		$query = $this->db->query($string);
@@ -653,6 +686,36 @@ function actividadWorstOffenderModel(){
 		}
 	}
 
+	function setAdmin($Cod_Pos){
+		$dataAdmin = array(
+			'Tiendas_Cod_Pos' => $Cod_Pos,
+			'Identificacion' => $this->input->post('identificacionAdmin') ,
+			'Nombre' => $this->input->post('nombreAdmin') ,
+			'Apellido' => $this->input->post('apellidoAdmin'),
+			'Movil_1' => $this->input->post('CelAdmin'),
+			'Movil_2' => $this->input->post('CelAdmin2'),
+			'Correo' => $this->input->post('emailAdmin')
+		);
+
+		$Movil_1 = $dataAdmin['Movil_1'];
+		$existe = $this->validarSiExiste('gtr.cliente', 'CELULAR', $Movil_1);
+		$nombreCompleto = strtoupper($this->input->post('nombreAdmin') . ' ' . $this->input->post('apellidoAdmin'));
+		
+		if($existe == 0){
+
+			$stringAdmCDE = "INSERT INTO gtr.cliente
+			(CELULAR,NOMBRE,CARGO,TIPO_CLIENTE)
+			VALUES
+			('$Movil_1','$nombreCompleto','ADMINISTRADOR CDE','ADM')";
+			//echo $stringAdmCDE;
+			$query2 = $this->db->query($stringAdmCDE);
+		}
+		
+		//echo "<pre>"; print_r($dataAdmin); echo "</pre>";
+
+		$query = $this->db->insert('administradores', $dataAdmin);
+		if ($query) {return 1;}else{return 0;} 
+	}
 
 	function setCoor($Cod_Pos){
 
@@ -793,8 +856,8 @@ function actividadWorstOffenderModel(){
 			$this->db->query($stringCorCDE);
 		}
 
-		$this->db->insert('administradores', $dataAdmin);		
-		$this->db->insert('coordinadores_db', $dataCoor);
+		//$this->db->insert('administradores', $dataAdmin);		
+		//$this->db->insert('coordinadores_db', $dataCoor);
 		$this->db->insert('horarios', $dataHorario);
 		$this->db->insert_batch('horarios', $dataRestoHorario);
 
@@ -810,8 +873,21 @@ function actividadWorstOffenderModel(){
 	/**
 	D E L E T E S
 	*/
-	function deleteCoor($id)
-	{
+	function deleteAdmin($id){
+		
+		$query1 = $this->db->query("SELECT Movil_1 FROM bd_cded_cde_pda.administradores where id_admin = '$id'");
+		if ($query1) {
+			$data = $query1->row_array();
+			$celular = $data['Movil_1'];
+			$this->db->query("DELETE FROM gtr.cliente where CELULAR = '$celular'");
+
+			$this->db->query("DELETE FROM bd_cded_cde_pda.administradores where id_admin = '$id'");
+		}
+		
+	}
+
+	function deleteCoor($id){
+
 		$query1 = $this->db->query("SELECT Movil_1 FROM bd_cded_cde_pda.coordinadores_db where id = '$id'");
 		if ($query1) {
 			$data = $query1->row_array();

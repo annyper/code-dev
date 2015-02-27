@@ -14,6 +14,7 @@ class Gtr extends CI_Controller
 		date_default_timezone_set('America/Bogota');
 
 		//session_start();
+		
 		error_reporting(0);
 		$this->load->helper('url');
 
@@ -813,12 +814,15 @@ $this->load->view('gtr/charts/chartVisitas', $data);
 		//echo "<pre>"; print_r($data['VisitasAcumulado'] ); echo "</pre>";
 }
 
-function renderInfoCDE($Cod_pos)
-{
+function renderInfoCDE($Cod_pos){
+
 	$data['tienda_admin'] = $this->checkList_model->getInfoCDE($Cod_pos);
+
+	$data['admin'] = $this->checkList_model->getInfoCDEadmin($Cod_pos);
+
 	$data['coor'] = $this->checkList_model->getInfoCDEcoor($Cod_pos);
 
-		//echo "<pre>"; print_r($data); echo "</pre>";
+	//echo "<pre>"; print_r($data); echo "</pre>";
 	$this->load->view('gtr/main/infocde', $data);
 }
 
@@ -869,17 +873,18 @@ function editInfoCDE($Cod_pos = null)
 			$this->load->view('templates/alerta', $data);
 		}
 	}
-	else
-	{
+	else {
 		//echo $Cod_pos;
 
 		$data['mensaje'] = validation_errors();
 		$data['Cod_pos'] = $Cod_pos;
 		$data['tienda_admin'] = $this->checkList_model->getInfoCDE($Cod_pos);
+		$data['admin'] = $this->checkList_model->getInfoCDEadmin($Cod_pos);
 		$data['coor'] = $this->checkList_model->getInfoCDEcoor($Cod_pos);
 		$data['horario'] = $this->checkList_model->getHorario($Cod_pos);
+		$data['cdeList'] = $this->checkList_model->getCDElist();
 
-				//echo "<pre>"; print_r($data); echo "</pre>";
+		//echo "<pre>"; print_r($data['cdeList']); echo "</pre>";
 		$data['oficina'] = $data['tienda_admin']['Tienda'];
 		//echo "<pre>"; print_r($data); echo "</pre>";
 		$this->load->view('templates/header-hourPicker', $data);
@@ -938,6 +943,22 @@ function DataCDE($dataform, $Cod_pos, $aux = null){
 	
 }
 
+function setAdmin($Cod_pos){
+
+	$data['alerta']  = $this->checkList_model->setAdmin($Cod_pos);
+
+	if ($data['alerta'] == 1) {
+		$data['mensaje'] = "Guardado satisfactoriamente";
+		$data['clase'] = 'alert-success';
+		$this->load->view('templates/includes/alerta', $data);
+	}
+	elseif ($data['alerta'] == 0) {
+		$data['mensaje'] = "Error, sorry :P";
+		$data['clase'] = 'alert-danger';
+		$this->load->view('templates/includes/alerta', $data);
+	}
+}
+
 function inserDAtaCDE($Cod_pos){
 
 	$this->form_validation->set_rules('identificacion', 'Identificacion asesor', 'trim|required|xss_clean|htmlspecialchars');
@@ -953,12 +974,43 @@ function inserDAtaCDE($Cod_pos){
 	}
 }
 
+function updateCDEAdmin($id_admin, $Cod_PosOld, $Cod_posNuevo){
+	if ($this->input->is_ajax_request()) {
+			
+		$this->checkList_model->updateCDEAdmin($id_admin, $Cod_PosOld, $Cod_posNuevo);
+		$data['mensaje'] = "Administrador trasladado de CDE exitosamente";
+		$data['clase'] = 'alert-success';
+		$this->load->view('templates/includes/alerta', $data);
+	}
+}
+
+function updateCDECoor($id_coor, $Cod_PosOld, $Cod_posNuevo){
+	if ($this->input->is_ajax_request()) {
+			
+		$this->checkList_model->updateCDECoor($id_coor, $Cod_PosOld, $Cod_posNuevo);
+		$data['mensaje'] = "Coordinador trasladado de CDE exitosamente";
+		$data['clase'] = 'alert-success';
+		$this->load->view('templates/includes/alerta', $data);
+	}
+}
+
 	function getDatosApertura(){
 		$data = $this->checkList_model->getDatosApertura();
 
 		//echo "<pre>";
 		echo $data;
 		//echo "</pre>";
+	}
+
+	function deleteAdmin($id){
+		
+		if ($this->input->is_ajax_request()) {
+			
+			$this->checkList_model->deleteAdmin($id);
+			$data['mensaje'] = "Administrador eliminado";
+			$data['clase'] = 'alert-danger';
+			$this->load->view('templates/includes/alerta', $data);
+		}
 	}
 
 	function deleteCoor($id){
